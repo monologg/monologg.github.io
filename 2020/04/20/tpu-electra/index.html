@@ -19,7 +19,7 @@
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="http://monologg.github.io/images/tfrc.png">
 <meta property="article:published_time" content="2020-04-20T10:31:03.795Z">
-<meta property="article:modified_time" content="2020-04-20T11:16:55.688Z">
+<meta property="article:modified_time" content="2020-04-20T11:40:59.162Z">
 <meta property="article:author" content="Jangwon Park">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="http://monologg.github.io/images/tfrc.png">
@@ -36,7 +36,7 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-dark.css">
 
 
     
@@ -180,6 +180,7 @@
 </ul>
 <h2 id="GCP-VM-amp-TPU-생성"><a href="#GCP-VM-amp-TPU-생성" class="headerlink" title="GCP VM &amp; TPU 생성"></a>GCP VM &amp; TPU 생성</h2><ul>
 <li>VM과 TPU를 각각 따로 만드는 것보다, 우측 상단의 <code>cloud shell</code>을 열어 아래의 명령어를 입력하는 것을 추천합니다.</li>
+<li>저장소는 Bucket이, 연산은 TPU에서 처리하기 때문에 VM Instance는 가벼운 것을 써도 상관이 없습니다.</li>
 </ul>
 <figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ctpu up --zone=europe-west4<span class="_">-a</span> --tf-version=1.15 \</span><br><span class="line">          --tpu-size=v3-8 --machine-type=n1-standard-2 \</span><br><span class="line">          --disk-size-gb=20 --name=&#123;<span class="variable">$VM_NAME</span>&#125;</span><br></pre></td></tr></table></figure>
 
