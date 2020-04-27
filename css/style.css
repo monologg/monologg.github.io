@@ -418,7 +418,7 @@ code,
 pre {
   -moz-osx-font-smoothing: auto;
   -webkit-font-smoothing: auto;
-  font-family: 'IBM Plex Mono', 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei';
+  font-family: 'IBM Plex Mono Regular', 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei';
 }
 body {
   color: #4a4a4a;
@@ -1069,7 +1069,7 @@ a.has-text-grey-lightest:focus {
   font-family: monospace !important;
 }
 .is-family-code {
-  font-family: 'IBM Plex Mono', 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei' !important;
+  font-family: 'IBM Plex Mono Regular', 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei' !important;
 }
 .is-block {
   display: block !important;
@@ -11164,7 +11164,7 @@ figure.highlight figcaption * {
 }
 figure.highlight figcaption span {
   font-weight: 500;
-  font-family: 'IBM Plex Mono', 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei';
+  font-family: 'IBM Plex Mono Regular', 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei';
 }
 figure.highlight figcaption .level-left *:not(:last-child) {
   margin-right: 0.5em;
