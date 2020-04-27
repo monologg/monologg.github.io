@@ -412,13 +412,13 @@ button,
 input,
 select,
 textarea {
-  font-family: NanumSquareRound, 'Noto Sans KR', Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif;
+  font-family: 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif;
 }
 code,
 pre {
   -moz-osx-font-smoothing: auto;
   -webkit-font-smoothing: auto;
-  font-family: 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei';
+  font-family: 'IBM Plex Mono', 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei';
 }
 body {
   color: #4a4a4a;
@@ -1057,19 +1057,19 @@ a.has-text-grey-lightest:focus {
   font-weight: 700 !important;
 }
 .is-family-primary {
-  font-family: NanumSquareRound, 'Noto Sans KR', Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif !important;
+  font-family: 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif !important;
 }
 .is-family-secondary {
-  font-family: NanumSquareRound, 'Noto Sans KR', Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif !important;
+  font-family: 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif !important;
 }
 .is-family-sans-serif {
-  font-family: NanumSquareRound, 'Noto Sans KR', Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif !important;
+  font-family: 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif !important;
 }
 .is-family-monospace {
   font-family: monospace !important;
 }
 .is-family-code {
-  font-family: 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei' !important;
+  font-family: 'IBM Plex Mono', 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei' !important;
 }
 .is-block {
   display: block !important;
@@ -11164,7 +11164,7 @@ figure.highlight figcaption * {
 }
 figure.highlight figcaption span {
   font-weight: 500;
-  font-family: 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei';
+  font-family: 'IBM Plex Mono', 'Consolas', 'Source Code Pro', monospace, 'Microsoft YaHei';
 }
 figure.highlight figcaption .level-left *:not(:last-child) {
   margin-right: 0.5em;
