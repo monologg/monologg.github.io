@@ -10752,10 +10752,8 @@ article.article .title {
 }
 article.article .content {
   word-wrap: break-word;
+  font-weight: 500;
   font-size: 16px;
-}
-article.article .content p {
-  font-weight: 400;
 }
 article.article .content h1 {
   font-size: 1.75em;
