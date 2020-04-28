@@ -412,7 +412,7 @@ button,
 input,
 select,
 textarea {
-  font-family: 'Source Sans Pro', 'APPLE SD Gothic Neo', HelveticaNeue, Helvetica, 'NanumGothic', '맑은 고딕', 'Malgun Gothic', arial, sans-serif;
+  font-family: 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif;
 }
 code,
 pre {
@@ -1057,13 +1057,13 @@ a.has-text-grey-lightest:focus {
   font-weight: 700 !important;
 }
 .is-family-primary {
-  font-family: 'Source Sans Pro', 'APPLE SD Gothic Neo', HelveticaNeue, Helvetica, 'NanumGothic', '맑은 고딕', 'Malgun Gothic', arial, sans-serif !important;
+  font-family: 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif !important;
 }
 .is-family-secondary {
-  font-family: 'Source Sans Pro', 'APPLE SD Gothic Neo', HelveticaNeue, Helvetica, 'NanumGothic', '맑은 고딕', 'Malgun Gothic', arial, sans-serif !important;
+  font-family: 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif !important;
 }
 .is-family-sans-serif {
-  font-family: 'Source Sans Pro', 'APPLE SD Gothic Neo', HelveticaNeue, Helvetica, 'NanumGothic', '맑은 고딕', 'Malgun Gothic', arial, sans-serif !important;
+  font-family: 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei', sans-serif !important;
 }
 .is-family-monospace {
   font-family: monospace !important;
@@ -10754,6 +10754,7 @@ article.article .content {
   word-wrap: break-word;
   font-weight: 400;
   font-size: 16px;
+  line-height: 1.7;
 }
 article.article .content h1 {
   font-size: 2em;
