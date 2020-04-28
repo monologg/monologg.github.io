@@ -10753,7 +10753,7 @@ article.article .title {
 }
 article.article .content {
   word-wrap: break-word;
-  font-weight: 500;
+  font-weight: 400;
   font-size: 16px;
 }
 article.article .content h1 {
@@ -10860,7 +10860,7 @@ article.article .content blockquote footer strong + cite {
 }
 .navbar-main .navbar-item {
   font-size: 16px;
-  font-weight: 500;
+  font-weight: 400;
   display: flex;
   align-items: center;
   padding: 0 0.5rem;
