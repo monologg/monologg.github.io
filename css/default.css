@@ -412,7 +412,7 @@ button,
 input,
 select,
 textarea {
-  font-family: sans-serif, 'Spoqa Han Sans', 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei';
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", STHeiti, "Microsoft YaHei", "Microsoft JhengHei", "Source Han Sans SC", "Noto Sans CJK SC", "Source Han Sans CN", "Noto Sans SC", "Source Han Sans TC", "Noto Sans CJK TC", "WenQuanYi Micro Hei", SimSun, sans-serif;
 }
 code,
 pre {
@@ -1057,13 +1057,13 @@ a.has-text-grey-lightest:focus {
   font-weight: 700 !important;
 }
 .is-family-primary {
-  font-family: sans-serif, 'Spoqa Han Sans', 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei' !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", STHeiti, "Microsoft YaHei", "Microsoft JhengHei", "Source Han Sans SC", "Noto Sans CJK SC", "Source Han Sans CN", "Noto Sans SC", "Source Han Sans TC", "Noto Sans CJK TC", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 .is-family-secondary {
-  font-family: sans-serif, 'Spoqa Han Sans', 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei' !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", STHeiti, "Microsoft YaHei", "Microsoft JhengHei", "Source Han Sans SC", "Noto Sans CJK SC", "Source Han Sans CN", "Noto Sans SC", "Source Han Sans TC", "Noto Sans CJK TC", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 .is-family-sans-serif {
-  font-family: sans-serif, 'Spoqa Han Sans', 'Noto Sans KR Bold', NanumSquareRound, Ubuntu, Roboto, 'Open Sans', 'Microsoft YaHei' !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, "PingFang SC", "Hiragino Sans GB", STHeiti, "Microsoft YaHei", "Microsoft JhengHei", "Source Han Sans SC", "Noto Sans CJK SC", "Source Han Sans CN", "Noto Sans SC", "Source Han Sans TC", "Noto Sans CJK TC", "WenQuanYi Micro Hei", SimSun, sans-serif !important;
 }
 .is-family-monospace {
   font-family: monospace !important;
@@ -10752,7 +10752,7 @@ article.article .title {
 }
 article.article .content {
   word-wrap: break-word;
-  font-size: 1.1rem;
+  font-size: 16px;
 }
 article.article .content p {
   font-weight: 400;

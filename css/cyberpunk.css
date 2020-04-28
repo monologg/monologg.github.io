@@ -10753,7 +10753,7 @@ article.article .title {
 }
 article.article .content {
   word-wrap: break-word;
-  font-size: 1.1rem;
+  font-size: 16px;
 }
 article.article .content p {
   font-weight: 400;
