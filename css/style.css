@@ -10751,21 +10751,32 @@ article.article .content {
 }
 article.article .content h1 {
   font-size: 1.75em;
+  font-weight: 700;
+  line-height: 2;
 }
 article.article .content h2 {
   font-size: 1.5em;
+  font-weight: 700;
+  line-height: 2;
 }
 article.article .content h3 {
   font-size: 1.25em;
+  font-weight: 700;
+  line-height: 2;
 }
 article.article .content h4 {
   font-size: 1.125em;
+  font-weight: 700;
+  line-height: 2;
 }
 article.article .content h5 {
   font-size: 1em;
+  font-weight: 700;
+  line-height: 2;
 }
 article.article .content pre {
-  font-size: 0.85em;
+  font-size: 0.9em;
+  line-height: 1.75;
 }
 article.article .content code {
   padding: 0;
