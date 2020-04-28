@@ -10745,9 +10745,17 @@ article.article .article-meta {
   overflow-x: auto;
   margin-bottom: 0.5rem;
 }
+article.article .title {
+  font-size: 2em;
+  font-weight: 700;
+  line-height: 2;
+}
 article.article .content {
   word-wrap: break-word;
   font-size: 1.1rem;
+}
+article.article .content p {
+  font-weight: 400;
 }
 article.article .content h1 {
   font-size: 1.75em;
