@@ -10749,7 +10749,7 @@ article.article .article-meta {
 article.article .title {
   font-size: 2em;
   font-weight: 700;
-  line-height: 2;
+  line-height: 1.5;
 }
 article.article .content {
   word-wrap: break-word;
@@ -10859,6 +10859,8 @@ article.article .content blockquote footer strong + cite {
   margin-left: auto;
 }
 .navbar-main .navbar-item {
+  font-size: 16px;
+  font-weight: 500;
   display: flex;
   align-items: center;
   padding: 0 0.5rem;
