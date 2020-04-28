@@ -146,6 +146,10 @@ tokenizer.train(
 )
 
 tokenizer.save("./", "ch-{}-wpm-{}".format(args.limit_alphabet, args.vocab_size))
+
+def preprocess(input):
+  return None
+
 {% endhighlight %}
 
 ---
