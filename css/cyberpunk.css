@@ -10747,7 +10747,7 @@ article.article .article-meta {
   margin-bottom: 0.5rem;
 }
 article.article .title {
-  font-size: 2em;
+  font-size: 31px;
   font-weight: 700;
   line-height: 1.5;
 }
@@ -10758,27 +10758,27 @@ article.article .content {
   line-height: 1.7;
 }
 article.article .content h1 {
-  font-size: 2em;
+  font-size: 31px;
   font-weight: 700;
   line-height: 2;
 }
 article.article .content h2 {
-  font-size: 1.75em;
+  font-size: 28px;
   font-weight: 700;
   line-height: 2;
 }
 article.article .content h3 {
-  font-size: 1.5em;
+  font-size: 25px;
   font-weight: 700;
   line-height: 2;
 }
 article.article .content h4 {
-  font-size: 1.25em;
+  font-size: 22px;
   font-weight: 700;
   line-height: 2;
 }
 article.article .content h5 {
-  font-size: 1.125em;
+  font-size: 19px;
   font-weight: 700;
   line-height: 2;
 }
@@ -10860,7 +10860,7 @@ article.article .content blockquote footer strong + cite {
   margin-left: auto;
 }
 .navbar-main .navbar-item {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 400;
   display: flex;
   align-items: center;
