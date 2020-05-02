@@ -3,6 +3,27 @@
 
 
     <url>
+        <loc>http://monologg.kr/tags/preprocess/</loc>
+        <lastmod>2020-05-02T19:46:30.888Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/electra/</loc>
+        <lastmod>2020-05-02T19:46:30.888Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/nlp/</loc>
+        <lastmod>2020-05-02T19:46:30.888Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://monologg.kr/tags/finetuning/</loc>
         <lastmod>2020-05-02T18:24:27.246Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -11,20 +32,6 @@
 
     <url>
         <loc>http://monologg.kr/tags/pretraining/</loc>
-        <lastmod>2020-05-02T18:24:27.246Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/electra/</loc>
-        <lastmod>2020-05-02T18:24:27.246Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/nlp/</loc>
         <lastmod>2020-05-02T18:24:27.246Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -61,13 +68,6 @@
     <url>
         <loc>http://monologg.kr/tags/tpu/</loc>
         <lastmod>2020-05-02T00:51:15.993Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/preprocess/</loc>
-        <lastmod>2020-05-02T00:50:19.207Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
