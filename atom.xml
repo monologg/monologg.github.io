@@ -172,9 +172,9 @@
     
       <category term="nlp" scheme="http://monologg.kr/tags/nlp/"/>
     
-      <category term="tpu" scheme="http://monologg.kr/tags/tpu/"/>
-    
       <category term="electra" scheme="http://monologg.kr/tags/electra/"/>
+    
+      <category term="tpu" scheme="http://monologg.kr/tags/tpu/"/>
     
   </entry>
   
