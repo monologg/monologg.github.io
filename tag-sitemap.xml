@@ -3,6 +3,34 @@
 
 
     <url>
+        <loc>http://monologg.kr/tags/finetuning/</loc>
+        <lastmod>2020-05-02T03:01:10.204Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/pretraining/</loc>
+        <lastmod>2020-05-02T03:01:10.204Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/electra/</loc>
+        <lastmod>2020-05-02T03:01:10.204Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/nlp/</loc>
+        <lastmod>2020-05-02T03:01:10.204Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://monologg.kr/tags/tokenization/</loc>
         <lastmod>2020-05-02T00:51:57.810Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -11,13 +39,6 @@
 
     <url>
         <loc>http://monologg.kr/tags/wordpiece/</loc>
-        <lastmod>2020-05-02T00:51:57.810Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/nlp/</loc>
         <lastmod>2020-05-02T00:51:57.810Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -38,29 +59,8 @@
     </url>
 
     <url>
-        <loc>http://monologg.kr/tags/electra/</loc>
-        <lastmod>2020-05-02T00:51:33.755Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://monologg.kr/tags/tpu/</loc>
         <lastmod>2020-05-02T00:51:15.993Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/finetuning/</loc>
-        <lastmod>2020-05-02T00:51:03.812Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/pretraining/</loc>
-        <lastmod>2020-05-02T00:51:03.812Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

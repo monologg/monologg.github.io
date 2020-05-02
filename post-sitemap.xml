@@ -8,6 +8,14 @@
     </url>
 
     <url>
+        <loc>http://monologg.kr/2020/05/02/koelectra-part2/</loc>
+        <lastmod>2020-05-02T03:01:10.204Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://monologg.kr/2020/04/27/wordpiece-vocab/</loc>
         <lastmod>2020-05-02T00:51:57.810Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -26,14 +34,6 @@
     <url>
         <loc>http://monologg.kr/2020/04/20/tpu-electra/</loc>
         <lastmod>2020-05-02T00:51:15.993Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/2020/05/02/koelectra-part2/</loc>
-        <lastmod>2020-05-02T00:51:03.812Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
