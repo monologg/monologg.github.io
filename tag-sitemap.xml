@@ -3,6 +3,27 @@
 
 
     <url>
+        <loc>http://monologg.kr/tags/tokenization/</loc>
+        <lastmod>2020-05-04T00:35:47.430Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/wordpiece/</loc>
+        <lastmod>2020-05-04T00:35:47.430Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/nlp/</loc>
+        <lastmod>2020-05-04T00:35:47.430Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://monologg.kr/tags/preprocess/</loc>
         <lastmod>2020-05-02T19:46:30.888Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -11,13 +32,6 @@
 
     <url>
         <loc>http://monologg.kr/tags/electra/</loc>
-        <lastmod>2020-05-02T19:46:30.888Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/nlp/</loc>
         <lastmod>2020-05-02T19:46:30.888Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -33,20 +47,6 @@
     <url>
         <loc>http://monologg.kr/tags/pretraining/</loc>
         <lastmod>2020-05-02T18:24:27.246Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/tokenization/</loc>
-        <lastmod>2020-05-02T00:51:57.810Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/wordpiece/</loc>
-        <lastmod>2020-05-02T00:51:57.810Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
