@@ -3,35 +3,42 @@
 
 
     <url>
-        <loc>http://monologg.kr/tags/tokenization/</loc>
-        <lastmod>2020-05-04T00:35:47.430Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/wordpiece/</loc>
-        <lastmod>2020-05-04T00:35:47.430Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/nlp/</loc>
-        <lastmod>2020-05-04T00:35:47.430Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/preprocess/</loc>
-        <lastmod>2020-05-02T19:46:30.888Z</lastmod>
+        <loc>http://monologg.kr/tags/tpu/</loc>
+        <lastmod>2020-05-27T10:45:56.879Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://monologg.kr/tags/electra/</loc>
+        <lastmod>2020-05-27T10:45:56.879Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/nlp/</loc>
+        <lastmod>2020-05-27T10:45:56.879Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/tokenization/</loc>
+        <lastmod>2020-05-27T10:44:31.122Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/wordpiece/</loc>
+        <lastmod>2020-05-27T10:44:31.122Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/preprocess/</loc>
         <lastmod>2020-05-02T19:46:30.888Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -61,13 +68,6 @@
     <url>
         <loc>http://monologg.kr/tags/transformers/</loc>
         <lastmod>2020-05-02T00:51:33.755Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/tpu/</loc>
-        <lastmod>2020-05-02T00:51:15.993Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
