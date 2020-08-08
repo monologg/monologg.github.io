@@ -9,14 +9,21 @@
 
     <url>
         <loc>http://monologg.kr/categories/NLP/TPU/</loc>
-        <lastmod>2020-05-27T10:45:56.879Z</lastmod>
+        <lastmod>2020-08-08T17:37:15.623Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://monologg.kr/categories/NLP/</loc>
-        <lastmod>2020-05-27T10:45:56.879Z</lastmod>
+        <lastmod>2020-08-08T17:37:15.623Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/categories/NLP/ELECTRA/</loc>
+        <lastmod>2020-08-08T17:36:36.563Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -24,13 +31,6 @@
     <url>
         <loc>http://monologg.kr/categories/NLP/Wordpiece/</loc>
         <lastmod>2020-05-27T10:44:31.122Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/categories/NLP/ELECTRA/</loc>
-        <lastmod>2020-05-02T19:46:30.888Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
