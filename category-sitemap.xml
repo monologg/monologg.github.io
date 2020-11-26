@@ -8,14 +8,21 @@
     </url>
 
     <url>
-        <loc>http://monologg.kr/categories/NLP/TPU/</loc>
-        <lastmod>2020-08-08T17:37:15.623Z</lastmod>
+        <loc>http://monologg.kr/categories/NLP/Tokenization/</loc>
+        <lastmod>2020-10-12T12:49:10.652Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://monologg.kr/categories/NLP/</loc>
+        <lastmod>2020-10-12T12:49:10.652Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/categories/NLP/TPU/</loc>
         <lastmod>2020-08-08T17:37:15.623Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
