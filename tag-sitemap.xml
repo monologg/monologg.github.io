@@ -3,71 +3,71 @@
 
 
     <url>
-        <loc>http://monologg.kr/tags/tpu/</loc>
-        <lastmod>2020-08-08T17:37:15.623Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/electra/</loc>
-        <lastmod>2020-08-08T17:37:15.623Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/nlp/</loc>
-        <lastmod>2020-08-08T17:37:15.623Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/preprocess/</loc>
-        <lastmod>2020-08-08T17:36:36.563Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://monologg.kr/tags/tokenization/</loc>
-        <lastmod>2020-05-27T10:44:31.122Z</lastmod>
+        <lastmod>2021-02-19T14:48:37.828Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://monologg.kr/tags/wordpiece/</loc>
-        <lastmod>2020-05-27T10:44:31.122Z</lastmod>
+        <lastmod>2021-02-19T14:48:37.828Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://monologg.kr/tags/finetuning/</loc>
-        <lastmod>2020-05-02T18:24:27.246Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/tags/pretraining/</loc>
-        <lastmod>2020-05-02T18:24:27.246Z</lastmod>
+        <loc>http://monologg.kr/tags/nlp/</loc>
+        <lastmod>2021-02-19T14:48:37.828Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://monologg.kr/tags/pytorch/</loc>
-        <lastmod>2020-05-02T00:51:33.755Z</lastmod>
+        <lastmod>2021-02-19T14:48:35.727Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://monologg.kr/tags/transformers/</loc>
-        <lastmod>2020-05-02T00:51:33.755Z</lastmod>
+        <lastmod>2021-02-19T14:48:35.727Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/electra/</loc>
+        <lastmod>2021-02-19T14:48:35.727Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/tpu/</loc>
+        <lastmod>2021-02-19T14:48:33.350Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/finetuning/</loc>
+        <lastmod>2021-02-19T14:48:31.705Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/pretraining/</loc>
+        <lastmod>2021-02-19T14:48:31.705Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/tags/preprocess/</loc>
+        <lastmod>2021-02-19T14:48:29.105Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

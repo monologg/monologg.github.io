@@ -8,32 +8,8 @@
     </url>
 
     <url>
-        <loc>http://monologg.kr/2020/04/20/tpu-electra/</loc>
-        <lastmod>2020-08-08T17:37:15.623Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/2020/05/02/koelectra-part1/</loc>
-        <lastmod>2020-08-08T17:36:36.563Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://monologg.kr/2020/04/27/wordpiece-vocab/</loc>
-        <lastmod>2020-05-27T10:44:31.122Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/2020/05/02/koelectra-part2/</loc>
-        <lastmod>2020-05-02T18:24:27.246Z</lastmod>
+        <lastmod>2021-02-19T14:48:37.828Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -41,7 +17,31 @@
 
     <url>
         <loc>http://monologg.kr/2020/05/01/transformers-porting/</loc>
-        <lastmod>2020-05-02T00:51:33.755Z</lastmod>
+        <lastmod>2021-02-19T14:48:35.727Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/2020/04/20/tpu-electra/</loc>
+        <lastmod>2021-02-19T14:48:33.350Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/2020/05/02/koelectra-part2/</loc>
+        <lastmod>2021-02-19T14:48:31.705Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/2020/05/02/koelectra-part1/</loc>
+        <lastmod>2021-02-19T14:48:29.105Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

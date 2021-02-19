@@ -8,36 +8,36 @@
     </url>
 
     <url>
-        <loc>http://monologg.kr/categories/NLP/TPU/</loc>
-        <lastmod>2020-08-08T17:37:15.623Z</lastmod>
+        <loc>http://monologg.kr/categories/NLP/Wordpiece/</loc>
+        <lastmod>2021-02-19T14:48:37.828Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://monologg.kr/categories/NLP/</loc>
-        <lastmod>2020-08-08T17:37:15.623Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/categories/NLP/ELECTRA/</loc>
-        <lastmod>2020-08-08T17:36:36.563Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://monologg.kr/categories/NLP/Wordpiece/</loc>
-        <lastmod>2020-05-27T10:44:31.122Z</lastmod>
+        <lastmod>2021-02-19T14:48:37.828Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://monologg.kr/categories/NLP/Transformers/</loc>
-        <lastmod>2020-05-02T00:51:33.755Z</lastmod>
+        <lastmod>2021-02-19T14:48:35.727Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/categories/NLP/TPU/</loc>
+        <lastmod>2021-02-19T14:48:33.350Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://monologg.kr/categories/NLP/ELECTRA/</loc>
+        <lastmod>2021-02-19T14:48:31.705Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
