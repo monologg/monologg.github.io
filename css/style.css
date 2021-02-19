@@ -11341,23 +11341,20 @@ figure.highlight .section {
   line-height: inherit;
 }
 @media screen and (min-width: 1280px) {
-  .is-2-column .container {
-    max-width: 1216px;
-    width: 1216px;
-  }
   .is-1-column .container,
-  max-width: $desktop - 1 * $gap {
-    width: 1024px;
+  .is-2-column .container {
+    max-width: 960px;
+    width: 960px;
   }
 }
 @media screen and (min-width: 1472px) {
   .is-2-column .container {
-    max-width: 1280px;
-    width: 1280px;
+    max-width: 1152px;
+    width: 1152px;
   }
   .is-1-column .container {
-    max-width: 1024px;
-    width: 1024px;
+    max-width: 960px;
+    width: 960px;
   }
 }
 @media screen and (min-width: 769px), print {
