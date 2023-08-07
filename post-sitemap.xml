@@ -8,7 +8,7 @@
     </url>
 
     <url>
-        <loc>https://monologg.kr/2020/05/01/transformers-porting/</loc>
+        <loc>https://monologg.kr/2020/05/02/koelectra-part1/</loc>
         <lastmod>2023-08-07T15:40:31.677Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
@@ -24,14 +24,6 @@
     </url>
 
     <url>
-        <loc>https://monologg.kr/2020/04/27/wordpiece-vocab/</loc>
-        <lastmod>2023-08-07T15:40:31.677Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>https://monologg.kr/2020/05/02/koelectra-part2/</loc>
         <lastmod>2023-08-07T15:40:31.677Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -40,7 +32,15 @@
     </url>
 
     <url>
-        <loc>https://monologg.kr/2020/05/02/koelectra-part1/</loc>
+        <loc>https://monologg.kr/2020/05/01/transformers-porting/</loc>
+        <lastmod>2023-08-07T15:40:31.677Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>https://monologg.kr/2020/04/27/wordpiece-vocab/</loc>
         <lastmod>2023-08-07T15:40:31.677Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>

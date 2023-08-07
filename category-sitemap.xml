@@ -8,13 +8,6 @@
     </url>
 
     <url>
-        <loc>https://monologg.kr/categories/NLP/Wordpiece/</loc>
-        <lastmod>2023-08-07T15:40:31.677Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>https://monologg.kr/categories/NLP/TPU/</loc>
         <lastmod>2023-08-07T15:40:31.677Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -22,7 +15,7 @@
     </url>
 
     <url>
-        <loc>https://monologg.kr/categories/NLP/Transformers/</loc>
+        <loc>https://monologg.kr/categories/NLP/Wordpiece/</loc>
         <lastmod>2023-08-07T15:40:31.677Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -30,6 +23,13 @@
 
     <url>
         <loc>https://monologg.kr/categories/NLP/ELECTRA/</loc>
+        <lastmod>2023-08-07T15:40:31.677Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>https://monologg.kr/categories/NLP/Transformers/</loc>
         <lastmod>2023-08-07T15:40:31.677Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
