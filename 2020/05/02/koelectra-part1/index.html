@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="generator" content="Hexo 4.2.1"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>2주 간의 KoELECTRA 개발기 - 1부 - Monologg Blog</title><meta description="2주 간의 KoELECTRA 개발을 마치고, 그 과정을 글로 남기려고 한다. 이 글을 읽으신 분들은 내가 했던 삽질(?)을 최대한 덜 하길 바라는 마음이다:) 1부에는 실제 학습을 돌리기 전까지의 과정을 다룰 예정이다.  Github Repo: https:&amp;#x2F;&amp;#x2F;github.com&amp;#x2F;monologg&amp;#x2F;KoELECTRA"><meta property="og:type" content="blog"><meta property="og:title" content="2주 간의 KoELECTRA 개발기 - 1부"><meta property="og:url" content="https://monologg.kr/2020/05/02/koelectra-part1/"><meta property="og:site_name" content="Monologg Blog"><meta property="og:description" content="2주 간의 KoELECTRA 개발을 마치고, 그 과정을 글로 남기려고 한다. 이 글을 읽으신 분들은 내가 했던 삽질(?)을 최대한 덜 하길 바라는 마음이다:) 1부에는 실제 학습을 돌리기 전까지의 과정을 다룰 예정이다.  Github Repo: https:&amp;#x2F;&amp;#x2F;github.com&amp;#x2F;monologg&amp;#x2F;KoELECTRA"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://monologg.kr/images/2020-05-02-koelectra-part1/thumbnail.png"><meta property="article:published_time" content="2020-05-01T16:00:00.000Z"><meta property="article:modified_time" content="2023-08-07T15:40:31.677Z"><meta property="article:author" content="Jangwon Park"><meta property="article:tag" content="nlp"><meta property="article:tag" content="electra"><meta property="article:tag" content="preprocess"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/images/2020-05-02-koelectra-part1/thumbnail.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://monologg.kr/2020/05/02/koelectra-part1/"},"headline":"Monologg Blog","image":["https://monologg.kr/images/2020-05-02-koelectra-part1/thumbnail.png"],"datePublished":"2020-05-01T16:00:00.000Z","dateModified":"2023-08-07T15:40:31.677Z","author":{"@type":"Person","name":"Jangwon Park"},"description":"2주 간의 KoELECTRA 개발을 마치고, 그 과정을 글로 남기려고 한다. 이 글을 읽으신 분들은 내가 했던 삽질(?)을 최대한 덜 하길 바라는 마음이다:) 1부에는 실제 학습을 돌리기 전까지의 과정을 다룰 예정이다.  Github Repo: https:&#x2F;&#x2F;github.com&#x2F;monologg&#x2F;KoELECTRA"}</script><link rel="canonical" href="https://monologg.kr/2020/05/02/koelectra-part1/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-dark.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono" type="text/css"><link href="//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css" rel="stylesheet" type="text/css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DECTTCKXQT" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DECTTCKXQT');</script><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9379525792094836" crossorigin="anonymous"></script><link rel="alternate" href="/rss2.xml" title="Monologg Blog" type="application/rss+xml">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><i class="fas fa-laptop-code" style="font-size:24px"></i></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="external nofollow noopener noreferrer" title="Download on GitHub" href="https://github.com/monologg"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="thumbnail" src="/images/2020-05-02-koelectra-part1/thumbnail.png" alt="2주 간의 KoELECTRA 개발기 - 1부"></span></div><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" datetime="2020-05-01T16:00:00.000Z" title="2020-05-01T16:00:00.000Z">2020-05-02</time><span class="level-item"><a class="link-muted" href="/categories/NLP/">NLP</a><span> / </span><a class="link-muted" href="/categories/NLP/ELECTRA/">ELECTRA</a></span></div></div><h1 class="title is-3 is-size-4-mobile">2주 간의 KoELECTRA 개발기 - 1부</h1><div class="content"><p><strong>2주 간의 KoELECTRA 개발</strong>을 마치고, 그 과정을 글로 남기려고 한다.</p>
+<p>이 글을 읽으신 분들은 내가 했던 <strong>삽질(?)</strong>을 최대한 덜 하길 바라는 마음이다:)</p>
+<p>1부에는 <strong>실제 학습을 돌리기 전까지의 과정</strong>을 다룰 예정이다.</p>
+<blockquote>
+<p><strong>Github Repo:</strong> <a href="https://github.com/monologg/KoELECTRA" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/monologg/KoELECTRA</a></p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="문제-의식"><a href="#문제-의식" class="headerlink" title="문제 의식"></a>문제 의식</h2><p>한국에 Public하게 공개되어 있는 <code>한국어 PLM(Pretrained Language Model)</code>에는 크게 3가지가 있다.</p>
+<ol>
+<li>SKT의 <code>KoBERT</code></li>
+<li>TwoBlock AI의 <code>HanBERT</code></li>
+<li>ETRI의 <code>KorBERT</code></li>
+</ol>
+<p>3가지 모두 좋은 성능을 보이지만, 3가지 모두 단점이 존재한다. 각각의 단점을 정리하면 아래와 같다.</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th align="left">단점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>KoBERT</strong></td>
+<td align="left"><strong>Vocab size (8002개)</strong>가 상대적으로 작음</td>
+</tr>
+<tr>
+<td align="left"><strong>HanBERT</strong></td>
+<td align="left">Tokenizer로 인해 <strong>Ubuntu 환경</strong>에서만 사용 가능</td>
+</tr>
+<tr>
+<td align="left"><strong>KorBERT</strong></td>
+<td align="left"><strong>API 신청</strong> 등의 과정 필요</td>
+</tr>
+</tbody></table>
+<p>특히 3가지 모두 공통적으로 <code>Huggingface Transformers</code> 라이브러리에서 사용하려면 <strong>tokenization 파일을 따로 만들어야 하는 단점</strong>이 있다.</p>
+<p><a href="https://github.com/monologg/DistilKoBERT" rel="external nofollow noopener noreferrer" target="_blank">KoBERT</a>와 <a href="https://github.com/monologg/HanBert-Transformers" rel="external nofollow noopener noreferrer" target="_blank">HanBERT</a>의 경우 내가 직접 tokenization 파일을 만들어서 github에 배포했지만, 일부 사용자들이 불편함을 토로하기도 했다.</p>
+<p>그래서 이번 기회에 위의 단점들을 모두 해결한 <code>한국어 PLM</code>을 개발하고 싶었다.</p>
+<blockquote>
+<ol>
+<li><strong>Vocab size</strong>가 어느 정도 커야 함 (30000개 정도)</li>
+<li><strong>모든 OS</strong>에서 사용 가능</li>
+<li><strong>tokenization 파일을 만들 필요 없이</strong> 곧바로 사용 가능</li>
+<li>어느 정도 <strong>성능</strong>까지 보장되어야 함</li>
+</ol>
+</blockquote>
+<p>위의 4가지를 모두 만족시키기 위하여 시작한 프로젝트가 바로 <code>KoELECTRA</code> 이다.</p>
+<h2 id="Tokenizer"><a href="#Tokenizer" class="headerlink" title="Tokenizer"></a>Tokenizer</h2><p>실제 현업에서도 좋은 성능을 위해 <code>Mecab + Sentencepiece</code>를 많이 사용하는 것으로 알고 있다. 그러나 공식 BERT, ELECTRA 등은 <code>Wordpiece</code>를 사용하고 있으며, <code>transformers</code>에서도 공식적으로 Wordpiece만 지원하고 있다.</p>
+<p>즉, ELECTRA에서 Mecab이나 Sentencepiece를 사용하려면 추가적으로 <code>tokenization</code> 파일을 만들어야 하며, <code>transformers</code> 라이브러리의 api가 바뀌면 내가 직접 그에 맞게 tokenization 파일을 바꿔줘야 한다는 것이다. (KoBERT의 경우 실제로도 그렇게 하고 있다ㅠ)</p>
+<p><strong>이러한 문제들 때문에 이번 프로젝트에서는 무조건으로 <code>Wordpiece</code>를 사용하는 방안으로 진행하였다.</strong></p>
+<h3 id="Wordpiece"><a href="#Wordpiece" class="headerlink" title="Wordpiece"></a>Wordpiece</h3><blockquote>
+<p>“Wordpiece vocab을 만들 때 Huggingface의 <a href="https://github.com/huggingface/tokenizers" rel="external nofollow noopener noreferrer" target="_blank"><code>Tokenizers</code></a> 라이브러리를 쓰는 것이 가장 좋다.”</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="code"><pre><span class="line"><span class="keyword">import</span> argparse</span><br><span class="line"><span class="keyword">from</span> tokenizers <span class="keyword">import</span> BertWordPieceTokenizer</span><br><span class="line"></span><br><span class="line">parser = argparse.ArgumentParser()</span><br><span class="line"></span><br><span class="line">parser.add_argument(<span class="string">"--corpus_file"</span>, type=str)</span><br><span class="line">parser.add_argument(<span class="string">"--vocab_size"</span>, type=int, default=<span class="number">32000</span>)</span><br><span class="line">parser.add_argument(<span class="string">"--limit_alphabet"</span>, type=int, default=<span class="number">6000</span>)</span><br><span class="line"></span><br><span class="line">args = parser.parse_args()</span><br><span class="line"></span><br><span class="line">tokenizer = BertWordPieceTokenizer(</span><br><span class="line">    vocab_file=<span class="literal">None</span>,</span><br><span class="line">    clean_text=<span class="literal">True</span>,</span><br><span class="line">    handle_chinese_chars=<span class="literal">True</span>,</span><br><span class="line">    strip_accents=<span class="literal">False</span>, <span class="comment"># Must be False if cased model</span></span><br><span class="line">    lowercase=<span class="literal">False</span>,</span><br><span class="line">    wordpieces_prefix=<span class="string">"##"</span></span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">tokenizer.train(</span><br><span class="line">    files=[args.corpus_file],</span><br><span class="line">    limit_alphabet=args.limit_alphabet,</span><br><span class="line">    vocab_size=args.vocab_size</span><br><span class="line">)</span><br><span class="line"></span><br><span class="line">tokenizer.save(<span class="string">"./"</span>, <span class="string">"bert-wordpiece"</span>)</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<ul>
+<li>Vocab size의 경우 관례적으로 많이 쓰이는 <strong>약 3만개</strong>로 세팅하였다.</li>
+<li><strong>전처리 없이</strong> 원본 Corpus만 가지고 vocab 만들면 <strong>성능이 굉장히 안 좋음</strong></li>
+<li>character coverage를 최대한 높게 잡는 것이 좋다고 판단 (<strong>즉, corpus에서 등장했던 모든 character를 vocab에 포함시킴</strong>)<ul>
+<li>예를 들어 <code>퀭메일</code>이란 단어가 있다고 가정하자.</li>
+<li>만일 <code>퀭</code>이 vocab에 없다면 <code>퀭메일</code> 전체를 <code>[UNK]</code>로 처리하게 된다.</li>
+<li>만일 <code>퀭</code>이 vocab 안에 있으면 <code>퀭 + ##메일</code>로 tokenize가 될 수 있어 <code>##메일</code>이란 단어의 의미를 가져갈 수 있다.</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<p>(자세한 내용은 이전에 포스팅한 <a href="https://monologg.kr/2020/04/27/wordpiece-vocab/">[나만의 BERT Wordpiece Vocab 만들기]</a>을 참고)</p>
+<h2 id="전처리-Preprocessing"><a href="#전처리-Preprocessing" class="headerlink" title="전처리 (Preprocessing)"></a>전처리 (Preprocessing)</h2><blockquote>
+<p>“첫째도 <strong>전처리</strong>! 둘째도 <strong>전처리</strong>! 셋째도 <strong>전처리</strong>!”<br>“PLM의 성능에 가장 큰 영향을 주는 것은 <code>corpus quality</code>이다!”</p>
+</blockquote>
+<p><strong>크롤링한 뉴스의 문장 하나</strong>를 살펴보자</p>
+<blockquote>
+<p>[주요기사] ☞ [포토 스토리] 무허가 도시광산 을 아시나요? ☞ [따뜻한 사진 한 장] 사랑, 하나가 되어 가는 길 &lt;찰나의 기록, 순간의 진실 / KPPA 바로가기&gt; Copyrightsⓒ 한국사진기자협회(<a href="http://www.kppa.or.kr" rel="external nofollow noopener noreferrer" target="_blank">www.kppa.or.kr</a>), powered by castnet. 무단 전재 및 재배포 금지 보내기</p>
+</blockquote>
+<p>문제는 이런 문장이 매우 많은데다가, 이걸 Pretrain에 넣을 시 성능이 나빠질 게 뻔하다….</p>
+<p>이렇게 noise가 많은 Corpus로 vocab을 만들고 pretrain까지 하면 성능이 좋을 리가 없다.</p>
+<p>아래는 내가 적용한 대표적인 전처리 기준이다.</p>
+<blockquote>
+<ul>
+<li>한자, 일부 특수문자 제거</li>
+<li><strong>한국어 문장 분리기</strong> (<a href="https://github.com/likejazz/korean-sentence-splitter" rel="external nofollow noopener noreferrer" target="_blank">kss</a>) 사용</li>
+<li>뉴스 관련 문장은 제거 (<code>무단전재</code>, <code>(서울=뉴스1)</code> 등 포함되면 무조건 제외)</li>
+</ul>
+</blockquote>
+<p>사실 전처리의 기준에 정답은 없다. 가장 중요한 것은 <strong>자신의 Task에 맞게 전처리 기준을 세우는 것이다</strong>. 내가 생각했던 Task 들에는 한자는 중요하지 않다고 판단해서 지운 것이지, 한자가 꼭 필요한 Task의 경우에는 지우면 안 될 것이다.</p>
+<h2 id="TPU-사용-관련-Tip"><a href="#TPU-사용-관련-Tip" class="headerlink" title="TPU 사용 관련 Tip"></a>TPU 사용 관련 Tip</h2><p>(자세한 내용은 이전에 포스팅한 <a href="https://monologg.kr/2020/04/20/tpu-electra/">[TPU를 이용하여 Electra Pretraining하기]</a>을 참고)</p>
+<h3 id="1-Tensorflow-Research-Cloud-TFRC-를-쓰면-TPU가-무료"><a href="#1-Tensorflow-Research-Cloud-TFRC-를-쓰면-TPU가-무료" class="headerlink" title="1. Tensorflow Research Cloud(TFRC)를 쓰면 TPU가 무료"></a>1. Tensorflow Research Cloud(TFRC)를 쓰면 TPU가 무료</h3><p>→ 이미 <a href="https://github.com/google-research/electra" rel="external nofollow noopener noreferrer" target="_blank">공식 코드</a>가 TPU를 완벽히 지원하기에, 직접 ELECTRA를 만들고 싶다면 <strong>GPU보다는 TPU를 쓰는 것을 강력히 권장한다.</strong></p>
+<h3 id="2-VM-Instance는-작은-것-n1-standard-1-을-써도-상관-없다"><a href="#2-VM-Instance는-작은-것-n1-standard-1-을-써도-상관-없다" class="headerlink" title="2. VM Instance는 작은 것(n1-standard-1)을 써도 상관 없다"></a>2. VM Instance는 작은 것(<code>n1-standard-1</code>)을 써도 상관 없다</h3><p>→ ELECTRA를 GCP에서 학습하려면 <code>TPU</code>, <code>Bucket</code>, <code>VM Instance</code> 이렇게 3개가 필요하다. 그런데 <strong>저장소는 Bucket이, 연산은 TPU가 처리</strong>하기 때문에 VM Instance는 가벼운 것을 써도 된다.<br>→ <code>n1-standard-1</code>는 시간당 약 $0.037, <code>n1-standard-4</code>는 시간당 약 $0.14이다. (<strong>비용이 무려 2배 차이!!</strong>)</p>
+<h3 id="3-TPU를-쓰는-경우-모든-input-file은-Cloud-storage-bucket을-통해야만-한다"><a href="#3-TPU를-쓰는-경우-모든-input-file은-Cloud-storage-bucket을-통해야만-한다" class="headerlink" title="3. TPU를 쓰는 경우 모든 input file은 Cloud storage bucket을 통해야만 한다"></a>3. TPU를 쓰는 경우 모든 input file은 Cloud storage bucket을 통해야만 한다</h3><p>→ 이것도 처음에 몰랐다가 고생했던 삽질 중 하나다. <code>tf.estimator.tpu</code> 쪽 코드를 쓰는 경우 로컬 데이터가 아닌 <code>Bucket</code>을 통해야만 한다. (<a href="https://cloud.google.com/tpu/docs/troubleshooting?hl=ko#common-errors" rel="external nofollow noopener noreferrer" target="_blank">관련 FAQ</a>)<br>→ 다행히도 Bucket의 비용이 비싸지가 않다 (특정 리전에 만들어 놓으면 1GB당 월 약 $0.03)</p>
+<h3 id="4-VM-Instance와-TPU를-만들-때-ctpu-up-명령어를-사용해라"><a href="#4-VM-Instance와-TPU를-만들-때-ctpu-up-명령어를-사용해라" class="headerlink" title="4. VM Instance와 TPU를 만들 때 ctpu up 명령어를 사용해라"></a>4. VM Instance와 TPU를 만들 때 <code>ctpu up</code> 명령어를 사용해라</h3><p>→ VM Instance와 TPU를 따로 따로 생성하면 처음에 정상적으로 작동하지 않는 경우가 있었다. 아래와 같이 <code>cloud shell</code>로 명령어를 한 번만 치면 VM과 TPU가 동시에 생성된다😃</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ ctpu up --zone=europe-west4<span class="_">-a</span> --tf-version=1.15 \</span><br><span class="line">          --tpu-size=v3-8 --machine-type=n1-standard-2 \</span><br><span class="line">          --disk-size-gb=20 --name=&#123;<span class="variable">$VM_NAME</span>&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="Configuration의-함정"><a href="#Configuration의-함정" class="headerlink" title="Configuration의 함정"></a>Configuration의 함정</h2><p>앞에서도 언급했듯이 ELECTRA Pretraining은 <a href="https://github.com/google-research/electra" rel="external nofollow noopener noreferrer" target="_blank">공식 코드</a>를 그대로 가져다 쓰는 것이 좋다. 공식 코드를 가져다쓰기 전에 <code>논문</code>과 <code>코드 분석</code>을 어느 정도 하고 진행하는 것을 권장한다.</p>
+<p>그럼에도 좀 헷갈렸던 부분이 있어 여기서 언급하려 한다.</p>
+<h3 id="1-공식-레포에서-제공하는-small-모델은-정확히는-small-모델이다"><a href="#1-공식-레포에서-제공하는-small-모델은-정확히는-small-모델이다" class="headerlink" title="1. 공식 레포에서 제공하는 small 모델은 정확히는 small++ 모델이다"></a>1. 공식 레포에서 제공하는 <code>small</code> 모델은 정확히는 <code>small++</code> 모델이다</h3><p><img src="/images/2020-05-02-koelectra-part1/small_notice.png" alt><br><img src="/images/2020-05-02-koelectra-part1/small_gen_size.png" alt></p>
+<p>공식 코드에서도 알 수 있듯이 <code>small</code>로 공개된 모델은 정확히 말하면 <code>small++</code> 모델이다. 둘의 차이점은 아래와 같다.</p>
+<table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>max_seq_len</th>
+<th>generator_hidden_size</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>small</strong></td>
+<td>128</td>
+<td>0.25</td>
+</tr>
+<tr>
+<td align="left"><strong>small++</strong></td>
+<td>512</td>
+<td>1.0</td>
+</tr>
+</tbody></table>
+<p>(<code>generator_hidden_size=1.0</code>이란 것은 <code>discriminator</code>와 <code>generator</code>의 hidden_size가 같다는 것이다)</p>
+<p>이러한 부분이 논문에 자세히 나와 있지 않아 처음에 small 모델을 만들 때 진짜 small로 만들었다가 다시 small++로 만드는 수고를 거쳤다…. (이 글을 읽은 분들은 이 삽질을 안 하길 빈다.)</p>
+<figure class="highlight json"><figcaption><span>hparams.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"tpu_name"</span>: <span class="string">"electra-small"</span>,</span><br><span class="line">  <span class="attr">"tpu_zone"</span>: <span class="string">"europe-west4-a"</span>,</span><br><span class="line">  <span class="attr">"num_train_steps"</span>: <span class="number">1000000</span>,</span><br><span class="line">  <span class="attr">"save_checkpoints_steps"</span>: <span class="number">50000</span>,</span><br><span class="line">  <span class="attr">"train_batch_size"</span>: <span class="number">128</span>,</span><br><span class="line">  <span class="attr">"learning_rate"</span>: <span class="number">5e-4</span>,</span><br><span class="line">  <span class="attr">"vocab_size"</span>: <span class="number">32200</span>,</span><br><span class="line">  <span class="attr">"max_seq_length"</span>: <span class="number">512</span>,</span><br><span class="line">  <span class="attr">"generator_hidden_size"</span>: <span class="number">1.0</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="2-max-seq-length를-128로-줄인다면-max-position-embeddings도-128로-줄여야-한다"><a href="#2-max-seq-length를-128로-줄인다면-max-position-embeddings도-128로-줄여야-한다" class="headerlink" title="2. max_seq_length를 128로 줄인다면 max_position_embeddings도 128로 줄여야 한다"></a>2. max_seq_length를 128로 줄인다면 max_position_embeddings도 128로 줄여야 한다</h3><p>간혹 커스터마이즈된 모델을 만들 때 <code>max_seq_length</code>를 줄이고자 하는 경우가 있다.</p>
+<p>그럴 시 <code>max_seq_length</code>만 줄이면 해결된다고 오해할 수 있는데, <code>max_position_embeddings</code>도 줄여줘야 transformers 라이브러리에 맞게 변환할 때 문제가 생기지 않는다. (transformers가 max_position_embeddings으로 최대 길이를 알아내기 때문!)</p>
+<p>더 큰 함정은 아래와 같이 <code>model_hparam_overrides</code>라는 attribute 안에 <code>max_position_embeddings</code>를 넣어줘야 하는 것이다!</p>
+<figure class="highlight json"><figcaption><span>hparams.json</span></figcaption><table><tr><td class="code"><pre><span class="line">&#123;</span><br><span class="line">  <span class="attr">"max_seq_length"</span>: <span class="number">128</span>,</span><br><span class="line">  <span class="attr">"model_hparam_overrides"</span>: &#123;</span><br><span class="line">    <span class="attr">"max_position_embeddings"</span>: <span class="number">128</span></span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="마치며"><a href="#마치며" class="headerlink" title="마치며"></a>마치며</h2><p>1부에서는 <strong>실제 Pretraining을 시작하기 전의 준비 과정</strong>을 다뤘다.</p>
+<a href="/2020/05/02/koelectra-part2/" title="2주 간의 KoELECTRA 개발기 - 2부">2주 간의 KoELECTRA 개발기 - 2부</a> 에서는 실제 Pretraining, Transformers 포팅, Finetuning 등을 다룰 예정이다:)
+
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://github.com/google-research/electra" rel="external nofollow noopener noreferrer" target="_blank">ELECTRA Official Code</a></li>
+<li><a href="https://github.com/huggingface/tokenizers" rel="external nofollow noopener noreferrer" target="_blank">Huggingface Tokenizers</a></li>
+<li><a href="https://cloud.google.com/tpu/docs?hl=ko" rel="external nofollow noopener noreferrer" target="_blank">Cloud TPU Documentation</a></li>
+</ul>
+<h2 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h2><ul>
+<li><a href="/2020/04/20/tpu-electra/" title="TPU를 이용하여 Electra Pretraining하기">TPU를 이용하여 Electra Pretraining하기</a></li>
+<li><a href="/2020/04/27/wordpiece-vocab/" title="나만의 BERT Wordpiece Vocab 만들기">나만의 BERT Wordpiece Vocab 만들기</a></li>
+<li><a href="/2020/05/02/koelectra-part2/" title="2주 간의 KoELECTRA 개발기 - 2부">2주 간의 KoELECTRA 개발기 - 2부</a>
+</li>
+</ul>
+</div><div class="article-tags size-small is-uppercase mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/nlp/">nlp</a><a class="link-muted mr-2" rel="tag" href="/tags/electra/">electra</a><a class="link-muted mr-2" rel="tag" href="/tags/preprocess/">preprocess</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=5ea69e998fb91e001b32120c&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-start"><a class="article-nav-prev level level-item link-muted" href="/2020/05/02/koelectra-part2/"><i class="level-item fas fa-chevron-left"></i><span class="level-item">2주 간의 KoELECTRA 개발기 - 2부</span></a></div><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/05/01/transformers-porting/"><span class="level-item">내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><div class="card widget" id="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="is-flex" href="#문제-의식"><span class="mr-2">1</span><span>문제 의식</span></a></li><li><a class="is-flex" href="#Tokenizer"><span class="mr-2">2</span><span>Tokenizer</span></a><ul class="menu-list"><li><a class="is-flex" href="#Wordpiece"><span class="mr-2">2.1</span><span>Wordpiece</span></a></li></ul></li><li><a class="is-flex" href="#전처리-Preprocessing"><span class="mr-2">3</span><span>전처리 (Preprocessing)</span></a></li><li><a class="is-flex" href="#TPU-사용-관련-Tip"><span class="mr-2">4</span><span>TPU 사용 관련 Tip</span></a><ul class="menu-list"><li><a class="is-flex" href="#1-Tensorflow-Research-Cloud-TFRC-를-쓰면-TPU가-무료"><span class="mr-2">4.1</span><span>1. Tensorflow Research Cloud(TFRC)를 쓰면 TPU가 무료</span></a></li><li><a class="is-flex" href="#2-VM-Instance는-작은-것-n1-standard-1-을-써도-상관-없다"><span class="mr-2">4.2</span><span>2. VM Instance는 작은 것(n1-standard-1)을 써도 상관 없다</span></a></li><li><a class="is-flex" href="#3-TPU를-쓰는-경우-모든-input-file은-Cloud-storage-bucket을-통해야만-한다"><span class="mr-2">4.3</span><span>3. TPU를 쓰는 경우 모든 input file은 Cloud storage bucket을 통해야만 한다</span></a></li><li><a class="is-flex" href="#4-VM-Instance와-TPU를-만들-때-ctpu-up-명령어를-사용해라"><span class="mr-2">4.4</span><span>4. VM Instance와 TPU를 만들 때 ctpu up 명령어를 사용해라</span></a></li></ul></li><li><a class="is-flex" href="#Configuration의-함정"><span class="mr-2">5</span><span>Configuration의 함정</span></a><ul class="menu-list"><li><a class="is-flex" href="#1-공식-레포에서-제공하는-small-모델은-정확히는-small-모델이다"><span class="mr-2">5.1</span><span>1. 공식 레포에서 제공하는 small 모델은 정확히는 small++ 모델이다</span></a></li><li><a class="is-flex" href="#2-max-seq-length를-128로-줄인다면-max-position-embeddings도-128로-줄여야-한다"><span class="mr-2">5.2</span><span>2. max_seq_length를 128로 줄인다면 max_position_embeddings도 128로 줄여야 한다</span></a></li></ul></li><li><a class="is-flex" href="#마치며"><span class="mr-2">6</span><span>마치며</span></a></li><li><a class="is-flex" href="#Reference"><span class="mr-2">7</span><span>Reference</span></a></li><li><a class="is-flex" href="#Related-Posts"><span class="mr-2">8</span><span>Related Posts</span></a></li></ul></div></div></div><div class="card widget"><div class="card-content"><h3 class="menu-label">Recent</h3><article class="media"><a class="media-left" href="/2020/05/02/koelectra-part2/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-05-02-koelectra-part2/thumbnail.jpg" alt="2주 간의 KoELECTRA 개발기 - 2부"></p></a><div class="media-content size-small"><p><time datetime="2020-05-01T18:00:00.000Z">2020-05-02</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/02/koelectra-part2/">2주 간의 KoELECTRA 개발기 - 2부</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/ELECTRA/">ELECTRA</a></p></div></article><article class="media"><a class="media-left" href="/2020/05/02/koelectra-part1/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-05-02-koelectra-part1/thumbnail.png" alt="2주 간의 KoELECTRA 개발기 - 1부"></p></a><div class="media-content size-small"><p><time datetime="2020-05-01T16:00:00.000Z">2020-05-02</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/02/koelectra-part1/">2주 간의 KoELECTRA 개발기 - 1부</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/ELECTRA/">ELECTRA</a></p></div></article><article class="media"><a class="media-left" href="/2020/05/01/transformers-porting/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-05-01-transformers-porting/thumbnail.png" alt="내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기"></p></a><div class="media-content size-small"><p><time datetime="2020-04-30T15:00:00.000Z">2020-05-01</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/01/transformers-porting/">내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/Transformers/">Transformers</a></p></div></article><article class="media"><a class="media-left" href="/2020/04/27/wordpiece-vocab/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-04-28-wordpiece-vocab/thumbnail.jpg" alt="나만의 BERT Wordpiece Vocab 만들기"></p></a><div class="media-content size-small"><p><time datetime="2020-04-26T15:00:00.000Z">2020-04-27</time></p><p class="title is-6"><a class="link-muted" href="/2020/04/27/wordpiece-vocab/">나만의 BERT Wordpiece Vocab 만들기</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/Wordpiece/">Wordpiece</a></p></div></article><article class="media"><a class="media-left" href="/2020/04/20/tpu-electra/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-04-20-tpu-electra/thumbnail.jpg" alt="TPU를 이용하여 Electra Pretraining하기"></p></a><div class="media-content size-small"><p><time datetime="2020-04-19T15:00:00.000Z">2020-04-20</time></p><p class="title is-6"><a class="link-muted" href="/2020/04/20/tpu-electra/">TPU를 이용하여 Electra Pretraining하기</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/TPU/">TPU</a></p></div></article></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><i class="fas fa-laptop-code" style="font-size:24px"></i></a><p class="size-small"><span>&copy; 2023 Jangwon Park</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="external nofollow noopener noreferrer">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="external nofollow noopener noreferrer" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="external nofollow noopener noreferrer" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            site: {
+                url: 'https://monologg.kr',
+                external_link: {"enable":true,"exclude":[]}
+            },
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: ''
+                }
+            }
+        };</script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to Top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script><script type="text/javascript">var infolinks_pid = 3364207; var infolinks_wsid = 0;</script><script type="text/javascript" src="http://resources.infolinks.com/js/infolinks_main.js"></script></body></html>

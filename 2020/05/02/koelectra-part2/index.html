@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="generator" content="Hexo 4.2.1"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>2주 간의 KoELECTRA 개발기 - 2부 - Monologg Blog</title><meta description="2주 간의 KoELECTRA 개발을 마치고, 그 과정을 글로 남기려고 한다. 이 글을 읽으신 분들은 내가 했던 삽질(?)을 최대한 덜 하길 바라는 마음이다:) 2부에는 Pretraining, Finetuning 등을 다룰 예정이다.  Github Repo: https:&amp;#x2F;&amp;#x2F;github.com&amp;#x2F;monologg&amp;#x2F;KoELECTRA"><meta property="og:type" content="blog"><meta property="og:title" content="2주 간의 KoELECTRA 개발기 - 2부"><meta property="og:url" content="https://monologg.kr/2020/05/02/koelectra-part2/"><meta property="og:site_name" content="Monologg Blog"><meta property="og:description" content="2주 간의 KoELECTRA 개발을 마치고, 그 과정을 글로 남기려고 한다. 이 글을 읽으신 분들은 내가 했던 삽질(?)을 최대한 덜 하길 바라는 마음이다:) 2부에는 Pretraining, Finetuning 등을 다룰 예정이다.  Github Repo: https:&amp;#x2F;&amp;#x2F;github.com&amp;#x2F;monologg&amp;#x2F;KoELECTRA"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://monologg.kr/images/2020-05-02-koelectra-part2/thumbnail.jpg"><meta property="article:published_time" content="2020-05-01T18:00:00.000Z"><meta property="article:modified_time" content="2023-08-07T15:40:31.677Z"><meta property="article:author" content="Jangwon Park"><meta property="article:tag" content="nlp"><meta property="article:tag" content="electra"><meta property="article:tag" content="pretraining"><meta property="article:tag" content="finetuning"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/images/2020-05-02-koelectra-part2/thumbnail.jpg"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://monologg.kr/2020/05/02/koelectra-part2/"},"headline":"Monologg Blog","image":["https://monologg.kr/images/2020-05-02-koelectra-part2/thumbnail.jpg"],"datePublished":"2020-05-01T18:00:00.000Z","dateModified":"2023-08-07T15:40:31.677Z","author":{"@type":"Person","name":"Jangwon Park"},"description":"2주 간의 KoELECTRA 개발을 마치고, 그 과정을 글로 남기려고 한다. 이 글을 읽으신 분들은 내가 했던 삽질(?)을 최대한 덜 하길 바라는 마음이다:) 2부에는 Pretraining, Finetuning 등을 다룰 예정이다.  Github Repo: https:&#x2F;&#x2F;github.com&#x2F;monologg&#x2F;KoELECTRA"}</script><link rel="canonical" href="https://monologg.kr/2020/05/02/koelectra-part2/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-dark.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;600&amp;family=Source+Code+Pro"><link rel="stylesheet" href="/css/default.css"><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono" type="text/css"><link href="//spoqa.github.io/spoqa-han-sans/css/SpoqaHanSans-kr.css" rel="stylesheet" type="text/css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css"><script src="https://www.googletagmanager.com/gtag/js?id=G-DECTTCKXQT" async></script><script>window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+    
+        gtag('config', 'G-DECTTCKXQT');</script><!--!--><script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script><script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9379525792094836" crossorigin="anonymous"></script><link rel="alternate" href="/rss2.xml" title="Monologg Blog" type="application/rss+xml">
+</head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><i class="fas fa-laptop-code" style="font-size:24px"></i></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="external nofollow noopener noreferrer" title="Download on GitHub" href="https://github.com/monologg"><i class="fab fa-github"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="thumbnail" src="/images/2020-05-02-koelectra-part2/thumbnail.jpg" alt="2주 간의 KoELECTRA 개발기 - 2부"></span></div><article class="card-content article" role="article"><div class="article-meta size-small is-uppercase level is-mobile"><div class="level-left"><time class="level-item" datetime="2020-05-01T18:00:00.000Z" title="2020-05-01T18:00:00.000Z">2020-05-02</time><span class="level-item"><a class="link-muted" href="/categories/NLP/">NLP</a><span> / </span><a class="link-muted" href="/categories/NLP/ELECTRA/">ELECTRA</a></span></div></div><h1 class="title is-3 is-size-4-mobile">2주 간의 KoELECTRA 개발기 - 2부</h1><div class="content"><p><strong>2주 간의 KoELECTRA 개발</strong>을 마치고, 그 과정을 글로 남기려고 한다.</p>
+<p>이 글을 읽으신 분들은 내가 했던 <strong>삽질(?)</strong>을 최대한 덜 하길 바라는 마음이다:)</p>
+<p>2부에는 <strong>Pretraining, Finetuning</strong> 등을 다룰 예정이다.</p>
+<blockquote>
+<p><strong>Github Repo:</strong> <a href="https://github.com/monologg/KoELECTRA" rel="external nofollow noopener noreferrer" target="_blank">https://github.com/monologg/KoELECTRA</a></p>
+</blockquote>
+<a id="more"></a>
+
+<h2 id="Training"><a href="#Training" class="headerlink" title="Training"></a>Training</h2><p>😀 드디어 모든 삽질들을 끝내고, Pretraining을 시작하였다 😀</p>
+<h3 id="Loss"><a href="#Loss" class="headerlink" title="Loss"></a>Loss</h3><div class="justified-gallery">
+
+<p><img src="/images/2020-05-02-koelectra-part2/base_loss.png" alt="base loss"><br><img src="/images/2020-05-02-koelectra-part2/small_loss.png" alt="small loss"></p>
+</div>
+
+<p>약 300k step 까지의 <code>base</code>와 <code>small</code>의 loss 추이이다. 첫 100k까지는 매우 빠르게 줄어들다가, 그 이후에는 조금씩 줄어드는 모습을 보인다.</p>
+<h3 id="Benchmark"><a href="#Benchmark" class="headerlink" title="Benchmark"></a>Benchmark</h3><p>학습 중간중간 성능 체크는 <code>nsmc</code> 데이터셋을 가지고 간단하게 평가하였다 (사실 GPU가 1개 밖에 없어 <code>nsmc</code>만 테스트한 건 비밀😢)</p>
+<table>
+<thead>
+<tr>
+<th>Acc(%)</th>
+<th>25K</th>
+<th>75K</th>
+<th>90K</th>
+<th>125K</th>
+<th>150K</th>
+<th>250K</th>
+<th>300K</th>
+<th>450K</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>Base</code></td>
+<td>88.10</td>
+<td>88.48</td>
+<td>88.67</td>
+<td>88.92</td>
+<td>88.97</td>
+<td>89.51</td>
+<td>89.65</td>
+<td>90.16</td>
+</tr>
+</tbody></table>
+<p>Step이 증가할수록 accuracy가 오르는 것이 눈에 띄게 보이니 신기하긴 했다. (이것이 Pretraining의 힘인가….)</p>
+<h3 id="Training-Time"><a href="#Training-Time" class="headerlink" title="Training Time"></a>Training Time</h3><p>데이터의 경우 <strong>14GB</strong>로 총 <code>2.6B Token</code>이다. BERT와 ELECTRA에서는 <code>3.3B Token</code>을 사용한 것에 비하면 데이터의 양이 조금 모자란 게 아쉽긴 하지만, 이것이 개인 단위에서 모을 수 있었던 최선의 데이터양이었다😵</p>
+<p><strong>TPU v3-8</strong> 기준으로 <code>Base</code> 모델은 <strong>약 7일</strong>, <code>Small</code> 모델은 <strong>약 3일</strong>이 소요되었다. 그래서 이 기간 동안 <strong>Finetuning</strong> 코드를 짜는 것으로 시간을 절약하였다.</p>
+<h2 id="Finetuning-코드-제작"><a href="#Finetuning-코드-제작" class="headerlink" title="Finetuning 코드 제작"></a>Finetuning 코드 제작</h2><p>코드의 경우는 <a href="https://github.com/huggingface/transformers/tree/master/examples" rel="external nofollow noopener noreferrer" target="_blank">Transformers의 Example 코드</a>를 참고하여 제작하였다.</p>
+<p><strong>Finetuning의 경우 총 7개의 task에 대해 진행하였다.</strong> (때마침 얼마 전 카카오브레인에서 <code>KorNLI</code>와 <code>KorSTS</code> 데이터셋을 공개해주었다👍 1년 전과 비교했을 때 벤치마크를 평가할 수 있는 한국어 데이터셋이 많아진 것은 정말 좋은 일이라 할 수 있다.)</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th align="center">NSMC</th>
+<th align="center">PAWS</th>
+<th align="center">QuestionPair</th>
+<th align="center">KorNLI</th>
+<th align="center">KorSTS</th>
+<th align="center">NaverNER</th>
+<th align="center">KorQuad</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Task</strong></td>
+<td align="center">감정분석</td>
+<td align="center">유사문장</td>
+<td align="center">유사문장</td>
+<td align="center">추론</td>
+<td align="center">유사문장</td>
+<td align="center">개체명인식</td>
+<td align="center">기계독해</td>
+</tr>
+<tr>
+<td><strong>Metric</strong></td>
+<td align="center">Acc</td>
+<td align="center">Acc</td>
+<td align="center">Acc</td>
+<td align="center">Acc</td>
+<td align="center">Spearman</td>
+<td align="center">F1</td>
+<td align="center">EM/F1</td>
+</tr>
+</tbody></table>
+<p>기존의 연구들에서는 <code>Bert-Multilingual-Cased</code>를 가지고 많이 비교하였는데, 이번 연구에서는 <code>XLM-Roberta-Base</code> 모델로 평가를 시도하였다. 확실히 xlm-roberta가 bert보다는 성능이 좋았기에, 적어도 <code>KoELECTRA</code>가 xlm-roberta는 뛰어넘어야 유의미하지 않을까라고 생각해서 였다.</p>
+<p><a href="https://deview.kr/2019/schedule/291" rel="external nofollow noopener noreferrer" target="_blank">Deview에서 발표한 Larva</a>의 경우 Benchmark pipeline을 만들어서 ckpt가 들어올 때마다 계속 evaluation을 해주었다고 하는데, 앞에서도 말했듯이 나에게는 GPU가 1개 밖에 없고, GCP에서 GPU를 많이 빌릴 수도 없기에 <strong>가장 최근 5개의 ckpt를 가지고 평가</strong>하였고, 그 중에서 평균값이 가장 좋았던 것을 최종 모델로 선정하였다.</p>
+<p><strong>Finetuning용 코드 및 사용법</strong>은 <a href="https://github.com/monologg/KoELECTRA/tree/master/finetune" rel="external nofollow noopener noreferrer" target="_blank">여기</a>에서 직접 확인해볼 수 있다.</p>
+<h2 id="Convert-from-Tensorflow-to-Pytorch"><a href="#Convert-from-Tensorflow-to-Pytorch" class="headerlink" title="Convert from Tensorflow to Pytorch"></a>Convert from Tensorflow to Pytorch</h2><p>Huggingface에서 <code>ElectraModel</code>을 구현하면서 tensorflow를 pytorch로 변환하는 코드도 함께 만들어줬다😍</p>
+<p>관련 내용은 [<a href="/2020/05/01/transformers-porting/" title="내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기">내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기</a>]를 읽어보길 바란다. (<strong>여기서도 굉장히 삽질을 많이 해본 입장으로서 꼭 읽어보길 권한다</strong>)</p>
+<h2 id="Result"><a href="#Result" class="headerlink" title="Result"></a>Result</h2><div class="justified-gallery">
+
+<p><img src="/images/2020-05-02-koelectra-part2/base_result.png" alt="Base result"><br><img src="/images/2020-05-02-koelectra-part2/small_result.png" alt="Small result"></p>
+</div>
+
+<p>처음에 이 프로젝트를 계획할 때 가장 걱정되었던 점이 <strong>“성능이 안 나오면 어쩌나”</strong>였다. (성능이 너무 안 좋으면 사실 2주를 제대로 날린 셈이기에….)</p>
+<p><strong>결과는 예상했던 것보다 훨씬 좋았다.</strong> 애초에 데이터의 양이나 Tokenizer 등을 고려했을 때 <code>HanBERT</code>를 완벽히 따라잡는 것은 무리라고 생각했지만, <code>KoBERT</code>보다 전반적으로 성능이 많이 좋을 줄은 몰랐다. <code>HanBERT</code>와도 실질적인 결과는 비슷하거나 오히려 더 좋은 케이스도 있어서 이 정도면 🎉<strong>대성공</strong>🎉이라고 봐도 될 꺼 같다.</p>
+<p><code>KoELECTRA-Small</code>의 성능이 가장 인상적이었는데, 모델의 사이즈가 <code>DistilKoBERT</code>의 절반임에도 불구하고 우수한 성능을 보였다. <strong>경량화 모델에서 충분히 사용할 만한 가치가 있을 것 같다.</strong></p>
+<h2 id="How-to-Use"><a href="#How-to-Use" class="headerlink" title="How to Use"></a>How to Use</h2><p>이 프로젝트를 처음 계획했을 때의 고려사항 중 아래 사항들이 가장 중요했었다.</p>
+<blockquote>
+<p>“<strong>모든 OS</strong>에서 사용 가능”<br>“<strong>tokenization 파일을 만들 필요 없이</strong> 곧바로 사용 가능”</p>
+</blockquote>
+<p>그리고 이제 <code>transformers</code> 라이브러리만 있으면 어떠한 환경에서도 <code>한국어 PLM</code>을 사용할 수 있게된 것이다🤗</p>
+<figure class="highlight bash"><figcaption><span>Installation</span></figcaption><table><tr><td class="code"><pre><span class="line">$ pip3 install -U transformers</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><figcaption><span>How to Use</span></figcaption><table><tr><td class="code"><pre><span class="line"><span class="keyword">from</span> transformers <span class="keyword">import</span> ElectraModel, ElectraTokenizer</span><br><span class="line"></span><br><span class="line"><span class="comment"># KoELECTRA-Base</span></span><br><span class="line">model = ElectraModel.from_pretrained(<span class="string">"monologg/koelectra-base-discriminator"</span>)</span><br><span class="line">tokenizer = ElectraTokenizer.from_pretrained(<span class="string">"monologg/koelectra-base-discriminator"</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># KoELECTRA-Small</span></span><br><span class="line">model = ElectraModel.from_pretrained(<span class="string">"monologg/koelectra-small-discriminator"</span>)</span><br><span class="line">tokenizer = ElectraTokenizer.from_pretrained(<span class="string">"monologg/koelectra-small-discriminator"</span>)</span><br></pre></td></tr></table></figure>
+
+<h2 id="맺으며"><a href="#맺으며" class="headerlink" title="맺으며"></a>맺으며</h2><center>
+
+<p><img src="/images/2020-05-02-koelectra-part2/facebook-reaction.png" alt="와우!"></p>
+</center>
+
+<p>솔직히 이렇게까지 반응이 좋을 줄은 몰랐다🙄 개발자로서 이럴 때가 가장 보람있지 않은가 싶다.</p>
+<p>처음 계획할 때부터 <strong>“이거 만들면 다른 분들에게도 큰 도움이 되겠다”</strong>라 생각했는데, 실제로도 그런 것 같아 기분이 (굉장히) 좋다 😀</p>
+<blockquote>
+<p>“내가 불편해하는 것은 분명 다른 누군가도 불편해한다. 그런 부분을 해결해주는 것이 개발자의 역할이라고 생각한다.”</p>
+</blockquote>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><ul>
+<li><a href="https://github.com/google-research/electra" rel="external nofollow noopener noreferrer" target="_blank">ELECTRA Official Code</a></li>
+<li><a href="https://github.com/huggingface/transformers" rel="external nofollow noopener noreferrer" target="_blank">Huggingface Transformers</a></li>
+<li><a href="https://deview.kr/data/deview/2019/presentation/[111]+%E1%84%8B%E1%85%A5%E1%86%B7_%E1%84%8E%E1%85%A5%E1%86%BC+%E1%84%8F%E1%85%B3%E1%86%AB+%E1%84%8B%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%A5+%E1%84%86%E1%85%A9%E1%84%83%E1%85%A6%E1%86%AF+%E1%84%80%E1%85%A9%E1%86%BC%E1%84%8C%E1%85%A1%E1%86%BC+%E1%84%80%E1%85%A1%E1%84%83%E1%85%A9%E1%86%BC%E1%84%80%E1%85%B5.pdf" rel="external nofollow noopener noreferrer" target="_blank">Deview 2019 Larva Presentation</a></li>
+<li><a href="https://github.com/kakaobrain/KorNLUDatasets" rel="external nofollow noopener noreferrer" target="_blank">KorNLI, KorSTS</a></li>
+</ul>
+<h2 id="Related-Posts"><a href="#Related-Posts" class="headerlink" title="Related Posts"></a>Related Posts</h2><ul>
+<li><a href="/2020/05/01/transformers-porting/" title="내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기">내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기</a></li>
+<li><a href="/2020/05/02/koelectra-part1/" title="2주 간의 KoELECTRA 개발기 - 1부">2주 간의 KoELECTRA 개발기 - 1부</a>
+</li>
+</ul>
+</div><div class="article-tags size-small is-uppercase mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/nlp/">nlp</a><a class="link-muted mr-2" rel="tag" href="/tags/electra/">electra</a><a class="link-muted mr-2" rel="tag" href="/tags/pretraining/">pretraining</a><a class="link-muted mr-2" rel="tag" href="/tags/finetuning/">finetuning</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=5ea69e998fb91e001b32120c&amp;product=inline-share-buttons" defer></script></article></div><!--!--><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2020/05/02/koelectra-part1/"><span class="level-item">2주 간의 KoELECTRA 개발기 - 1부</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><!--!--></div><!--!--><div class="column column-right is-4-tablet is-4-desktop is-4-widescreen  order-3 is-sticky"><div class="card widget" id="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="is-flex" href="#Training"><span class="mr-2">1</span><span>Training</span></a><ul class="menu-list"><li><a class="is-flex" href="#Loss"><span class="mr-2">1.1</span><span>Loss</span></a></li><li><a class="is-flex" href="#Benchmark"><span class="mr-2">1.2</span><span>Benchmark</span></a></li><li><a class="is-flex" href="#Training-Time"><span class="mr-2">1.3</span><span>Training Time</span></a></li></ul></li><li><a class="is-flex" href="#Finetuning-코드-제작"><span class="mr-2">2</span><span>Finetuning 코드 제작</span></a></li><li><a class="is-flex" href="#Convert-from-Tensorflow-to-Pytorch"><span class="mr-2">3</span><span>Convert from Tensorflow to Pytorch</span></a></li><li><a class="is-flex" href="#Result"><span class="mr-2">4</span><span>Result</span></a></li><li><a class="is-flex" href="#How-to-Use"><span class="mr-2">5</span><span>How to Use</span></a></li><li><a class="is-flex" href="#맺으며"><span class="mr-2">6</span><span>맺으며</span></a></li><li><a class="is-flex" href="#Reference"><span class="mr-2">7</span><span>Reference</span></a></li><li><a class="is-flex" href="#Related-Posts"><span class="mr-2">8</span><span>Related Posts</span></a></li></ul></div></div></div><div class="card widget"><div class="card-content"><h3 class="menu-label">Recent</h3><article class="media"><a class="media-left" href="/2020/05/02/koelectra-part2/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-05-02-koelectra-part2/thumbnail.jpg" alt="2주 간의 KoELECTRA 개발기 - 2부"></p></a><div class="media-content size-small"><p><time datetime="2020-05-01T18:00:00.000Z">2020-05-02</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/02/koelectra-part2/">2주 간의 KoELECTRA 개발기 - 2부</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/ELECTRA/">ELECTRA</a></p></div></article><article class="media"><a class="media-left" href="/2020/05/02/koelectra-part1/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-05-02-koelectra-part1/thumbnail.png" alt="2주 간의 KoELECTRA 개발기 - 1부"></p></a><div class="media-content size-small"><p><time datetime="2020-05-01T16:00:00.000Z">2020-05-02</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/02/koelectra-part1/">2주 간의 KoELECTRA 개발기 - 1부</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/ELECTRA/">ELECTRA</a></p></div></article><article class="media"><a class="media-left" href="/2020/05/01/transformers-porting/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-05-01-transformers-porting/thumbnail.png" alt="내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기"></p></a><div class="media-content size-small"><p><time datetime="2020-04-30T15:00:00.000Z">2020-05-01</time></p><p class="title is-6"><a class="link-muted" href="/2020/05/01/transformers-porting/">내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/Transformers/">Transformers</a></p></div></article><article class="media"><a class="media-left" href="/2020/04/27/wordpiece-vocab/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-04-28-wordpiece-vocab/thumbnail.jpg" alt="나만의 BERT Wordpiece Vocab 만들기"></p></a><div class="media-content size-small"><p><time datetime="2020-04-26T15:00:00.000Z">2020-04-27</time></p><p class="title is-6"><a class="link-muted" href="/2020/04/27/wordpiece-vocab/">나만의 BERT Wordpiece Vocab 만들기</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/Wordpiece/">Wordpiece</a></p></div></article><article class="media"><a class="media-left" href="/2020/04/20/tpu-electra/"><p class="image is-64x64"><img class="thumbnail" src="/images/2020-04-20-tpu-electra/thumbnail.jpg" alt="TPU를 이용하여 Electra Pretraining하기"></p></a><div class="media-content size-small"><p><time datetime="2020-04-19T15:00:00.000Z">2020-04-20</time></p><p class="title is-6"><a class="link-muted" href="/2020/04/20/tpu-electra/">TPU를 이용하여 Electra Pretraining하기</a></p><p class="is-uppercase"><a class="link-muted" href="/categories/NLP/">NLP</a> / <a class="link-muted" href="/categories/NLP/TPU/">TPU</a></p></div></article></div></div></div></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><i class="fas fa-laptop-code" style="font-size:24px"></i></a><p class="size-small"><span>&copy; 2023 Jangwon Park</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="external nofollow noopener noreferrer">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="external nofollow noopener noreferrer" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="external nofollow noopener noreferrer" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p></div></div></div></div></footer><script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script><script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            site: {
+                url: 'https://monologg.kr',
+                external_link: {"enable":true,"exclude":[]}
+            },
+            article: {
+                highlight: {
+                    clipboard: true,
+                    fold: ''
+                }
+            }
+        };</script><script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to Top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script><script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script><script type="text/javascript">var infolinks_pid = 3364207; var infolinks_wsid = 0;</script><script type="text/javascript" src="http://resources.infolinks.com/js/infolinks_main.js"></script></body></html>
