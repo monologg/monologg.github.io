@@ -1,0 +1,603 @@
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>Monologg Blog</description><link>https://monologg.kr/</link><language>en</language><item><title>2주 간의 KoELECTRA 개발기 - 2부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part2/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part2/</guid><pubDate>Sat, 02 May 2020 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
+&lt;p&gt;이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)&lt;/p&gt;
+&lt;p&gt;2부에는 &lt;strong&gt;Pretraining, Finetuning&lt;/strong&gt; 등을 다룰 예정이다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Github Repo:&lt;/strong&gt; &lt;a href=&quot;https://github.com/monologg/KoELECTRA&quot;&gt;https://github.com/monologg/KoELECTRA&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Training&lt;/h2&gt;
+&lt;p&gt;😀 드디어 모든 삽질들을 끝내고, Pretraining을 시작하였다 😀&lt;/p&gt;
+&lt;h3&gt;Loss&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2020-05-02-koelectra-part2/base_loss.png&quot; alt=&quot;base loss&quot; /&gt;
+&lt;img src=&quot;/images/2020-05-02-koelectra-part2/small_loss.png&quot; alt=&quot;small loss&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;약 300k step 까지의 &lt;code&gt;base&lt;/code&gt;와 &lt;code&gt;small&lt;/code&gt;의 loss 추이이다. 첫 100k까지는 매우 빠르게 줄어들다가, 그 이후에는 조금씩 줄어드는 모습을 보인다.&lt;/p&gt;
+&lt;h3&gt;Benchmark&lt;/h3&gt;
+&lt;p&gt;학습 중간중간 성능 체크는 &lt;code&gt;nsmc&lt;/code&gt; 데이터셋을 가지고 간단하게 평가하였다 (사실 GPU가 1개 밖에 없어 &lt;code&gt;nsmc&lt;/code&gt;만 테스트한 건 비밀😢)&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;Acc(%)&lt;/th&gt;
+&lt;th&gt;25K&lt;/th&gt;
+&lt;th&gt;75K&lt;/th&gt;
+&lt;th&gt;90K&lt;/th&gt;
+&lt;th&gt;125K&lt;/th&gt;
+&lt;th&gt;150K&lt;/th&gt;
+&lt;th&gt;250K&lt;/th&gt;
+&lt;th&gt;300K&lt;/th&gt;
+&lt;th&gt;450K&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;Base&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;88.10&lt;/td&gt;
+&lt;td&gt;88.48&lt;/td&gt;
+&lt;td&gt;88.67&lt;/td&gt;
+&lt;td&gt;88.92&lt;/td&gt;
+&lt;td&gt;88.97&lt;/td&gt;
+&lt;td&gt;89.51&lt;/td&gt;
+&lt;td&gt;89.65&lt;/td&gt;
+&lt;td&gt;90.16&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Step이 증가할수록 accuracy가 오르는 것이 눈에 띄게 보이니 신기하긴 했다. (이것이 Pretraining의 힘인가....)&lt;/p&gt;
+&lt;h3&gt;Training Time&lt;/h3&gt;
+&lt;p&gt;데이터의 경우 &lt;strong&gt;14GB&lt;/strong&gt;로 총 &lt;code&gt;2.6B Token&lt;/code&gt;이다. BERT와 ELECTRA에서는 &lt;code&gt;3.3B Token&lt;/code&gt;을 사용한 것에 비하면 데이터의 양이 조금 모자란 게 아쉽긴 하지만, 이것이 개인 단위에서 모을 수 있었던 최선의 데이터양이었다😵&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;TPU v3-8&lt;/strong&gt; 기준으로 &lt;code&gt;Base&lt;/code&gt; 모델은 &lt;strong&gt;약 7일&lt;/strong&gt;, &lt;code&gt;Small&lt;/code&gt; 모델은 &lt;strong&gt;약 3일&lt;/strong&gt;이 소요되었다. 그래서 이 기간 동안 &lt;strong&gt;Finetuning&lt;/strong&gt; 코드를 짜는 것으로 시간을 절약하였다.&lt;/p&gt;
+&lt;h2&gt;Finetuning 코드 제작&lt;/h2&gt;
+&lt;p&gt;코드의 경우는 &lt;a href=&quot;https://github.com/huggingface/transformers/tree/master/examples&quot;&gt;Transformers의 Example 코드&lt;/a&gt;를 참고하여 제작하였다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Finetuning의 경우 총 7개의 task에 대해 진행하였다.&lt;/strong&gt; (때마침 얼마 전 카카오브레인에서 &lt;code&gt;KorNLI&lt;/code&gt;와 &lt;code&gt;KorSTS&lt;/code&gt; 데이터셋을 공개해주었다👍 1년 전과 비교했을 때 벤치마크를 평가할 수 있는 한국어 데이터셋이 많아진 것은 정말 좋은 일이라 할 수 있다.)&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;NSMC&lt;/th&gt;
+&lt;th&gt;PAWS&lt;/th&gt;
+&lt;th&gt;QuestionPair&lt;/th&gt;
+&lt;th&gt;KorNLI&lt;/th&gt;
+&lt;th&gt;KorSTS&lt;/th&gt;
+&lt;th&gt;NaverNER&lt;/th&gt;
+&lt;th&gt;KorQuad&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Task&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;감정분석&lt;/td&gt;
+&lt;td&gt;유사문장&lt;/td&gt;
+&lt;td&gt;유사문장&lt;/td&gt;
+&lt;td&gt;추론&lt;/td&gt;
+&lt;td&gt;유사문장&lt;/td&gt;
+&lt;td&gt;개체명인식&lt;/td&gt;
+&lt;td&gt;기계독해&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;Metric&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Acc&lt;/td&gt;
+&lt;td&gt;Acc&lt;/td&gt;
+&lt;td&gt;Acc&lt;/td&gt;
+&lt;td&gt;Acc&lt;/td&gt;
+&lt;td&gt;Spearman&lt;/td&gt;
+&lt;td&gt;F1&lt;/td&gt;
+&lt;td&gt;EM/F1&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;기존의 연구들에서는 &lt;code&gt;Bert-Multilingual-Cased&lt;/code&gt;를 가지고 많이 비교하였는데, 이번 연구에서는 &lt;code&gt;XLM-Roberta-Base&lt;/code&gt; 모델로 평가를 시도하였다. 확실히 xlm-roberta가 bert보다는 성능이 좋았기에, 적어도 &lt;code&gt;KoELECTRA&lt;/code&gt;가 xlm-roberta는 뛰어넘어야 유의미하지 않을까라고 생각해서 였다.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://deview.kr/2019/schedule/291&quot;&gt;Deview에서 발표한 Larva&lt;/a&gt;의 경우 Benchmark pipeline을 만들어서 ckpt가 들어올 때마다 계속 evaluation을 해주었다고 하는데, 앞에서도 말했듯이 나에게는 GPU가 1개 밖에 없고, GCP에서 GPU를 많이 빌릴 수도 없기에 &lt;strong&gt;가장 최근 5개의 ckpt를 가지고 평가&lt;/strong&gt;하였고, 그 중에서 평균값이 가장 좋았던 것을 최종 모델로 선정하였다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Finetuning용 코드 및 사용법&lt;/strong&gt;은 &lt;a href=&quot;https://github.com/monologg/KoELECTRA/tree/master/finetune&quot;&gt;여기&lt;/a&gt;에서 직접 확인해볼 수 있다.&lt;/p&gt;
+&lt;h2&gt;Convert from Tensorflow to Pytorch&lt;/h2&gt;
+&lt;p&gt;Huggingface에서 &lt;code&gt;ElectraModel&lt;/code&gt;을 구현하면서 tensorflow를 pytorch로 변환하는 코드도 함께 만들어줬다😍&lt;/p&gt;
+&lt;p&gt;관련 내용은 &lt;a href=&quot;/posts/2020/05/01/transformers-porting/&quot;&gt;내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기&lt;/a&gt;를 읽어보길 바란다. (&lt;strong&gt;여기서도 굉장히 삽질을 많이 해본 입장으로서 꼭 읽어보길 권한다&lt;/strong&gt;)&lt;/p&gt;
+&lt;h2&gt;Result&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2020-05-02-koelectra-part2/base_result.png&quot; alt=&quot;Base result&quot; /&gt;
+&lt;img src=&quot;/images/2020-05-02-koelectra-part2/small_result.png&quot; alt=&quot;Small result&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;처음에 이 프로젝트를 계획할 때 가장 걱정되었던 점이 **&quot;성능이 안 나오면 어쩌나&quot;**였다. (성능이 너무 안 좋으면 사실 2주를 제대로 날린 셈이기에....)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;결과는 예상했던 것보다 훨씬 좋았다.&lt;/strong&gt; 애초에 데이터의 양이나 Tokenizer 등을 고려했을 때 &lt;code&gt;HanBERT&lt;/code&gt;를 완벽히 따라잡는 것은 무리라고 생각했지만, &lt;code&gt;KoBERT&lt;/code&gt;보다 전반적으로 성능이 많이 좋을 줄은 몰랐다. &lt;code&gt;HanBERT&lt;/code&gt;와도 실질적인 결과는 비슷하거나 오히려 더 좋은 케이스도 있어서 이 정도면 &lt;strong&gt;대성공&lt;/strong&gt;이라고 봐도 될 꺼 같다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;KoELECTRA-Small&lt;/code&gt;의 성능이 가장 인상적이었는데, 모델의 사이즈가 &lt;code&gt;DistilKoBERT&lt;/code&gt;의 절반임에도 불구하고 우수한 성능을 보였다. &lt;strong&gt;경량화 모델에서 충분히 사용할 만한 가치가 있을 것 같다.&lt;/strong&gt;&lt;/p&gt;
+&lt;h2&gt;How to Use&lt;/h2&gt;
+&lt;p&gt;이 프로젝트를 처음 계획했을 때의 고려사항 중 아래 사항들이 가장 중요했었다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&quot;&lt;strong&gt;모든 OS&lt;/strong&gt;에서 사용 가능&quot;
+&quot;&lt;strong&gt;tokenization 파일을 만들 필요 없이&lt;/strong&gt; 곧바로 사용 가능&quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;그리고 이제 &lt;code&gt;transformers&lt;/code&gt; 라이브러리만 있으면 어떠한 환경에서도 &lt;code&gt;한국어 PLM&lt;/code&gt;을 사용할 수 있게된 것이다🤗&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ pip3 install -U transformers
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;from transformers import ElectraModel, ElectraTokenizer
+
+# KoELECTRA-Base
+model = ElectraModel.from_pretrained(&quot;monologg/koelectra-base-discriminator&quot;)
+tokenizer = ElectraTokenizer.from_pretrained(&quot;monologg/koelectra-base-discriminator&quot;)
+
+# KoELECTRA-Small
+model = ElectraModel.from_pretrained(&quot;monologg/koelectra-small-discriminator&quot;)
+tokenizer = ElectraTokenizer.from_pretrained(&quot;monologg/koelectra-small-discriminator&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;맺으며&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2020-05-02-koelectra-part2/facebook-reaction.png&quot; alt=&quot;와우!&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;솔직히 이렇게까지 반응이 좋을 줄은 몰랐다🙄 개발자로서 이럴 때가 가장 보람있지 않은가 싶다.&lt;/p&gt;
+&lt;p&gt;처음 계획할 때부터 **&quot;이거 만들면 다른 분들에게도 큰 도움이 되겠다&quot;**라 생각했는데, 실제로도 그런 것 같아 기분이 (굉장히) 좋다 😀&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&quot;내가 불편해하는 것은 분명 다른 누군가도 불편해한다. 그런 부분을 해결해주는 것이 개발자의 역할이라고 생각한다.&quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/google-research/electra&quot;&gt;ELECTRA Official Code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/huggingface/transformers&quot;&gt;Huggingface Transformers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://deview.kr/data/deview/2019/presentation/%5B111%5D+%E1%84%8B%E1%85%A5%E1%86%B7_%E1%84%8E%E1%85%A5%E1%86%BC+%E1%84%8F%E1%85%B3%E1%86%AB+%E1%84%8B%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%A5+%E1%84%86%E1%85%A9%E1%84%83%E1%85%A6%E1%86%AF+%E1%84%80%E1%85%A9%E1%86%BC%E1%84%8C%E1%85%A1%E1%86%BC+%E1%84%80%E1%85%A1%E1%84%83%E1%85%A2%E1%84%83%E1%85%B3%E1%84%80%E1%85%B5.pdf&quot;&gt;Deview 2019 Larva Presentation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/kakaobrain/KorNLUDatasets&quot;&gt;KorNLI, KorSTS&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Related Posts&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2020/05/01/transformers-porting/&quot;&gt;내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2020/05/02/koelectra-part1/&quot;&gt;2주 간의 KoELECTRA 개발기 - 1부&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>2주 간의 KoELECTRA 개발기 - 1부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part1/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part1/</guid><pubDate>Sat, 02 May 2020 01:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
+&lt;p&gt;이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)&lt;/p&gt;
+&lt;p&gt;1부에는 &lt;strong&gt;실제 학습을 돌리기 전까지의 과정&lt;/strong&gt;을 다룰 예정이다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Github Repo:&lt;/strong&gt; &lt;a href=&quot;https://github.com/monologg/KoELECTRA&quot;&gt;https://github.com/monologg/KoELECTRA&lt;/a&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h2&gt;문제 의식&lt;/h2&gt;
+&lt;p&gt;한국에 Public하게 공개되어 있는 &lt;code&gt;한국어 PLM(Pretrained Language Model)&lt;/code&gt;에는 크게 3가지가 있다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;SKT의 &lt;code&gt;KoBERT&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;TwoBlock AI의 &lt;code&gt;HanBERT&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;ETRI의 &lt;code&gt;KorBERT&lt;/code&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;3가지 모두 좋은 성능을 보이지만, 3가지 모두 단점이 존재한다. 각각의 단점을 정리하면 아래와 같다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;단점&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;KoBERT&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;**Vocab size (8002개)**가 상대적으로 작음&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;HanBERT&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;Tokenizer로 인해 &lt;strong&gt;Ubuntu 환경&lt;/strong&gt;에서만 사용 가능&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;KorBERT&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;API 신청&lt;/strong&gt; 등의 과정 필요&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;특히 3가지 모두 공통적으로 &lt;code&gt;Huggingface Transformers&lt;/code&gt; 라이브러리에서 사용하려면 &lt;strong&gt;tokenization 파일을 따로 만들어야 하는 단점&lt;/strong&gt;이 있다.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/monologg/DistilKoBERT&quot;&gt;KoBERT&lt;/a&gt;와 &lt;a href=&quot;https://github.com/monologg/HanBert-Transformers&quot;&gt;HanBERT&lt;/a&gt;의 경우 내가 직접 tokenization 파일을 만들어서 github에 배포했지만, 일부 사용자들이 불편함을 토로하기도 했다.&lt;/p&gt;
+&lt;p&gt;그래서 이번 기회에 위의 단점들을 모두 해결한 &lt;code&gt;한국어 PLM&lt;/code&gt;을 개발하고 싶었다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Vocab size&lt;/strong&gt;가 어느 정도 커야 함 (30000개 정도)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;모든 OS&lt;/strong&gt;에서 사용 가능&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;tokenization 파일을 만들 필요 없이&lt;/strong&gt; 곧바로 사용 가능&lt;/li&gt;
+&lt;li&gt;어느 정도 &lt;strong&gt;성능&lt;/strong&gt;까지 보장되어야 함&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;위의 4가지를 모두 만족시키기 위하여 시작한 프로젝트가 바로 &lt;code&gt;KoELECTRA&lt;/code&gt; 이다.&lt;/p&gt;
+&lt;h2&gt;Tokenizer&lt;/h2&gt;
+&lt;p&gt;실제 현업에서도 좋은 성능을 위해 &lt;code&gt;Mecab + Sentencepiece&lt;/code&gt;를 많이 사용하는 것으로 알고 있다. 그러나 공식 BERT, ELECTRA 등은 &lt;code&gt;Wordpiece&lt;/code&gt;를 사용하고 있으며, &lt;code&gt;transformers&lt;/code&gt;에서도 공식적으로 Wordpiece만 지원하고 있다.&lt;/p&gt;
+&lt;p&gt;즉, ELECTRA에서 Mecab이나 Sentencepiece를 사용하려면 추가적으로 &lt;code&gt;tokenization&lt;/code&gt; 파일을 만들어야 하며, &lt;code&gt;transformers&lt;/code&gt; 라이브러리의 api가 바뀌면 내가 직접 그에 맞게 tokenization 파일을 바꿔줘야 한다는 것이다. (KoBERT의 경우 실제로도 그렇게 하고 있다ㅠ)&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;이러한 문제들 때문에 이번 프로젝트에서는 무조건으로 &lt;code&gt;Wordpiece&lt;/code&gt;를 사용하는 방안으로 진행하였다.&lt;/strong&gt;&lt;/p&gt;
+&lt;h3&gt;Wordpiece&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&quot;Wordpiece vocab을 만들 때 Huggingface의 &lt;a href=&quot;https://github.com/huggingface/tokenizers&quot;&gt;&lt;code&gt;Tokenizers&lt;/code&gt;&lt;/a&gt; 라이브러리를 쓰는 것이 가장 좋다.&quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;code&gt;import argparse
+from tokenizers import BertWordPieceTokenizer
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument(&quot;--corpus_file&quot;, type=str)
+parser.add_argument(&quot;--vocab_size&quot;, type=int, default=32000)
+parser.add_argument(&quot;--limit_alphabet&quot;, type=int, default=6000)
+
+args = parser.parse_args()
+
+tokenizer = BertWordPieceTokenizer(
+    vocab_file=None,
+    clean_text=True,
+    handle_chinese_chars=True,
+    strip_accents=False, # Must be False if cased model
+    lowercase=False,
+    wordpieces_prefix=&quot;##&quot;
+)
+
+tokenizer.train(
+    files=[args.corpus_file],
+    limit_alphabet=args.limit_alphabet,
+    vocab_size=args.vocab_size
+)
+
+tokenizer.save(&quot;./&quot;, &quot;bert-wordpiece&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;Vocab size의 경우 관례적으로 많이 쓰이는 &lt;strong&gt;약 3만개&lt;/strong&gt;로 세팅하였다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;전처리 없이&lt;/strong&gt; 원본 Corpus만 가지고 vocab 만들면 &lt;strong&gt;성능이 굉장히 안 좋음&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;character coverage를 최대한 높게 잡는 것이 좋다고 판단 (&lt;strong&gt;즉, corpus에서 등장했던 모든 character를 vocab에 포함시킴&lt;/strong&gt;)
+&lt;ul&gt;
+&lt;li&gt;예를 들어 &lt;code&gt;퀭메일&lt;/code&gt;이란 단어가 있다고 가정하자.&lt;/li&gt;
+&lt;li&gt;만일 &lt;code&gt;퀭&lt;/code&gt;이 vocab에 없다면 &lt;code&gt;퀭메일&lt;/code&gt; 전체를 &lt;code&gt;[UNK]&lt;/code&gt;로 처리하게 된다.&lt;/li&gt;
+&lt;li&gt;만일 &lt;code&gt;퀭&lt;/code&gt;이 vocab 안에 있으면 &lt;code&gt;퀭 + ##메일&lt;/code&gt;로 tokenize가 될 수 있어 &lt;code&gt;##메일&lt;/code&gt;이란 단어의 의미를 가져갈 수 있다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;(자세한 내용은 이전에 포스팅한 &lt;a href=&quot;/posts/2020/04/27/wordpiece-vocab/&quot;&gt;나만의 BERT Wordpiece Vocab 만들기&lt;/a&gt;을 참고)&lt;/p&gt;
+&lt;h2&gt;전처리 (Preprocessing)&lt;/h2&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&quot;첫째도 &lt;strong&gt;전처리&lt;/strong&gt;! 둘째도 &lt;strong&gt;전처리&lt;/strong&gt;! 셋째도 &lt;strong&gt;전처리&lt;/strong&gt;!&quot;
+&quot;PLM의 성능에 가장 큰 영향을 주는 것은 &lt;code&gt;corpus quality&lt;/code&gt;이다!&quot;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;strong&gt;크롤링한 뉴스의 문장 하나&lt;/strong&gt;를 살펴보자&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;[주요기사] ☞ [포토 스토리] 무허가 도시광산 을 아시나요? ☞ [따뜻한 사진 한 장] 사랑, 하나가 되어 가는 길 &amp;lt;찰나의 기록, 순간의 진실 / KPPA 바로가기&amp;gt; Copyrightsⓒ 한국사진기자협회(www.kppa.or.kr), powered by castnet. 무단 전재 및 재배포 금지 보내기&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;문제는 이런 문장이 매우 많은데다가, 이걸 Pretrain에 넣을 시 성능이 나빠질 게 뻔하다....&lt;/p&gt;
+&lt;p&gt;이렇게 noise가 많은 Corpus로 vocab을 만들고 pretrain까지 하면 성능이 좋을 리가 없다.&lt;/p&gt;
+&lt;p&gt;아래는 내가 적용한 대표적인 전처리 기준이다.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;한자, 일부 특수문자 제거&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;한국어 문장 분리기&lt;/strong&gt; (&lt;a href=&quot;https://github.com/likejazz/korean-sentence-splitter&quot;&gt;kss&lt;/a&gt;) 사용&lt;/li&gt;
+&lt;li&gt;뉴스 관련 문장은 제거 (&lt;code&gt;무단전재&lt;/code&gt;, &lt;code&gt;(서울=뉴스1)&lt;/code&gt; 등 포함되면 무조건 제외)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;사실 전처리의 기준에 정답은 없다. 가장 중요한 것은 &lt;strong&gt;자신의 Task에 맞게 전처리 기준을 세우는 것이다&lt;/strong&gt;. 내가 생각했던 Task 들에는 한자는 중요하지 않다고 판단해서 지운 것이지, 한자가 꼭 필요한 Task의 경우에는 지우면 안 될 것이다.&lt;/p&gt;
+&lt;h2&gt;TPU 사용 관련 Tip&lt;/h2&gt;
+&lt;p&gt;(자세한 내용은 이전에 포스팅한 &lt;a href=&quot;/posts/2020/04/20/tpu-electra/&quot;&gt;TPU를 이용하여 Electra Pretraining하기&lt;/a&gt;을 참고)&lt;/p&gt;
+&lt;h3&gt;1. Tensorflow Research Cloud(TFRC)를 쓰면 TPU가 무료&lt;/h3&gt;
+&lt;p&gt;→ 이미 &lt;a href=&quot;https://github.com/google-research/electra&quot;&gt;공식 코드&lt;/a&gt;가 TPU를 완벽히 지원하기에, 직접 ELECTRA를 만들고 싶다면 &lt;strong&gt;GPU보다는 TPU를 쓰는 것을 강력히 권장한다.&lt;/strong&gt;&lt;/p&gt;
+&lt;h3&gt;2. VM Instance는 작은 것(&lt;code&gt;n1-standard-1&lt;/code&gt;)을 써도 상관 없다&lt;/h3&gt;
+&lt;p&gt;→ ELECTRA를 GCP에서 학습하려면 &lt;code&gt;TPU&lt;/code&gt;, &lt;code&gt;Bucket&lt;/code&gt;, &lt;code&gt;VM Instance&lt;/code&gt; 이렇게 3개가 필요하다. 그런데 &lt;strong&gt;저장소는 Bucket이, 연산은 TPU가 처리&lt;/strong&gt;하기 때문에 VM Instance는 가벼운 것을 써도 된다.
+→ &lt;code&gt;n1-standard-1&lt;/code&gt;는 시간당 약 $0.037, &lt;code&gt;n1-standard-4&lt;/code&gt;는 시간당 약 $0.14이다. (&lt;strong&gt;비용이 무려 2배 차이!!&lt;/strong&gt;)&lt;/p&gt;
+&lt;h3&gt;3. TPU를 쓰는 경우 모든 input file은 Cloud storage bucket을 통해야만 한다&lt;/h3&gt;
+&lt;p&gt;→ 이것도 처음에 몰랐다가 고생했던 삽질 중 하나다. &lt;code&gt;tf.estimator.tpu&lt;/code&gt; 쪽 코드를 쓰는 경우 로컬 데이터가 아닌 &lt;code&gt;Bucket&lt;/code&gt;을 통해야만 한다. (&lt;a href=&quot;https://cloud.google.com/tpu/docs/troubleshooting?hl=ko#common-errors&quot;&gt;관련 FAQ&lt;/a&gt;)
+→ 다행히도 Bucket의 비용이 비싸지가 않다 (특정 리전에 만들어 놓으면 1GB당 월 약 $0.03)&lt;/p&gt;
+&lt;h3&gt;4. VM Instance와 TPU를 만들 때 &lt;code&gt;ctpu up&lt;/code&gt; 명령어를 사용해라&lt;/h3&gt;
+&lt;p&gt;→ VM Instance와 TPU를 따로 따로 생성하면 처음에 정상적으로 작동하지 않는 경우가 있었다. 아래와 같이 &lt;code&gt;cloud shell&lt;/code&gt;로 명령어를 한 번만 치면 VM과 TPU가 동시에 생성된다😃&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ctpu up --zone=europe-west4-a --tf-version=1.15 \
+          --tpu-size=v3-8 --machine-type=n1-standard-2 \
+          --disk-size-gb=20 --name={$VM_NAME}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Configuration의 함정&lt;/h2&gt;
+&lt;p&gt;앞에서도 언급했듯이 ELECTRA Pretraining은 &lt;a href=&quot;https://github.com/google-research/electra&quot;&gt;공식 코드&lt;/a&gt;를 그대로 가져다 쓰는 것이 좋다. 공식 코드를 가져다쓰기 전에 &lt;code&gt;논문&lt;/code&gt;과 &lt;code&gt;코드 분석&lt;/code&gt;을 어느 정도 하고 진행하는 것을 권장한다.&lt;/p&gt;
+&lt;p&gt;그럼에도 좀 헷갈렸던 부분이 있어 여기서 언급하려 한다.&lt;/p&gt;
+&lt;h3&gt;1. 공식 레포에서 제공하는 &lt;code&gt;small&lt;/code&gt; 모델은 정확히는 &lt;code&gt;small++&lt;/code&gt; 모델이다&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2020-05-02-koelectra-part1/small_notice.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;/images/2020-05-02-koelectra-part1/small_gen_size.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;공식 코드에서도 알 수 있듯이 &lt;code&gt;small&lt;/code&gt;로 공개된 모델은 정확히 말하면 &lt;code&gt;small++&lt;/code&gt; 모델이다. 둘의 차이점은 아래와 같다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;&lt;/th&gt;
+&lt;th&gt;max_seq_len&lt;/th&gt;
+&lt;th&gt;generator_hidden_size&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;small&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;128&lt;/td&gt;
+&lt;td&gt;0.25&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;strong&gt;small++&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;512&lt;/td&gt;
+&lt;td&gt;1.0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;(&lt;code&gt;generator_hidden_size=1.0&lt;/code&gt;이란 것은 &lt;code&gt;discriminator&lt;/code&gt;와 &lt;code&gt;generator&lt;/code&gt;의 hidden_size가 같다는 것이다)&lt;/p&gt;
+&lt;p&gt;이러한 부분이 논문에 자세히 나와 있지 않아 처음에 small 모델을 만들 때 진짜 small로 만들었다가 다시 small++로 만드는 수고를 거쳤다.... (이 글을 읽은 분들은 이 삽질을 안 하길 빈다.)&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;tpu_name&quot;: &quot;electra-small&quot;,
+  &quot;tpu_zone&quot;: &quot;europe-west4-a&quot;,
+  &quot;num_train_steps&quot;: 1000000,
+  &quot;save_checkpoints_steps&quot;: 50000,
+  &quot;train_batch_size&quot;: 128,
+  &quot;learning_rate&quot;: 5e-4,
+  &quot;vocab_size&quot;: 32200,
+  &quot;max_seq_length&quot;: 512,
+  &quot;generator_hidden_size&quot;: 1.0
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;2. max_seq_length를 128로 줄인다면 max_position_embeddings도 128로 줄여야 한다&lt;/h3&gt;
+&lt;p&gt;간혹 커스터마이즈된 모델을 만들 때 &lt;code&gt;max_seq_length&lt;/code&gt;를 줄이고자 하는 경우가 있다.&lt;/p&gt;
+&lt;p&gt;그럴 시 &lt;code&gt;max_seq_length&lt;/code&gt;만 줄이면 해결된다고 오해할 수 있는데, &lt;code&gt;max_position_embeddings&lt;/code&gt;도 줄여줘야 transformers 라이브러리에 맞게 변환할 때 문제가 생기지 않는다. (transformers가 max_position_embeddings으로 최대 길이를 알아내기 때문!)&lt;/p&gt;
+&lt;p&gt;더 큰 함정은 아래와 같이 &lt;code&gt;model_hparam_overrides&lt;/code&gt;라는 attribute 안에 &lt;code&gt;max_position_embeddings&lt;/code&gt;를 넣어줘야 하는 것이다!&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;max_seq_length&quot;: 128,
+  &quot;model_hparam_overrides&quot;: {
+    &quot;max_position_embeddings&quot;: 128
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;마치며&lt;/h2&gt;
+&lt;p&gt;1부에서는 &lt;strong&gt;실제 Pretraining을 시작하기 전의 준비 과정&lt;/strong&gt;을 다뤘다.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/posts/2020/05/02/koelectra-part2/&quot;&gt;2주 간의 KoELECTRA 개발기 - 2부&lt;/a&gt; 에서는 실제 Pretraining, Transformers 포팅, Finetuning 등을 다룰 예정이다:)&lt;/p&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/google-research/electra&quot;&gt;ELECTRA Official Code&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/huggingface/tokenizers&quot;&gt;Huggingface Tokenizers&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://cloud.google.com/tpu/docs?hl=ko&quot;&gt;Cloud TPU Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Related Posts&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2020/04/20/tpu-electra/&quot;&gt;TPU를 이용하여 Electra Pretraining하기&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2020/04/27/wordpiece-vocab/&quot;&gt;나만의 BERT Wordpiece Vocab 만들기&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2020/05/02/koelectra-part2/&quot;&gt;2주 간의 KoELECTRA 개발기 - 2부&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기</title><link>https://monologg.kr/posts/2020/05/01/transformers-porting/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/01/transformers-porting/</guid><pubDate>Fri, 01 May 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;code&gt;BERT&lt;/code&gt;, &lt;code&gt;ALBERT&lt;/code&gt;, &lt;code&gt;ELECTRA&lt;/code&gt; 등을 직접 Pretrain하게 되면 모델이 Tensorflow의 ckpt 형태로 저장이 된다.&lt;/p&gt;
+&lt;p&gt;이번 글에서는 &lt;code&gt;tensorflow ckpt&lt;/code&gt;를 transformers의 &lt;code&gt;pytorch ckpt&lt;/code&gt;로 변환하는 법을 알아보겠다🤗&lt;/p&gt;
+&lt;h2&gt;Intro&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;이번 글에서는 &lt;code&gt;ELECTRA-Small&lt;/code&gt;을 기준으로 실습을 해본다. (&lt;code&gt;BERT&lt;/code&gt; 등도 방법은 크게 다르지 않다)&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;transformers v2.8.0&lt;/code&gt;을 기준으로 작성하였다. 이후 버전에서 호환되지 않는 경우가 있을 수 있다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Transformers&lt;/code&gt;의 &lt;code&gt;ELECTRA&lt;/code&gt;는 &lt;code&gt;discriminator&lt;/code&gt;와 &lt;code&gt;generator&lt;/code&gt;를 &lt;strong&gt;각각 따로 만들어줘야 한다!&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Prerequisite&lt;/h2&gt;
+&lt;h3&gt;1. Original Tensorflow Checkpoint&lt;/h3&gt;
+&lt;p&gt;당연히 &lt;strong&gt;Tensorflow로 학습한 결과물&lt;/strong&gt;을 가지고 있어야 한다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;.
+├── koelectra-small-tf
+│   ├── checkpoint
+│   ├── events.out.tfevents.1586942968.koelectra-small
+│   ├── graph.pbtxt
+│   ├── ...
+│   ├── model.ckpt-700000.data-00000-of-00001
+│   ├── model.ckpt-700000.index
+│   └── model.ckpt-700000.meta
+└── ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;model_checkpoint_path: &quot;model.ckpt-700000&quot;
+all_model_checkpoint_paths: &quot;model.ckpt-600000&quot;
+all_model_checkpoint_paths: &quot;model.ckpt-625000&quot;
+all_model_checkpoint_paths: &quot;model.ckpt-650000&quot;
+all_model_checkpoint_paths: &quot;model.ckpt-675000&quot;
+all_model_checkpoint_paths: &quot;model.ckpt-700000&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;주의할 점은 &lt;code&gt;checkpoint&lt;/code&gt; 파일에서 &lt;code&gt;model_checkpoint_path&lt;/code&gt; 값을 **&quot;원하는 step의 ckpt&quot;**로 바꿔줘야 한다는 것이다.&lt;/p&gt;
+&lt;h3&gt;2. config.json&lt;/h3&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;(주의!) &lt;code&gt;transformers&lt;/code&gt; 라이브러리가 업데이트되면서 API가 변경되는 경우가 있고, 이에 따라 &lt;code&gt;config.json&lt;/code&gt;의 attribute가 추가/변경되는 경우가 있다.&lt;/strong&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;https://huggingface.co/models&quot;&gt;https://huggingface.co/models&lt;/a&gt;로 가서 대표 모델의 &lt;code&gt;config.json&lt;/code&gt;을 보면서 직접 만들어야 한다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;vocab_size&lt;/code&gt; 변경에만 주의하면 충분함&lt;/li&gt;
+&lt;li&gt;만일 &lt;code&gt;max_seq_length&lt;/code&gt;를 바꿨다면 &lt;code&gt;max_position_embeddings&lt;/code&gt;도 바꿔야 함&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;architectures&quot;: [&quot;ElectraForPreTraining&quot;],
+  &quot;attention_probs_dropout_prob&quot;: 0.1,
+  &quot;embedding_size&quot;: 128,
+  &quot;hidden_act&quot;: &quot;gelu&quot;,
+  &quot;hidden_dropout_prob&quot;: 0.1,
+  &quot;hidden_size&quot;: 256,
+  &quot;initializer_range&quot;: 0.02,
+  &quot;intermediate_size&quot;: 1024,
+  &quot;layer_norm_eps&quot;: 1e-12,
+  &quot;max_position_embeddings&quot;: 512,
+  &quot;model_type&quot;: &quot;electra&quot;,
+  &quot;num_attention_heads&quot;: 4,
+  &quot;num_hidden_layers&quot;: 12,
+  &quot;pad_token_id&quot;: 0,
+  &quot;type_vocab_size&quot;: 2,
+  &quot;vocab_size&quot;: 32200
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;3. tokenizer_config.json&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;cased&lt;/code&gt; 모델의 경우 그냥 tokenizer를 load하면 매번 &lt;code&gt;do_lower_case=False&lt;/code&gt;를 직접 추가해줘야 한다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;from transformers import ElectraTokenizer
+
+tokenizer = ElectraTokenizer.from_pretrained(&quot;monologg/koelectra-small-discriminator&quot;,
+                                             do_lower_case=False)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;tokenizer_config.json&lt;/code&gt;을 만들어주면 이러한 번거로움을 없앨 수 있다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;do_lower_case&quot;: false,
+  &quot;model_max_length&quot;: 512
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;4. vocab.txt&lt;/h3&gt;
+&lt;p&gt;tensorflow에서 학습했을 때 쓴 &lt;code&gt;vocab.txt&lt;/code&gt;를 그대로 쓰면 된다.&lt;/p&gt;
+&lt;h3&gt;5. 최종적인 디렉토리 형태&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;.
+├── koelectra-small-tf
+│   ├── checkpoint
+│   ├── events.out.tfevents.1586942968.koelectra-small
+│   ├── graph.pbtxt
+│   ├── ...
+│   ├── model.ckpt-700000.data-00000-of-00001
+│   ├── model.ckpt-700000.index
+│   └── model.ckpt-700000.meta
+│
+├── electra-small-discriminator
+│   ├── config.json
+│   ├── tokenizer_config.json
+│   └── vocab.txt
+│
+├── electra-small-generator
+│   ├── config.json
+│   ├── tokenizer_config.json
+│   └── vocab.txt
+└── ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;electra-small-discriminator&lt;/code&gt;와 &lt;code&gt;electra-small-generator&lt;/code&gt; 폴더를 각각 만든다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;config.json&lt;/code&gt;은 discriminator용과 generator용을 &lt;strong&gt;따로&lt;/strong&gt; 만들어서 폴더 안에 넣는다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;tokenizer_config.json&lt;/code&gt;과 &lt;code&gt;vocab.txt&lt;/code&gt;는 discriminator와 generator 둘 다 &lt;strong&gt;동일한 파일&lt;/strong&gt;을 넣으면 된다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Convert&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;import os
+import argparse
+from transformers.convert_electra_original_tf_checkpoint_to_pytorch import convert_tf_checkpoint_to_pytorch
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument(&quot;--tf_ckpt_path&quot;, type=str, default=&quot;koelectra-small-tf&quot;)
+parser.add_argument(&quot;--pt_discriminator_path&quot;, type=str, default=&quot;koelectra-small-discriminator&quot;)
+parser.add_argument(&quot;--pt_generator_path&quot;, type=str, default=&quot;koelectra-small-generator&quot;)
+
+args = parser.parse_args()
+
+convert_tf_checkpoint_to_pytorch(tf_checkpoint_path=args.tf_ckpt_path,
+                                 config_file=os.path.join(args.pt_discriminator_path, &quot;config.json&quot;),
+                                 pytorch_dump_path=os.path.join(args.pt_discriminator_path, &quot;pytorch_model.bin&quot;),
+                                 discriminator_or_generator=&quot;discriminator&quot;)
+
+convert_tf_checkpoint_to_pytorch(tf_checkpoint_path=args.tf_ckpt_path,
+                                 config_file=os.path.join(args.pt_generator_path, &quot;config.json&quot;),
+                                 pytorch_dump_path=os.path.join(args.pt_generator_path, &quot;pytorch_model.bin&quot;),
+                                 discriminator_or_generator=&quot;generator&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Upload your model to Huggingface s3&lt;/h2&gt;
+&lt;ol&gt;
+&lt;li&gt;먼저 &lt;a href=&quot;https://huggingface.co/&quot;&gt;huggingface.co&lt;/a&gt;로 가서 &lt;strong&gt;회원가입&lt;/strong&gt;을 해야 함&lt;/li&gt;
+&lt;li&gt;아래의 명령어로 s3에 업로드 진행&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;$ transformers-cli login
+$ transformers-cli upload koelectra-small-discriminator
+$ transformers-cli upload koelectra-small-generator
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Now Let&apos;s Use It&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;from transformers import ElectraModel, ElectraTokenizer
+
+model = ElectraModel.from_pretrained(&quot;monologg/koelectra-small-discriminator&quot;)
+tokenizer = ElectraTokenizer.from_pretrained(&quot;monologg/koelectra-small-discriminator&quot;)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;맺으며&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/images/2020-05-01-transformers-porting/model_download.png&quot; alt=&quot;생각보다 많이 사용하시네...&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;사실 Model Porting과 관련하여 &lt;strong&gt;명확한 Documentation이 없어&lt;/strong&gt; 나도 삽질을 상당히 했던 부분이다. 이번 내용이 다른 분들에게 도움이 되었으면 한다😛&lt;/p&gt;
+&lt;p&gt;또한 &lt;strong&gt;Huggingface s3에 모델을 업로드&lt;/strong&gt;하는 것은 꼭 사용해보길 권한다. 이 기능이 생긴지 얼마되지 않아서 모르시는 분들이 있는데, &lt;strong&gt;업로드 용량의 제한도 없고&lt;/strong&gt; 여러모로 라이브러리 사용도 편해진다. (모델을 100개 이상 올린다고 Huggingface 팀에서 뭐라고 하지 않으니 많이들 쓰셨으면ㅎㅎ)&lt;/p&gt;
+</content:encoded></item><item><title>나만의 BERT Wordpiece Vocab 만들기</title><link>https://monologg.kr/posts/2020/04/27/wordpiece-vocab/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/04/27/wordpiece-vocab/</guid><pubDate>Mon, 27 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;개인적으로 Pretrained Language Model 성능에 큰 영향을 주는 것 중 하나로 &lt;code&gt;Vocab quality&lt;/code&gt;라고 생각한다.&lt;/p&gt;
+&lt;p&gt;이번 포스트에서는 tokenization의 방법 중 하나인 &lt;code&gt;Wordpiece&lt;/code&gt;를 이용하여 어떻게 vocab을 만드는지 알아보려 한다:)&lt;/p&gt;
+&lt;h2&gt;Introduction&lt;/h2&gt;
+&lt;p&gt;한국어 Tokenizer의 대안으로는 크게 &lt;code&gt;Sentencepiece&lt;/code&gt;, &lt;code&gt;Mecab&lt;/code&gt;, &lt;code&gt;Wordpiece&lt;/code&gt;가 있다. (&lt;em&gt;여기서의 wordpiece는 Google의 BERT에서 사용된 wordpiece로 가정한다.&lt;/em&gt;)&lt;/p&gt;
+&lt;p&gt;BERT, ELECTRA 등은 기본적으로 &lt;code&gt;Wordpiece&lt;/code&gt;를 사용하기에 공식 코드에서 기본적으로 제공되는 Tokenizer 역시 이에 호환되게 코드가 작성되었다. 즉, &lt;code&gt;Sentencepiece&lt;/code&gt;나 &lt;code&gt;Mecab&lt;/code&gt;을 사용하려면 &lt;strong&gt;별도의 Tokenizer&lt;/strong&gt;를 직접 만들어야 하고, 이렇게 되면 &lt;code&gt;transformers&lt;/code&gt; 등의 라이브러리에서 모델을 곧바로 사용하는데 불편함이 생기게 된다.&lt;/p&gt;
+&lt;h2&gt;Original wordpiece code is NOT available!&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/28896432/80015023-19f7e680-850c-11ea-90d3-436ca253a7a1.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;공식 BERT에서 사용된 Wordpiece Builder는 제공되지 않고 있다&lt;/strong&gt;. BERT 공식 Github에서 다른 대안들을 제시해줬지만, 완전히 동일한 Wordpiece Vocab이 나오지 않았다.&lt;/p&gt;
+&lt;p&gt;몇몇 오픈소스들이 Wordpiece vocab builder를 구현하였지만 &lt;strong&gt;input file이 매우 클 시 메모리, 속도 등의 이슈&lt;/strong&gt;가 종종 발생한다ㅠ&lt;/p&gt;
+&lt;h2&gt;Huggingface Tokenizers&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/28896432/80016455-1c5b4000-850e-11ea-8432-3c356c11f932.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;최종적으로, 최근 Huggingface에서 발표한 &lt;code&gt;Tokenizers&lt;/code&gt; 라이브러리를 이용하여 Wordpiece Vocabulary를 만드는게 제일 좋았다.&lt;/p&gt;
+&lt;p&gt;해당 라이브러리를 사용하면 Corpus가 매우 커도 메모리 이슈가 발생하지 않으며, &lt;code&gt;Rust&lt;/code&gt;로 구현이 되어있어 속도 또한 Python보다 빠르다😃&lt;/p&gt;
+&lt;h2&gt;Code for building Wordpiece vocab&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;(tokenizer v0.7.0 기준으로 작성하였다. 현재도 라이브러리가 업데이트 중이어서 api가 달라질 수도...)&lt;/strong&gt;&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;import argparse
+from tokenizers import BertWordPieceTokenizer
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument(&quot;--corpus_file&quot;, type=str)
+parser.add_argument(&quot;--vocab_size&quot;, type=int, default=32000)
+parser.add_argument(&quot;--limit_alphabet&quot;, type=int, default=6000)
+
+args = parser.parse_args()
+
+tokenizer = BertWordPieceTokenizer(
+    vocab_file=None,
+    clean_text=True,
+    handle_chinese_chars=True,
+    strip_accents=False, # Must be False if cased model
+    lowercase=False,
+    wordpieces_prefix=&quot;##&quot;
+)
+
+tokenizer.train(
+    files=[args.corpus_file],
+    limit_alphabet=args.limit_alphabet,
+    vocab_size=args.vocab_size
+)
+
+tokenizer.save(&quot;./&quot;, &quot;ch-{}-wpm-{}&quot;.format(args.limit_alphabet, args.vocab_size))
+&lt;/code&gt;&lt;/pre&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;주의해야할 점은 &lt;code&gt;lowercase=False&lt;/code&gt;로 할 시 &lt;code&gt;strip_accent=False&lt;/code&gt;로 해줘야 한다는 것!&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;[UNK]&lt;/code&gt;의 비중을 최대한 줄이기 위해 &lt;strong&gt;모든 character를 커버&lt;/strong&gt;할 수 있도록 처리하였다. (&lt;code&gt;limit_alphabet&lt;/code&gt;)&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;Corpus의 전처리가 완료되었다는 전제하에 sentencepiece와 비교했을 때 &lt;strong&gt;UNK Ratio가 훨씬 낮았다.&lt;/strong&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://wikidocs.net/22592&quot;&gt;Sentencepiece vs Wordpiece&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/google-research/bert#learning-a-new-wordpiece-vocabulary&quot;&gt;Learning a new WordPiece vocabulary&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/kwonmha/bert-vocab-builder&quot;&gt;kwonmha&apos;s bert-vocab-builder&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/huggingface/tokenizers&quot;&gt;Huggingface Tokenizers&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item><item><title>TPU를 이용하여 Electra Pretraining하기</title><link>https://monologg.kr/posts/2020/04/20/tpu-electra/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/04/20/tpu-electra/</guid><pubDate>Mon, 20 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;최근 &lt;a href=&quot;https://openreview.net/forum?id=r1xMH1BtvB&quot;&gt;ELECTRA&lt;/a&gt;의 공식 코드가 공개되면서 한국어 Corpus에 직접 Electra를 만들게 되었다.&lt;/p&gt;
+&lt;p&gt;이번 글에서는 GCP에서 TPU를 어떻게 사용했는지 그 과정을 공유해보려 한다.&lt;/p&gt;
+&lt;h2&gt;Tensorflow Research Cloud 신청&lt;/h2&gt;
+&lt;p&gt;Tensorflow Research Cloud (TFRC)는 &lt;strong&gt;1달 동안 TPU를 무료&lt;/strong&gt;로 사용할 수 있게 해주는 프로그램이다.&lt;/p&gt;
+&lt;p&gt;해당 &lt;a href=&quot;https://www.tensorflow.org/tfrc?hl=ko&quot;&gt;링크&lt;/a&gt;로 가서 신청을 하게 되면 메일이 하나 오게 된다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/28896432/79709907-61a92300-82fe-11ea-9773-9ac63b5ebbb6.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;해당 메일에서 요구하는 대로 신청서를 추가로 작성한 후 제출하면 얼마 후 아래와 같이 답장이 오게 되고, 그 때부터 GCP에서 TPU를 무료로 사용할 수 있게 된다:)&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/28896432/79709997-9ddc8380-82fe-11ea-9040-06d8ef9c1f1b.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;Bucket에 Data 업로드&lt;/h2&gt;
+&lt;p&gt;TPU를 쓰는 경우 모든 input file을 &lt;strong&gt;Cloud storage bucket을 통해야만 한다.&lt;/strong&gt; (&lt;a href=&quot;https://cloud.google.com/tpu/docs/troubleshooting?hl=ko#common-errors&quot;&gt;관련 FAQ&lt;/a&gt;)&lt;/p&gt;
+&lt;h3&gt;Bucket 생성&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;예제상 Bucket의 이름을 &lt;code&gt;test-for-electra&lt;/code&gt;로 만들어 보겠다.&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;GCP 메인 페이지 좌측의 &lt;code&gt;[Storage]&lt;/code&gt; - &lt;code&gt;[브라우저]&lt;/code&gt; 로 이동&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;code&gt;버킷 만들기&lt;/code&gt; 클릭&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;
+&lt;p&gt;&lt;strong&gt;사용할 TPU와 동일한 Region&lt;/strong&gt;에 Bucket 만드는 것을 권장&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/28896432/79711012-a84c4c80-8301-11ea-955c-39dc604f5c10.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h3&gt;File Upload&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;
+&lt;p&gt;준비한 &lt;code&gt;pretrain_tfrecords&lt;/code&gt;와 &lt;code&gt;vocab.txt&lt;/code&gt;를 Bucket에 업로드&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/28896432/79739355-0a747400-8339-11ea-8de2-f78f8ade887f.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;GCP VM &amp;amp; TPU 생성&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;VM과 TPU를 각각 따로 만드는 것보다, 우측 상단의 &lt;code&gt;cloud shell&lt;/code&gt;을 열어 아래의 명령어를 입력하는 것을 추천한다.&lt;/li&gt;
+&lt;li&gt;저장소는 Bucket이, 연산은 TPU에서 처리하기 때문에 &lt;strong&gt;VM Instance는 가벼운 것을 써도 상관이 없다.&lt;/strong&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre&gt;&lt;code&gt;$ ctpu up --zone=europe-west4-a --tf-version=1.15 \
+          --tpu-size=v3-8 --machine-type=n1-standard-1 \
+          --disk-size-gb=20 --name={$VM_NAME}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&quot;https://user-images.githubusercontent.com/28896432/79740137-24fb1d00-833a-11ea-9be8-e317521fa178.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;Electra 학습 진행&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;$ git clone https://github.com/google-research/electra
+$ cd electra
+$ python3 run_pretraining.py --data-dir gs://{$BUCKET_NAME} \
+                             --model-name {$MODEL_NAME} \
+                             --hparams {$CONFIG_PATH}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;학습 완료 후 Instance, Bucket 삭제&lt;/h2&gt;
+&lt;pre&gt;&lt;code&gt;$ ctpu delete --zone=europe-west4-a --name={$VM_NAME}
+$ gsutil rm -r gs://test-for-electra
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;Reference&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/google-research/electra&quot;&gt;ELECTRA official github&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/pren1/A_Pipeline_Of_Pretraining_Bert_On_Google_TPU&quot;&gt;A Pipeline Of Pretraining Bert On Google TPU&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://cloud.google.com/tpu/docs&quot;&gt;Official TPU Documentation&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</content:encoded></item></channel></rss>

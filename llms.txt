@@ -1,0 +1,21 @@
+# Monologg Blog
+> Jangwon Park's tech blog about NLP, Machine Learning, and AI Engineering.
+
+## Author
+- Name: Jangwon Park
+- Role: NLP Engineer
+- GitHub: https://github.com/monologg
+- LinkedIn: https://www.linkedin.com/in/jang-won-park/
+
+## Articles
+- [2주 간의 KoELECTRA 개발기 - 2부](https://monologg.kr/posts/2020/05/02/koelectra-part2/): 2주 간의 KoELECTRA 개발기 - 2부
+- [2주 간의 KoELECTRA 개발기 - 1부](https://monologg.kr/posts/2020/05/02/koelectra-part1/): 2주 간의 KoELECTRA 개발기 - 1부
+- [내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기](https://monologg.kr/posts/2020/05/01/transformers-porting/): 내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기
+- [나만의 BERT Wordpiece Vocab 만들기](https://monologg.kr/posts/2020/04/27/wordpiece-vocab/): 나만의 BERT Wordpiece Vocab 만들기
+- [TPU를 이용하여 Electra Pretraining하기](https://monologg.kr/posts/2020/04/20/tpu-electra/): TPU를 이용하여 Electra Pretraining하기
+
+## Resources
+- [About](https://monologg.kr/about/): Author and site information
+- [Archive](https://monologg.kr/archive/): All posts by date
+- [RSS Feed](https://monologg.kr/rss.xml): RSS feed for this blog
+- [Sitemap](https://monologg.kr/sitemap-index.xml): XML sitemap
