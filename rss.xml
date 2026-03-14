@@ -7,8 +7,8 @@
 &lt;h2&gt;Training&lt;/h2&gt;
 &lt;p&gt;😀 드디어 모든 삽질들을 끝내고, Pretraining을 시작하였다 😀&lt;/p&gt;
 &lt;h3&gt;Loss&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2020-05-02-koelectra-part2/base_loss.png&quot; alt=&quot;base loss&quot; /&gt;
-&lt;img src=&quot;/images/2020-05-02-koelectra-part2/small_loss.png&quot; alt=&quot;small loss&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./base_loss.png&quot; alt=&quot;base loss&quot; /&gt;
+&lt;img src=&quot;./small_loss.png&quot; alt=&quot;small loss&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;약 300k step 까지의 &lt;code&gt;base&lt;/code&gt;와 &lt;code&gt;small&lt;/code&gt;의 loss 추이이다. 첫 100k까지는 매우 빠르게 줄어들다가, 그 이후에는 조금씩 줄어드는 모습을 보인다.&lt;/p&gt;
 &lt;h3&gt;Benchmark&lt;/h3&gt;
 &lt;p&gt;학습 중간중간 성능 체크는 &lt;code&gt;nsmc&lt;/code&gt; 데이터셋을 가지고 간단하게 평가하였다 (사실 GPU가 1개 밖에 없어 &lt;code&gt;nsmc&lt;/code&gt;만 테스트한 건 비밀😢)&lt;/p&gt;
@@ -90,8 +90,8 @@
 &lt;p&gt;Huggingface에서 &lt;code&gt;ElectraModel&lt;/code&gt;을 구현하면서 tensorflow를 pytorch로 변환하는 코드도 함께 만들어줬다😍&lt;/p&gt;
 &lt;p&gt;관련 내용은 &lt;a href=&quot;/posts/2020/05/01/transformers-porting/&quot;&gt;내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기&lt;/a&gt;를 읽어보길 바란다. (&lt;strong&gt;여기서도 굉장히 삽질을 많이 해본 입장으로서 꼭 읽어보길 권한다&lt;/strong&gt;)&lt;/p&gt;
 &lt;h2&gt;Result&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2020-05-02-koelectra-part2/base_result.png&quot; alt=&quot;Base result&quot; /&gt;
-&lt;img src=&quot;/images/2020-05-02-koelectra-part2/small_result.png&quot; alt=&quot;Small result&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./base_result.png&quot; alt=&quot;Base result&quot; /&gt;
+&lt;img src=&quot;./small_result.png&quot; alt=&quot;Small result&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;처음에 이 프로젝트를 계획할 때 가장 걱정되었던 점이 **&quot;성능이 안 나오면 어쩌나&quot;**였다. (성능이 너무 안 좋으면 사실 2주를 제대로 날린 셈이기에....)&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;결과는 예상했던 것보다 훨씬 좋았다.&lt;/strong&gt; 애초에 데이터의 양이나 Tokenizer 등을 고려했을 때 &lt;code&gt;HanBERT&lt;/code&gt;를 완벽히 따라잡는 것은 무리라고 생각했지만, &lt;code&gt;KoBERT&lt;/code&gt;보다 전반적으로 성능이 많이 좋을 줄은 몰랐다. &lt;code&gt;HanBERT&lt;/code&gt;와도 실질적인 결과는 비슷하거나 오히려 더 좋은 케이스도 있어서 이 정도면 &lt;strong&gt;대성공&lt;/strong&gt;이라고 봐도 될 꺼 같다.&lt;/p&gt;
 &lt;p&gt;&lt;code&gt;KoELECTRA-Small&lt;/code&gt;의 성능이 가장 인상적이었는데, 모델의 사이즈가 &lt;code&gt;DistilKoBERT&lt;/code&gt;의 절반임에도 불구하고 우수한 성능을 보였다. &lt;strong&gt;경량화 모델에서 충분히 사용할 만한 가치가 있을 것 같다.&lt;/strong&gt;&lt;/p&gt;
@@ -115,7 +115,7 @@ model = ElectraModel.from_pretrained(&quot;monologg/koelectra-small-discriminato
 tokenizer = ElectraTokenizer.from_pretrained(&quot;monologg/koelectra-small-discriminator&quot;)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;맺으며&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2020-05-02-koelectra-part2/facebook-reaction.png&quot; alt=&quot;와우!&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./facebook-reaction.png&quot; alt=&quot;와우!&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;솔직히 이렇게까지 반응이 좋을 줄은 몰랐다🙄 개발자로서 이럴 때가 가장 보람있지 않은가 싶다.&lt;/p&gt;
 &lt;p&gt;처음 계획할 때부터 **&quot;이거 만들면 다른 분들에게도 큰 도움이 되겠다&quot;**라 생각했는데, 실제로도 그런 것 같아 기분이 (굉장히) 좋다 😀&lt;/p&gt;
 &lt;blockquote&gt;
@@ -271,8 +271,8 @@ tokenizer.save(&quot;./&quot;, &quot;bert-wordpiece&quot;)
 &lt;p&gt;앞에서도 언급했듯이 ELECTRA Pretraining은 &lt;a href=&quot;https://github.com/google-research/electra&quot;&gt;공식 코드&lt;/a&gt;를 그대로 가져다 쓰는 것이 좋다. 공식 코드를 가져다쓰기 전에 &lt;code&gt;논문&lt;/code&gt;과 &lt;code&gt;코드 분석&lt;/code&gt;을 어느 정도 하고 진행하는 것을 권장한다.&lt;/p&gt;
 &lt;p&gt;그럼에도 좀 헷갈렸던 부분이 있어 여기서 언급하려 한다.&lt;/p&gt;
 &lt;h3&gt;1. 공식 레포에서 제공하는 &lt;code&gt;small&lt;/code&gt; 모델은 정확히는 &lt;code&gt;small++&lt;/code&gt; 모델이다&lt;/h3&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2020-05-02-koelectra-part1/small_notice.png&quot; alt=&quot;&quot; /&gt;
-&lt;img src=&quot;/images/2020-05-02-koelectra-part1/small_gen_size.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./small_notice.png&quot; alt=&quot;&quot; /&gt;
+&lt;img src=&quot;./small_gen_size.png&quot; alt=&quot;&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;공식 코드에서도 알 수 있듯이 &lt;code&gt;small&lt;/code&gt;로 공개된 모델은 정확히 말하면 &lt;code&gt;small++&lt;/code&gt; 모델이다. 둘의 차이점은 아래와 같다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -476,7 +476,7 @@ model = ElectraModel.from_pretrained(&quot;monologg/koelectra-small-discriminato
 tokenizer = ElectraTokenizer.from_pretrained(&quot;monologg/koelectra-small-discriminator&quot;)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;맺으며&lt;/h2&gt;
-&lt;p&gt;&lt;img src=&quot;/images/2020-05-01-transformers-porting/model_download.png&quot; alt=&quot;생각보다 많이 사용하시네...&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./model_download.png&quot; alt=&quot;생각보다 많이 사용하시네...&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;사실 Model Porting과 관련하여 &lt;strong&gt;명확한 Documentation이 없어&lt;/strong&gt; 나도 삽질을 상당히 했던 부분이다. 이번 내용이 다른 분들에게 도움이 되었으면 한다😛&lt;/p&gt;
 &lt;p&gt;또한 &lt;strong&gt;Huggingface s3에 모델을 업로드&lt;/strong&gt;하는 것은 꼭 사용해보길 권한다. 이 기능이 생긴지 얼마되지 않아서 모르시는 분들이 있는데, &lt;strong&gt;업로드 용량의 제한도 없고&lt;/strong&gt; 여러모로 라이브러리 사용도 편해진다. (모델을 100개 이상 올린다고 Huggingface 팀에서 뭐라고 하지 않으니 많이들 쓰셨으면ㅎㅎ)&lt;/p&gt;
 </content:encoded></item><item><title>나만의 BERT Wordpiece Vocab 만들기</title><link>https://monologg.kr/posts/2020/04/27/wordpiece-vocab/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/04/27/wordpiece-vocab/</guid><pubDate>Mon, 27 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;개인적으로 Pretrained Language Model 성능에 큰 영향을 주는 것 중 하나로 &lt;code&gt;Vocab quality&lt;/code&gt;라고 생각한다.&lt;/p&gt;
