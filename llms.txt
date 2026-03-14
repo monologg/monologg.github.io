@@ -3,7 +3,7 @@
 
 ## Author
 - Name: Jangwon Park
-- Role: NLP Engineer
+- Role: AI Engineer
 - GitHub: https://github.com/monologg
 - LinkedIn: https://www.linkedin.com/in/jang-won-park/
 
