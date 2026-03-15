@@ -1,11 +1,13 @@
 # Monologg Blog
-> Jangwon Park's tech blog about NLP, Machine Learning, and AI Engineering.
+> AI Engineering Blog by Jangwon Park
 
 ## Author
 - Name: Jangwon Park
 - Role: AI Engineer
-- GitHub: https://github.com/monologg
-- LinkedIn: https://www.linkedin.com/in/jang-won-park/
+- https://github.com/monologg
+- https://www.linkedin.com/in/jang-won-park/
+- https://scholar.google.co.kr/citations?user=82GO93wAAAAJ/
+- https://huggingface.co/monologg
 
 ## Articles
 - [2주 간의 KoELECTRA 개발기 - 2부](https://monologg.kr/posts/2020/05/02/koelectra-part2/): 2주 간의 KoELECTRA 개발기 - 2부
