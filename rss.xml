@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>2주 간의 KoELECTRA 개발기 - 2부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part2/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part2/</guid><pubDate>Sat, 02 May 2020 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>2주 간의 KoELECTRA 개발기 - 2부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part2/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part2/</guid><description>KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.</description><pubDate>Sat, 02 May 2020 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
 &lt;p&gt;이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)&lt;/p&gt;
 &lt;p&gt;2부에는 &lt;strong&gt;Pretraining, Finetuning&lt;/strong&gt; 등을 다룰 예정이다.&lt;/p&gt;
 &lt;blockquote&gt;
@@ -133,7 +133,7 @@ tokenizer = ElectraTokenizer.from_pretrained(&quot;monologg/koelectra-small-disc
 &lt;li&gt;&lt;a href=&quot;/posts/2020/05/01/transformers-porting/&quot;&gt;내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2020/05/02/koelectra-part1/&quot;&gt;2주 간의 KoELECTRA 개발기 - 1부&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>2주 간의 KoELECTRA 개발기 - 1부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part1/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part1/</guid><pubDate>Sat, 02 May 2020 01:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
+</content:encoded></item><item><title>2주 간의 KoELECTRA 개발기 - 1부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part1/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part1/</guid><description>KoELECTRA 개발 과정 1부. 기존 한국어 PLM의 한계점 분석, Wordpiece Tokenizer 제작, 14GB 한국어 데이터 전처리, TPU 세팅 및 Configuration 설정까지의 과정을 기록합니다.</description><pubDate>Sat, 02 May 2020 01:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
 &lt;p&gt;이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)&lt;/p&gt;
 &lt;p&gt;1부에는 &lt;strong&gt;실제 학습을 돌리기 전까지의 과정&lt;/strong&gt;을 다룰 예정이다.&lt;/p&gt;
 &lt;blockquote&gt;
@@ -335,7 +335,7 @@ tokenizer.save(&quot;./&quot;, &quot;bert-wordpiece&quot;)
 &lt;li&gt;&lt;a href=&quot;/posts/2020/04/27/wordpiece-vocab/&quot;&gt;나만의 BERT Wordpiece Vocab 만들기&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2020/05/02/koelectra-part2/&quot;&gt;2주 간의 KoELECTRA 개발기 - 2부&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기</title><link>https://monologg.kr/posts/2020/05/01/transformers-porting/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/01/transformers-porting/</guid><pubDate>Fri, 01 May 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;code&gt;BERT&lt;/code&gt;, &lt;code&gt;ALBERT&lt;/code&gt;, &lt;code&gt;ELECTRA&lt;/code&gt; 등을 직접 Pretrain하게 되면 모델이 Tensorflow의 ckpt 형태로 저장이 된다.&lt;/p&gt;
+</content:encoded></item><item><title>내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기</title><link>https://monologg.kr/posts/2020/05/01/transformers-porting/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/01/transformers-porting/</guid><description>직접 Pretrain한 ELECTRA 모델의 Tensorflow ckpt를 Huggingface Transformers의 PyTorch ckpt로 변환하는 방법. config 설정부터 weight 변환까지 단계별로 안내합니다.</description><pubDate>Fri, 01 May 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;code&gt;BERT&lt;/code&gt;, &lt;code&gt;ALBERT&lt;/code&gt;, &lt;code&gt;ELECTRA&lt;/code&gt; 등을 직접 Pretrain하게 되면 모델이 Tensorflow의 ckpt 형태로 저장이 된다.&lt;/p&gt;
 &lt;p&gt;이번 글에서는 &lt;code&gt;tensorflow ckpt&lt;/code&gt;를 transformers의 &lt;code&gt;pytorch ckpt&lt;/code&gt;로 변환하는 법을 알아보겠다🤗&lt;/p&gt;
 &lt;h2&gt;Intro&lt;/h2&gt;
 &lt;ul&gt;
@@ -479,7 +479,7 @@ tokenizer = ElectraTokenizer.from_pretrained(&quot;monologg/koelectra-small-disc
 &lt;p&gt;&lt;img src=&quot;./model_download.png&quot; alt=&quot;생각보다 많이 사용하시네...&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;사실 Model Porting과 관련하여 &lt;strong&gt;명확한 Documentation이 없어&lt;/strong&gt; 나도 삽질을 상당히 했던 부분이다. 이번 내용이 다른 분들에게 도움이 되었으면 한다😛&lt;/p&gt;
 &lt;p&gt;또한 &lt;strong&gt;Huggingface s3에 모델을 업로드&lt;/strong&gt;하는 것은 꼭 사용해보길 권한다. 이 기능이 생긴지 얼마되지 않아서 모르시는 분들이 있는데, &lt;strong&gt;업로드 용량의 제한도 없고&lt;/strong&gt; 여러모로 라이브러리 사용도 편해진다. (모델을 100개 이상 올린다고 Huggingface 팀에서 뭐라고 하지 않으니 많이들 쓰셨으면ㅎㅎ)&lt;/p&gt;
-</content:encoded></item><item><title>나만의 BERT Wordpiece Vocab 만들기</title><link>https://monologg.kr/posts/2020/04/27/wordpiece-vocab/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/04/27/wordpiece-vocab/</guid><pubDate>Mon, 27 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;개인적으로 Pretrained Language Model 성능에 큰 영향을 주는 것 중 하나로 &lt;code&gt;Vocab quality&lt;/code&gt;라고 생각한다.&lt;/p&gt;
+</content:encoded></item><item><title>나만의 BERT Wordpiece Vocab 만들기</title><link>https://monologg.kr/posts/2020/04/27/wordpiece-vocab/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/04/27/wordpiece-vocab/</guid><description>BERT와 ELECTRA에 사용되는 Wordpiece 방식의 한국어 Vocab을 직접 만드는 방법. Sentencepiece, Mecab과의 차이점과 Huggingface Tokenizers 라이브러리 활용법을 설명합니다.</description><pubDate>Mon, 27 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;개인적으로 Pretrained Language Model 성능에 큰 영향을 주는 것 중 하나로 &lt;code&gt;Vocab quality&lt;/code&gt;라고 생각한다.&lt;/p&gt;
 &lt;p&gt;이번 포스트에서는 tokenization의 방법 중 하나인 &lt;code&gt;Wordpiece&lt;/code&gt;를 이용하여 어떻게 vocab을 만드는지 알아보려 한다:)&lt;/p&gt;
 &lt;h2&gt;Introduction&lt;/h2&gt;
 &lt;p&gt;한국어 Tokenizer의 대안으로는 크게 &lt;code&gt;Sentencepiece&lt;/code&gt;, &lt;code&gt;Mecab&lt;/code&gt;, &lt;code&gt;Wordpiece&lt;/code&gt;가 있다. (&lt;em&gt;여기서의 wordpiece는 Google의 BERT에서 사용된 wordpiece로 가정한다.&lt;/em&gt;)&lt;/p&gt;
@@ -540,7 +540,7 @@ tokenizer.save(&quot;./&quot;, &quot;ch-{}-wpm-{}&quot;.format(args.limit_alphab
 &lt;li&gt;&lt;a href=&quot;https://github.com/kwonmha/bert-vocab-builder&quot;&gt;kwonmha&apos;s bert-vocab-builder&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/huggingface/tokenizers&quot;&gt;Huggingface Tokenizers&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>TPU를 이용하여 Electra Pretraining하기</title><link>https://monologg.kr/posts/2020/04/20/tpu-electra/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/04/20/tpu-electra/</guid><pubDate>Mon, 20 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;최근 &lt;a href=&quot;https://openreview.net/forum?id=r1xMH1BtvB&quot;&gt;ELECTRA&lt;/a&gt;의 공식 코드가 공개되면서 한국어 Corpus에 직접 Electra를 만들게 되었다.&lt;/p&gt;
+</content:encoded></item><item><title>TPU를 이용하여 Electra Pretraining하기</title><link>https://monologg.kr/posts/2020/04/20/tpu-electra/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/04/20/tpu-electra/</guid><description>GCP에서 TPU를 이용하여 ELECTRA 모델을 Pretraining하는 방법. TFRC 신청부터 VM 세팅, TPU 연결, Pretraining 실행까지의 전체 과정을 다룹니다.</description><pubDate>Mon, 20 Apr 2020 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;최근 &lt;a href=&quot;https://openreview.net/forum?id=r1xMH1BtvB&quot;&gt;ELECTRA&lt;/a&gt;의 공식 코드가 공개되면서 한국어 Corpus에 직접 Electra를 만들게 되었다.&lt;/p&gt;
 &lt;p&gt;이번 글에서는 GCP에서 TPU를 어떻게 사용했는지 그 과정을 공유해보려 한다.&lt;/p&gt;
 &lt;h2&gt;Tensorflow Research Cloud 신청&lt;/h2&gt;
 &lt;p&gt;Tensorflow Research Cloud (TFRC)는 &lt;strong&gt;1달 동안 TPU를 무료&lt;/strong&gt;로 사용할 수 있게 해주는 프로그램이다.&lt;/p&gt;

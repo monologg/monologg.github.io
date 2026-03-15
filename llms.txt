@@ -10,11 +10,11 @@
 - https://huggingface.co/monologg
 
 ## Articles
-- [2주 간의 KoELECTRA 개발기 - 2부](https://monologg.kr/posts/2020/05/02/koelectra-part2/): 2주 간의 KoELECTRA 개발기 - 2부
-- [2주 간의 KoELECTRA 개발기 - 1부](https://monologg.kr/posts/2020/05/02/koelectra-part1/): 2주 간의 KoELECTRA 개발기 - 1부
-- [내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기](https://monologg.kr/posts/2020/05/01/transformers-porting/): 내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기
-- [나만의 BERT Wordpiece Vocab 만들기](https://monologg.kr/posts/2020/04/27/wordpiece-vocab/): 나만의 BERT Wordpiece Vocab 만들기
-- [TPU를 이용하여 Electra Pretraining하기](https://monologg.kr/posts/2020/04/20/tpu-electra/): TPU를 이용하여 Electra Pretraining하기
+- [2주 간의 KoELECTRA 개발기 - 2부](https://monologg.kr/posts/2020/05/02/koelectra-part2/): KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.
+- [2주 간의 KoELECTRA 개발기 - 1부](https://monologg.kr/posts/2020/05/02/koelectra-part1/): KoELECTRA 개발 과정 1부. 기존 한국어 PLM의 한계점 분석, Wordpiece Tokenizer 제작, 14GB 한국어 데이터 전처리, TPU 세팅 및 Configuration 설정까지의 과정을 기록합니다.
+- [내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기](https://monologg.kr/posts/2020/05/01/transformers-porting/): 직접 Pretrain한 ELECTRA 모델의 Tensorflow ckpt를 Huggingface Transformers의 PyTorch ckpt로 변환하는 방법. config 설정부터 weight 변환까지 단계별로 안내합니다.
+- [나만의 BERT Wordpiece Vocab 만들기](https://monologg.kr/posts/2020/04/27/wordpiece-vocab/): BERT와 ELECTRA에 사용되는 Wordpiece 방식의 한국어 Vocab을 직접 만드는 방법. Sentencepiece, Mecab과의 차이점과 Huggingface Tokenizers 라이브러리 활용법을 설명합니다.
+- [TPU를 이용하여 Electra Pretraining하기](https://monologg.kr/posts/2020/04/20/tpu-electra/): GCP에서 TPU를 이용하여 ELECTRA 모델을 Pretraining하는 방법. TFRC 신청부터 VM 세팅, TPU 연결, Pretraining 실행까지의 전체 과정을 다룹니다.
 
 ## Resources
 - [About](https://monologg.kr/about/): Author and site information
