@@ -10,6 +10,12 @@
 - https://huggingface.co/monologg
 
 ## Articles
+- [Claude Code VS Code Extension에서 Bypass Permission 설정하는 방법](https://monologg.kr/posts/2026/03/15/2026-03-15-claude-code-vscode-bypass-permissions/): Claude Code VS Code Extension을 쓰다 보면 매번 권한 승인 팝업이 뜨는 게 은근히 거슬리거든요.
+- [Astro 블로그 테마 Fuwari vs Firefly, 옮길 가치가 있을까?](https://monologg.kr/posts/2026/03/15/2026-03-15-fuwari-vs-firefly-astro-theme-comparison/): 블로그 테마를 바꾸고 싶은 충동은 개발자라면 누구나 한 번쯤 겪잖아요.
+- [OpenClaw의 Rust 경량 대안들 — ZeroClaw와 NanoClaw 비교](https://monologg.kr/posts/2026/03/15/2026-03-15-openclaw-rust-alternatives-zeroclaw-nanoclaw/): OpenClaw가 GitHub 스타 20만 개를 넘기면서 사실상 오픈소스 AI 에이전트의 표준처럼 자리잡았잖아요.
+- [Antigravity 터미널에서 Claude Code Shift+Enter 개행 설정하기](https://monologg.kr/posts/2026/03/15/2026-03-15-antigravity-claude-code-shift-enter-setup/): Claude Code를 IDE 내장 터미널에서 쓰다 보면, 여러 줄 입력이 필요할 때가 많아요.
+- [Perplexity MCP 대신 쓸 수 있는 웹 검색 MCP 5종 비교](https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/): Claude Code에서 웹 검색용으로 Perplexity MCP를 쓰고 있었는데요, 크레딧이 눈에 띄게 줄어들더라고요.
+- [Claude Code에서 OpenAI Codex를 호출하는 4가지 방법](https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/): Claude Code에서 OpenAI Codex를 호출하는 4가지 방법
 - [2주 간의 KoELECTRA 개발기 - 2부](https://monologg.kr/posts/2020/05/02/koelectra-part2/): KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.
 - [2주 간의 KoELECTRA 개발기 - 1부](https://monologg.kr/posts/2020/05/02/koelectra-part1/): KoELECTRA 개발 과정 1부. 기존 한국어 PLM의 한계점 분석, Wordpiece Tokenizer 제작, 14GB 한국어 데이터 전처리, TPU 세팅 및 Configuration 설정까지의 과정을 기록합니다.
 - [내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기](https://monologg.kr/posts/2020/05/01/transformers-porting/): 직접 Pretrain한 ELECTRA 모델의 Tensorflow ckpt를 Huggingface Transformers의 PyTorch ckpt로 변환하는 방법. config 설정부터 weight 변환까지 단계별로 안내합니다.
