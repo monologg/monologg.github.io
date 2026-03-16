@@ -1,4 +1,55 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교</title><link>https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</guid><description>Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했어요.</description><pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;MCP 서버를 여러 개 연결하다 보면 도구 수가 순식간에 폭발해요. Atlassian MCP 하나만 연결해도 72개 도구가 딸려오거든요. 여기에 Perplexity, Slack, Plane 같은 MCP를 추가하면 금세 100개를 넘겨버리죠. Antigravity처럼 100개 tool 제한이 걸린 환경에서는 Atlassian 하나 켜면 다른 MCP를 붙일 수조차 없어요.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>Antigravity 터미널에서 Claude Code Shift+Enter 개행 설정하기</title><link>https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/</guid><description>Claude Code를 IDE 내장 터미널에서 쓰다 보면, 여러 줄 입력이 필요할 때가 많아요.</description><pubDate>Tue, 17 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code를 IDE 내장 터미널에서 쓰다 보면, 여러 줄 입력이 필요할 때가 많아요. 그런데 Shift+Enter를 눌러도 개행이 안 되고 그냥 전송되어 버리는 경험, 한 번쯤 있지 않나요?&lt;/p&gt;
+&lt;p&gt;저도 Antigravity에서 SSH로 우분투 서버에 접속한 뒤 Claude Code를 사용하는데, Shift+Enter가 먹히지 않아서 한참 삽질했어요. 해결 과정을 정리해 봤어요.&lt;/p&gt;
+&lt;h2&gt;&lt;code&gt;/terminal-setup&lt;/code&gt;은 왜 안 될까요?&lt;/h2&gt;
+&lt;p&gt;Claude Code에는 &lt;code&gt;/terminal-setup&lt;/code&gt;이라는 편리한 명령이 있어요. VS Code 계열 터미널에서 Shift+Enter 단축키를 자동으로 잡아주는 기능이죠.&lt;/p&gt;
+&lt;p&gt;그런데 Antigravity에서 실행하면 이런 메시지가 뜨거든요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Terminal setup cannot be run from antigravity.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;현재 &lt;code&gt;/terminal-setup&lt;/code&gt; 자동 설정 대상은 VS Code, Cursor, Windsurf, Zed, Alacritty 정도예요. Antigravity는 VS Code 포크 IDE지만 아직 자동 설정을 지원하지 않아요. 수동 설정이 필요한 거죠.&lt;/p&gt;
+&lt;h2&gt;핵심은 로컬 IDE 키바인딩&lt;/h2&gt;
+&lt;p&gt;여기서 잠깐, 중요한 포인트가 있어요. SSH로 원격 서버에 접속해서 Claude Code를 쓰더라도, Shift+Enter 처리는 &lt;strong&gt;서버가 아니라 로컬 IDE&lt;/strong&gt;에서 먼저 잡혀요.&lt;/p&gt;
+&lt;p&gt;VS Code 계열 IDE는 키 입력을 IDE가 먼저 처리한 뒤, &lt;code&gt;workbench.action.terminal.sendSequence&lt;/code&gt; 같은 방식으로 터미널에 시퀀스를 전달하는 구조거든요. 그래서 서버 쪽 &lt;code&gt;.bashrc&lt;/code&gt;나 &lt;code&gt;stty&lt;/code&gt; 설정을 아무리 바꿔도 소용없어요.&lt;/p&gt;
+&lt;p&gt;바로 이거예요. 로컬 Antigravity의 키바인딩을 건드려야 해요.&lt;/p&gt;
+&lt;h2&gt;Antigravity keybindings.json 수동 설정&lt;/h2&gt;
+&lt;p&gt;설정 방법은 간단해요.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Antigravity에서 &lt;code&gt;Cmd+Shift+P&lt;/code&gt; (macOS) 또는 &lt;code&gt;Ctrl+Shift+P&lt;/code&gt; (Linux/Windows) 실행&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Open Keyboard Shortcuts (JSON)&lt;/code&gt; 검색 후 선택&lt;/li&gt;
+&lt;li&gt;열린 &lt;code&gt;keybindings.json&lt;/code&gt; 파일에 아래 항목 추가&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;key&quot;: &quot;shift+enter&quot;,
+  &quot;command&quot;: &quot;workbench.action.terminal.sendSequence&quot;,
+  &quot;args&quot;: { &quot;text&quot;: &quot;\u001b\r&quot; },
+  &quot;when&quot;: &quot;terminalFocus&quot;
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이미 &lt;code&gt;keybindings.json&lt;/code&gt;에 다른 설정이 있다면, 배열 안에 쉼표를 찍고 이 객체만 추가하면 돼요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[
+  {
+    &quot;key&quot;: &quot;ctrl+l&quot;,
+    &quot;command&quot;: &quot;workbench.action.terminal.clear&quot;
+  },
+  {
+    &quot;key&quot;: &quot;shift+enter&quot;,
+    &quot;command&quot;: &quot;workbench.action.terminal.sendSequence&quot;,
+    &quot;args&quot;: { &quot;text&quot;: &quot;\u001b\r&quot; },
+    &quot;when&quot;: &quot;terminalFocus&quot;
+  }
+]
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;추가한 뒤에는 Antigravity 창을 완전히 닫고 다시 열어야 적용돼요. &lt;code&gt;Reload Window&lt;/code&gt;로도 되는 경우가 있지만, 완전 재시작이 확실하더라고요.&lt;/p&gt;
+&lt;h2&gt;혹시 &lt;code&gt;shift+enter&lt;/code&gt;가 이미 다른 기능에 묶여 있다면?&lt;/h2&gt;
+&lt;p&gt;기존에 &lt;code&gt;shift+enter&lt;/code&gt;를 다른 command에 바인딩해 뒀다면, 새 바인딩이 제대로 안 먹을 수 있어요. 이 경우 기존 항목을 지우거나, &lt;code&gt;&quot;when&quot;&lt;/code&gt; 조건을 좁혀서 충돌을 피해야 해요. 위 설정의 &lt;code&gt;&quot;when&quot;: &quot;terminalFocus&quot;&lt;/code&gt; 조건 덕분에 터미널에 포커스가 있을 때만 동작하니, 대부분의 경우 충돌이 생기지 않을 거예요.&lt;/p&gt;
+&lt;h2&gt;급할 때는 임시 대안도 있어요&lt;/h2&gt;
+&lt;p&gt;설정을 바꾸기 전까지 당장 여러 줄 입력이 필요하면, Claude Code가 기본 제공하는 대안을 쓸 수 있어요.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;\&lt;/code&gt; + Enter: 백슬래시 치고 Enter를 누르면 개행으로 처리돼요&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Ctrl+J&lt;/code&gt;: 멀티라인 입력 전환 단축키로, 일부 터미널에서 바로 동작해요&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;둘 다 Claude Code 공식 문서에 나와 있는 방법이에요.&lt;/p&gt;
+&lt;p&gt;Antigravity가 &lt;code&gt;/terminal-setup&lt;/code&gt; 대상에 포함되면 이 수동 작업이 필요 없어지겠지만, 그 전까지는 &lt;code&gt;keybindings.json&lt;/code&gt; 한 줄이면 충분히 해결돼요.&lt;/p&gt;
+</content:encoded></item><item><title>MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교</title><link>https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</guid><description>Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했어요.</description><pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;MCP 서버를 여러 개 연결하다 보면 도구 수가 순식간에 폭발해요. Atlassian MCP 하나만 연결해도 72개 도구가 딸려오거든요. 여기에 Perplexity, Slack, Plane 같은 MCP를 추가하면 금세 100개를 넘겨버리죠. Antigravity처럼 100개 tool 제한이 걸린 환경에서는 Atlassian 하나 켜면 다른 MCP를 붙일 수조차 없어요.&lt;/p&gt;
 &lt;p&gt;이 문제를 해결하는 방법은 크게 세 가지예요. 하나씩 살펴볼게요.&lt;/p&gt;
 &lt;h2&gt;Claude Code 빌트인: MCP Tool Search&lt;/h2&gt;
 &lt;p&gt;Claude Code에는 이미 &lt;strong&gt;MCP Tool Search&lt;/strong&gt;라는 기능이 내장되어 있어요. MCP 도구 설명이 context window의 일정 비율을 넘으면 자동으로 활성화되는데, 모든 도구를 미리 로드하지 않고 필요할 때만 검색해서 불러오는 방식이에요.&lt;/p&gt;
