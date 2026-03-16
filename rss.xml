@@ -1,4 +1,255 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>Perplexity MCP 대신 쓸 수 있는 웹 검색 MCP 5종 비교</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</guid><description>Perplexity MCP의 비용 부담을 줄이기 위해 Brave Search, Tavily, SearXNG, Exa, ChatGPT MCP 5종을 비교하고 무료 티어 기준 최적 조합을 정리했습니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code에서 웹 검색용으로 Perplexity MCP를 쓰고 있었는데요, 크레딧이 눈에 띄게 줄어들더라고요. 쿼리당 $0.005라 한 번에 큰 돈은 아니지만, 하루에도 수십 번씩 검색하다 보면 월말에 청구서가 꽤 나와요. 무료 API 티어도 없고, Pro 플랜 $20/월에 포함되는 $5 크레딧으로는 1,000번 남짓 검색하면 끝이거든요.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교</title><link>https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</guid><description>Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했어요.</description><pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;MCP 서버를 여러 개 연결하다 보면 도구 수가 순식간에 폭발해요. Atlassian MCP 하나만 연결해도 72개 도구가 딸려오거든요. 여기에 Perplexity, Slack, Plane 같은 MCP를 추가하면 금세 100개를 넘겨버리죠. Antigravity처럼 100개 tool 제한이 걸린 환경에서는 Atlassian 하나 켜면 다른 MCP를 붙일 수조차 없어요.&lt;/p&gt;
+&lt;p&gt;이 문제를 해결하는 방법은 크게 세 가지예요. 하나씩 살펴볼게요.&lt;/p&gt;
+&lt;h2&gt;Claude Code 빌트인: MCP Tool Search&lt;/h2&gt;
+&lt;p&gt;Claude Code에는 이미 &lt;strong&gt;MCP Tool Search&lt;/strong&gt;라는 기능이 내장되어 있어요. MCP 도구 설명이 context window의 일정 비율을 넘으면 자동으로 활성화되는데, 모든 도구를 미리 로드하지 않고 필요할 때만 검색해서 불러오는 방식이에요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 기본값: context window의 10% 초과 시 자동 활성화
+ENABLE_TOOL_SEARCH=auto claude
+
+# 더 공격적으로: 5% 초과 시 활성화
+ENABLE_TOOL_SEARCH=auto:5 claude
+
+# 항상 켜기
+ENABLE_TOOL_SEARCH=true claude
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;context token 절약 측면에서는 효과적이에요. 하지만 여기서 중요한 점이 있어요. Tool Search는 context에 로드되는 도구 설명을 줄여줄 뿐, &lt;strong&gt;도구 수 자체를 줄이지는 않아요.&lt;/strong&gt; Antigravity의 100개 제한 같은 하드 리밋에는 소용이 없다는 뜻이죠.&lt;/p&gt;
+&lt;h2&gt;Claude Code 빌트인: settings.json deny&lt;/h2&gt;
+&lt;p&gt;특정 도구 몇 개만 차단하고 싶다면 &lt;code&gt;settings.json&lt;/code&gt;의 deny 권한이 가장 간단해요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;permissions&quot;: {
+    &quot;deny&quot;: [
+      &quot;mcp__perplexity__perplexity_ask&quot;,
+      &quot;mcp__atlassian__unused_tool_name&quot;
+    ]
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;예를 들어 Perplexity MCP에서 &lt;code&gt;perplexity_ask&lt;/code&gt;는 크레딧이 많이 나가니까 차단하고 &lt;code&gt;perplexity_search&lt;/code&gt;만 허용하고 싶다면, 위처럼 한 줄 추가하면 끝이에요. 도구가 2-3개뿐인 MCP에서 하나만 빼는 용도로는 이게 최선이에요.&lt;/p&gt;
+&lt;h2&gt;tool-filter-mcp: 대량 필터링이 필요할 때&lt;/h2&gt;
+&lt;p&gt;Atlassian처럼 72개 도구 중 대부분을 걸러내야 하는 경우, &lt;a href=&quot;https://github.com/respawn-app/tool-filter-mcp&quot;&gt;respawn-app/tool-filter-mcp&lt;/a&gt;가 효과적이에요. upstream MCP 서버 앞에 proxy를 두고 regex 기반 deny list로 도구를 필터링하는 방식이거든요.&lt;/p&gt;
+&lt;h3&gt;사용 가능한 도구 먼저 확인하기&lt;/h3&gt;
+&lt;pre&gt;&lt;code&gt;npx @respawn-app/tool-filter-mcp \
+  --upstream http://localhost:3000/sse \
+  --list-tools --format names
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;--format table&lt;/code&gt;로 하면 설명까지 볼 수 있고, &lt;code&gt;--format names&lt;/code&gt;는 콤마 구분 목록으로 뽑아줘서 deny 패턴을 만들기 편해요.&lt;/p&gt;
+&lt;h3&gt;HTTP/SSE upstream 설정&lt;/h3&gt;
+&lt;p&gt;&lt;code&gt;.mcp.json&lt;/code&gt;에 이렇게 추가하면 돼요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;mcpServers&quot;: {
+    &quot;atlassian-filtered&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [
+        &quot;@respawn-app/tool-filter-mcp&quot;,
+        &quot;--upstream&quot;, &quot;http://localhost:3000/sse&quot;,
+        &quot;--deny&quot;, &quot;pattern1,pattern2,.*_file$&quot;
+      ],
+      &quot;type&quot;: &quot;stdio&quot;
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3&gt;stdio upstream 설정&lt;/h3&gt;
+&lt;p&gt;upstream MCP가 npx 기반 stdio 서버라면 &lt;code&gt;--upstream-stdio&lt;/code&gt;를 쓰면 돼요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;mcpServers&quot;: {
+    &quot;atlassian-filtered&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [
+        &quot;@respawn-app/tool-filter-mcp&quot;,
+        &quot;--upstream-stdio&quot;,
+        &quot;--deny&quot;, &quot;unused_tool_pattern&quot;,
+        &quot;--&quot;,
+        &quot;npx&quot;, &quot;@anthropic/atlassian-mcp&quot;
+      ],
+      &quot;type&quot;: &quot;stdio&quot;
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;--&lt;/code&gt; 뒤에 원래 MCP 서버의 실행 명령어를 그대로 넣으면 돼요.&lt;/p&gt;
+&lt;h2&gt;어떤 방법을 언제 쓸까요?&lt;/h2&gt;
+&lt;p&gt;감이 오시나요? 정리하면 이래요.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;상황&lt;/th&gt;
+&lt;th&gt;추천 방법&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;특정 도구 몇 개만 차단&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;settings.json&lt;/code&gt; deny&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;context token 절약&lt;/td&gt;
+&lt;td&gt;MCP Tool Search&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;도구 수 자체를 대량으로 줄여야 함&lt;/td&gt;
+&lt;td&gt;tool-filter-mcp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;100개 같은 하드 리밋 회피&lt;/td&gt;
+&lt;td&gt;tool-filter-mcp&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;여기서 잠깐, 한 가지 더 중요한 포인트가 있어요.&lt;/p&gt;
+&lt;h2&gt;Claude Code가 아닌 다른 클라이언트에서는?&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;settings.json&lt;/code&gt; deny와 MCP Tool Search는 &lt;strong&gt;Claude Code 전용&lt;/strong&gt; 기능이에요. OpenAI Codex, Cursor, Windsurf, Claude Desktop 같은 다른 MCP 클라이언트에는 이런 빌트인 필터링이 없거든요.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;클라이언트&lt;/th&gt;
+&lt;th&gt;빌트인 도구 필터링&lt;/th&gt;
+&lt;th&gt;tool-filter-mcp 필요 여부&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Claude Code&lt;/td&gt;
+&lt;td&gt;settings.json deny, Tool Search&lt;/td&gt;
+&lt;td&gt;대량 필터링 아니면 불필요&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;OpenAI Codex&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;필요&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Cursor&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;필요&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Windsurf&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;필요&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Claude Desktop&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;필요&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;MCP 프로토콜 자체가 &quot;서버가 제공하는 도구를 클라이언트가 전부 받는&quot; 구조예요. 클라이언트 쪽에서 필터링을 지원하지 않으면, 서버 앞에 proxy를 두는 것이 유일한 방법이에요.&lt;/p&gt;
+&lt;p&gt;여러 MCP 클라이언트를 동시에 사용한다면 오히려 &lt;strong&gt;tool-filter-mcp로 통일하는 게 관리가 편해요.&lt;/strong&gt; 클라이언트마다 각각의 설정 방식을 외울 필요 없이, MCP 서버 설정 한 곳에서 필터링을 관리할 수 있으니까요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[Atlassian MCP] → [tool-filter-mcp] → Claude Code
+                                     → Codex
+                                     → Cursor
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;필터링된 MCP 서버를 각 클라이언트에 동일하게 연결하면 돼요. 설정 한 번으로 모든 클라이언트에서 동일한 도구 세트를 사용할 수 있죠.&lt;/p&gt;
+&lt;p&gt;MCP 생태계가 커질수록 도구 수 관리는 점점 중요해질 거예요. 지금은 Claude Code의 빌트인 기능과 tool-filter-mcp를 상황에 맞게 조합하는 것이 가장 현실적인 접근이에요.&lt;/p&gt;
+</content:encoded></item><item><title>Claude Code에서 OpenAI Codex를 호출하는 4가지 방법</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</guid><description>Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 워크플로우를 소개합니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code를 쓰다 보면 가끔 다른 모델의 의견이 궁금할 때가 있어요. &quot;이 구현, Codex한테 한 번 더 검증받아 볼까?&quot; 같은 생각이 드는 순간이죠. 실제로 Claude Code 안에서 OpenAI Codex를 호출할 수 있는 방법이 여러 가지 존재하더라고요. 직접 리서치하고 정리한 4가지 방법을 공유해요.&lt;/p&gt;
+&lt;h2&gt;방법 한눈에 보기&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;방법&lt;/th&gt;
+&lt;th&gt;난이도&lt;/th&gt;
+&lt;th&gt;핵심&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Codex 내장 MCP 서버&lt;/td&gt;
+&lt;td&gt;쉬움&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;codex mcp-server&lt;/code&gt; stdio 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;커뮤니티 MCP 래퍼&lt;/td&gt;
+&lt;td&gt;쉬움&lt;/td&gt;
+&lt;td&gt;npx 원클릭 설치&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Custom Slash Command&lt;/td&gt;
+&lt;td&gt;쉬움&lt;/td&gt;
+&lt;td&gt;단방향 CLI 호출&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;agent-mux&lt;/td&gt;
+&lt;td&gt;중간&lt;/td&gt;
+&lt;td&gt;멀티엔진 orchestrator&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;결론부터 말하면요, 가장 간단하고 강력한 건 첫 번째 방법이에요.&lt;/p&gt;
+&lt;h2&gt;Codex 내장 MCP 서버 — 가장 추천하는 방법&lt;/h2&gt;
+&lt;p&gt;Codex CLI에는 &lt;code&gt;codex mcp-server&lt;/code&gt;라는 내장 MCP 서버가 포함되어 있어요. stdio 방식으로 Claude Code에 직접 연결할 수 있거든요. 별도 서버를 띄울 필요가 없어요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# Codex CLI 설치 및 인증
+npm install -g @openai/codex
+codex login
+
+# Claude Code에 MCP 서버 등록
+claude mcp add --transport stdio --scope user codex -- codex mcp-server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이렇게 하면 Claude Code 안에서 두 개의 MCP 도구가 생겨요.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;codex&lt;/code&gt; — 새 Codex 세션을 시작해요. prompt, approval-policy, sandbox, model 파라미터를 지정할 수 있죠.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;codex-reply&lt;/code&gt; — &lt;code&gt;threadId&lt;/code&gt;로 기존 세션을 이어가요. 대화형 컨텍스트가 유지되니까 후속 질문도 가능해요.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;등록이 잘 됐는지 확인하려면 &lt;code&gt;claude mcp list&lt;/code&gt;를 실행하면 돼요. &lt;code&gt;codex: codex mcp-server - Connected&lt;/code&gt;가 보이면 성공이에요.&lt;/p&gt;
+&lt;p&gt;여기서 잠깐, approval-policy 파라미터가 꽤 중요한데요. &lt;code&gt;untrusted&lt;/code&gt;, &lt;code&gt;on-request&lt;/code&gt;, &lt;code&gt;on-failure&lt;/code&gt;, &lt;code&gt;never&lt;/code&gt; 중에서 선택할 수 있어요. 자동화 파이프라인에서는 &lt;code&gt;never&lt;/code&gt;로 설정하면 Codex가 별도 승인 없이 작업을 수행하죠.&lt;/p&gt;
+&lt;h2&gt;커뮤니티 MCP 래퍼 — 세션 관리가 필요할 때&lt;/h2&gt;
+&lt;p&gt;공식 내장 서버가 부족하다고 느낀다면 커뮤니티에서 만든 MCP 래퍼도 있어요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;claude mcp add codex-cli -- npx -y codex-mcp-server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 래퍼는 세션 관리, 모델 선택, resume 기능 같은 추가 기능을 제공해요. npm 패키지라서 설치도 간단하고요. agency-ai-solutions/openai-codex-mcp 같은 프로젝트는 &lt;code&gt;write_code&lt;/code&gt;, &lt;code&gt;explain_code&lt;/code&gt;, &lt;code&gt;review_code&lt;/code&gt; 같은 특화 메서드도 제공하더라고요.&lt;/p&gt;
+&lt;p&gt;다만 서드파티인 만큼 업데이트 주기나 모델 지원 범위를 확인하는 게 좋아요.&lt;/p&gt;
+&lt;h2&gt;Custom Slash Command — 단순하게 쓰고 싶을 때&lt;/h2&gt;
+&lt;p&gt;MCP 서버까지는 필요 없고 특정 작업만 Codex에 맡기고 싶다면 slash command가 적합해요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!-- ~/.claude/commands/codex-write.md --&amp;gt;
+---
+description: &quot;Generate code using OpenAI Codex CLI&quot;
+---
+codex write --language $2 --task &quot;$3&quot; --model o4-mini
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!-- ~/.claude/commands/codex-explain.md --&amp;gt;
+---
+description: &quot;Get code explanations from Codex CLI&quot;
+---
+codex explain @$1 --focus &quot;$2&quot; --detail comprehensive
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Claude Code에서 &lt;code&gt;/codex-write python &quot;피보나치 수열 생성 함수&quot;&lt;/code&gt; 처럼 호출하면 돼요. 간단하죠.&lt;/p&gt;
+&lt;p&gt;단점도 명확해요. Claude와의 양방향 상호작용이 안 되거든요. Codex의 출력이 Claude의 컨텍스트로 돌아오긴 하지만, Claude가 Codex 결과를 보고 후속 질문을 던지는 흐름은 만들기 어려워요. 단발성 작업에 적합한 방식이에요.&lt;/p&gt;
+&lt;h2&gt;agent-mux — 풀 오케스트레이션이 필요할 때&lt;/h2&gt;
+&lt;p&gt;여기서부터 좀 흥미로워져요. agent-mux는 Claude, Codex, OpenCode 등 여러 AI 엔진을 하나의 CLI로 통합하는 orchestrator예요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# Codex로 정밀 코드 변경
+agent-mux --engine codex --reasoning high --effort high \
+  &quot;Refactor auth module in src/auth/&quot;
+
+# Claude로 아키텍처 설계
+agent-mux --engine claude --effort high \
+  &quot;Design the rollback strategy for the payments migration&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;핵심은 Claude Code의 subagent 시스템과 결합한다는 거예요. Claude가 아키텍처 설계를 하고, 실제 코드 변경은 Codex에 위임하고, 또 다른 Claude가 리뷰하는 pipeline을 구성할 수 있죠.&lt;/p&gt;
+&lt;p&gt;감이 오시나요? 엔진별 강점을 태스크에 맞게 routing하는 거예요. Claude Opus는 설계와 추론에 강하고, Codex는 정밀한 코드 변경에 강하잖아요. agent-mux의 GSD(Get Shit Done) coordinator는 각 태스크에 엔진뿐 아니라 적절한 skill과 MCP 서버까지 자동으로 주입해요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# Codex 안에서 Claude를 coordinator로 실행
+agent-mux --engine codex --coordinator get-shit-done-agent \
+  --effort xhigh --full \
+  &quot;Migrate the auth module to the new API, test everything, audit the result&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;다만 설정 복잡도가 올라가고, agent-mux 자체가 아직 초기 단계라는 점은 감안해야 해요.&lt;/p&gt;
+&lt;h2&gt;어떤 Usecase에 쓸 수 있을까요?&lt;/h2&gt;
+&lt;p&gt;리서치하면서 정리한 실용적인 적용 포인트예요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;세컨드 오피니언&lt;/strong&gt; — Claude가 작성한 코드를 Codex에 리뷰 요청하거나, 그 반대도 가능해요. 두 모델의 관점이 다르니까 놓치는 부분을 잡아낼 수 있죠.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;강점 기반 routing&lt;/strong&gt; — 아키텍처 설계와 문서 작성은 Claude Opus에, 정밀 코드 변경과 디버깅은 Codex에 맡기는 패턴이에요. MCP 서버를 통해 자연스럽게 위임이 이뤄지거든요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;대규모 refactoring&lt;/strong&gt; — Codex의 넓은 컨텍스트 윈도우로 monorepo 전체를 파악한 뒤, Claude로 세부 구현을 진행하는 방식도 가능해요.&lt;/p&gt;
+&lt;h2&gt;제약사항과 주의할 점&lt;/h2&gt;
+&lt;p&gt;당연히 제약도 있어요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;비용 이중 발생&lt;/strong&gt; — Claude API와 OpenAI API를 동시에 사용하니까 비용이 두 배 가까이 들 수 있어요. 모든 작업에 양쪽 모델을 쓸 필요는 없고, 가치가 큰 작업에만 선별적으로 사용하는 게 현실적이에요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;인증 분리&lt;/strong&gt; — Codex는 ChatGPT 구독 또는 OpenAI API 키가 별도로 필요해요. &lt;code&gt;codex login&lt;/code&gt;으로 ChatGPT 계정 인증을 해두면 편하죠.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;컨텍스트 단절&lt;/strong&gt; — MCP를 통한 호출이라 Claude의 전체 컨텍스트가 Codex로 전달되지 않아요. 프롬프트로 명시한 내용만 넘어가거든요. 중요한 맥락은 프롬프트에 충분히 담아야 해요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;실험적 상태&lt;/strong&gt; — &lt;code&gt;codex mcp-server&lt;/code&gt;에는 아직 experimental 태그가 붙어 있어요. API 변경 가능성을 염두에 두는 게 좋죠.&lt;/p&gt;
+&lt;h2&gt;지금 바로 시작하려면&lt;/h2&gt;
+&lt;p&gt;Quick Win부터 잡으면 돼요. 딱 두 줄이에요.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm install -g @openai/codex &amp;amp;&amp;amp; codex login
+claude mcp add --transport stdio --scope user codex -- codex mcp-server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이후 Claude Code에서 &quot;Codex로 이 함수 리뷰해줘&quot; 같은 자연어 요청을 하면, Claude가 자동으로 Codex MCP 도구를 호출해요. 사용 패턴이 잡히면 slash command로 자주 쓰는 워크플로우를 래핑하고, 더 복잡한 오케스트레이션이 필요해지면 agent-mux를 검토하는 순서가 자연스럽겠죠.&lt;/p&gt;
+</content:encoded></item><item><title>Perplexity MCP 대신 쓸 수 있는 웹 검색 MCP 5종 비교</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</guid><description>Perplexity MCP의 비용 부담을 줄이기 위해 Brave Search, Tavily, SearXNG, Exa, ChatGPT MCP 5종을 비교하고 무료 티어 기준 최적 조합을 정리했습니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code에서 웹 검색용으로 Perplexity MCP를 쓰고 있었는데요, 크레딧이 눈에 띄게 줄어들더라고요. 쿼리당 $0.005라 한 번에 큰 돈은 아니지만, 하루에도 수십 번씩 검색하다 보면 월말에 청구서가 꽤 나와요. 무료 API 티어도 없고, Pro 플랜 $20/월에 포함되는 $5 크레딧으로는 1,000번 남짓 검색하면 끝이거든요.&lt;/p&gt;
 &lt;p&gt;그래서 비용 효율적인 대안을 찾아봤어요. Brave Search, Tavily, SearXNG, Exa, 그리고 ChatGPT/OpenAI MCP까지 총 5종을 검토한 결과를 공유해요.&lt;/p&gt;
 &lt;h2&gt;현재 상태: Perplexity MCP는 얼마나 비싼가요?&lt;/h2&gt;
 &lt;p&gt;먼저 기준선을 정리해 볼게요. Perplexity MCP 서버(&lt;code&gt;@perplexity-ai/mcp-server&lt;/code&gt;)는 4개 도구를 제공해요.&lt;/p&gt;
@@ -220,113 +471,6 @@ claude mcp add exa --transport http &quot;https://mcp.exa.ai/mcp?tools=web_searc
 &lt;p&gt;&lt;strong&gt;무제한 검색이 필요하면 SearXNG&lt;/strong&gt;가 정답이에요. Docker 관리만 감수한다면 비용이 $0이에요. 242개 엔진을 메타서치하니 결과의 폭도 넓고요.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Brave Search는 현 시점에서 추천하기 어려워요.&lt;/strong&gt; 무료 티어 폐지 후 Perplexity와 비용이 동일해졌거든요.&lt;/p&gt;
 &lt;p&gt;Tavily + Exa를 병행하면 월 2,000회까지 무료로 커버할 수 있어요. Perplexity에 $10 쓰던 걸 $0으로 줄일 수 있는 셈이에요.&lt;/p&gt;
-</content:encoded></item><item><title>Claude Code에서 OpenAI Codex를 호출하는 4가지 방법</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</guid><description>Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 워크플로우를 소개합니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code를 쓰다 보면 가끔 다른 모델의 의견이 궁금할 때가 있어요. &quot;이 구현, Codex한테 한 번 더 검증받아 볼까?&quot; 같은 생각이 드는 순간이죠. 실제로 Claude Code 안에서 OpenAI Codex를 호출할 수 있는 방법이 여러 가지 존재하더라고요. 직접 리서치하고 정리한 4가지 방법을 공유해요.&lt;/p&gt;
-&lt;h2&gt;방법 한눈에 보기&lt;/h2&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;방법&lt;/th&gt;
-&lt;th&gt;난이도&lt;/th&gt;
-&lt;th&gt;핵심&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;Codex 내장 MCP 서버&lt;/td&gt;
-&lt;td&gt;쉬움&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;codex mcp-server&lt;/code&gt; stdio 연결&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;커뮤니티 MCP 래퍼&lt;/td&gt;
-&lt;td&gt;쉬움&lt;/td&gt;
-&lt;td&gt;npx 원클릭 설치&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Custom Slash Command&lt;/td&gt;
-&lt;td&gt;쉬움&lt;/td&gt;
-&lt;td&gt;단방향 CLI 호출&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;agent-mux&lt;/td&gt;
-&lt;td&gt;중간&lt;/td&gt;
-&lt;td&gt;멀티엔진 orchestrator&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;결론부터 말하면요, 가장 간단하고 강력한 건 첫 번째 방법이에요.&lt;/p&gt;
-&lt;h2&gt;Codex 내장 MCP 서버 — 가장 추천하는 방법&lt;/h2&gt;
-&lt;p&gt;Codex CLI에는 &lt;code&gt;codex mcp-server&lt;/code&gt;라는 내장 MCP 서버가 포함되어 있어요. stdio 방식으로 Claude Code에 직접 연결할 수 있거든요. 별도 서버를 띄울 필요가 없어요.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Codex CLI 설치 및 인증
-npm install -g @openai/codex
-codex login
-
-# Claude Code에 MCP 서버 등록
-claude mcp add --transport stdio --scope user codex -- codex mcp-server
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이렇게 하면 Claude Code 안에서 두 개의 MCP 도구가 생겨요.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;codex&lt;/code&gt; — 새 Codex 세션을 시작해요. prompt, approval-policy, sandbox, model 파라미터를 지정할 수 있죠.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;codex-reply&lt;/code&gt; — &lt;code&gt;threadId&lt;/code&gt;로 기존 세션을 이어가요. 대화형 컨텍스트가 유지되니까 후속 질문도 가능해요.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;등록이 잘 됐는지 확인하려면 &lt;code&gt;claude mcp list&lt;/code&gt;를 실행하면 돼요. &lt;code&gt;codex: codex mcp-server - Connected&lt;/code&gt;가 보이면 성공이에요.&lt;/p&gt;
-&lt;p&gt;여기서 잠깐, approval-policy 파라미터가 꽤 중요한데요. &lt;code&gt;untrusted&lt;/code&gt;, &lt;code&gt;on-request&lt;/code&gt;, &lt;code&gt;on-failure&lt;/code&gt;, &lt;code&gt;never&lt;/code&gt; 중에서 선택할 수 있어요. 자동화 파이프라인에서는 &lt;code&gt;never&lt;/code&gt;로 설정하면 Codex가 별도 승인 없이 작업을 수행하죠.&lt;/p&gt;
-&lt;h2&gt;커뮤니티 MCP 래퍼 — 세션 관리가 필요할 때&lt;/h2&gt;
-&lt;p&gt;공식 내장 서버가 부족하다고 느낀다면 커뮤니티에서 만든 MCP 래퍼도 있어요.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;claude mcp add codex-cli -- npx -y codex-mcp-server
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이 래퍼는 세션 관리, 모델 선택, resume 기능 같은 추가 기능을 제공해요. npm 패키지라서 설치도 간단하고요. agency-ai-solutions/openai-codex-mcp 같은 프로젝트는 &lt;code&gt;write_code&lt;/code&gt;, &lt;code&gt;explain_code&lt;/code&gt;, &lt;code&gt;review_code&lt;/code&gt; 같은 특화 메서드도 제공하더라고요.&lt;/p&gt;
-&lt;p&gt;다만 서드파티인 만큼 업데이트 주기나 모델 지원 범위를 확인하는 게 좋아요.&lt;/p&gt;
-&lt;h2&gt;Custom Slash Command — 단순하게 쓰고 싶을 때&lt;/h2&gt;
-&lt;p&gt;MCP 서버까지는 필요 없고 특정 작업만 Codex에 맡기고 싶다면 slash command가 적합해요.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;!-- ~/.claude/commands/codex-write.md --&amp;gt;
----
-description: &quot;Generate code using OpenAI Codex CLI&quot;
----
-codex write --language $2 --task &quot;$3&quot; --model o4-mini
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;!-- ~/.claude/commands/codex-explain.md --&amp;gt;
----
-description: &quot;Get code explanations from Codex CLI&quot;
----
-codex explain @$1 --focus &quot;$2&quot; --detail comprehensive
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Claude Code에서 &lt;code&gt;/codex-write python &quot;피보나치 수열 생성 함수&quot;&lt;/code&gt; 처럼 호출하면 돼요. 간단하죠.&lt;/p&gt;
-&lt;p&gt;단점도 명확해요. Claude와의 양방향 상호작용이 안 되거든요. Codex의 출력이 Claude의 컨텍스트로 돌아오긴 하지만, Claude가 Codex 결과를 보고 후속 질문을 던지는 흐름은 만들기 어려워요. 단발성 작업에 적합한 방식이에요.&lt;/p&gt;
-&lt;h2&gt;agent-mux — 풀 오케스트레이션이 필요할 때&lt;/h2&gt;
-&lt;p&gt;여기서부터 좀 흥미로워져요. agent-mux는 Claude, Codex, OpenCode 등 여러 AI 엔진을 하나의 CLI로 통합하는 orchestrator예요.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Codex로 정밀 코드 변경
-agent-mux --engine codex --reasoning high --effort high \
-  &quot;Refactor auth module in src/auth/&quot;
-
-# Claude로 아키텍처 설계
-agent-mux --engine claude --effort high \
-  &quot;Design the rollback strategy for the payments migration&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;핵심은 Claude Code의 subagent 시스템과 결합한다는 거예요. Claude가 아키텍처 설계를 하고, 실제 코드 변경은 Codex에 위임하고, 또 다른 Claude가 리뷰하는 pipeline을 구성할 수 있죠.&lt;/p&gt;
-&lt;p&gt;감이 오시나요? 엔진별 강점을 태스크에 맞게 routing하는 거예요. Claude Opus는 설계와 추론에 강하고, Codex는 정밀한 코드 변경에 강하잖아요. agent-mux의 GSD(Get Shit Done) coordinator는 각 태스크에 엔진뿐 아니라 적절한 skill과 MCP 서버까지 자동으로 주입해요.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Codex 안에서 Claude를 coordinator로 실행
-agent-mux --engine codex --coordinator get-shit-done-agent \
-  --effort xhigh --full \
-  &quot;Migrate the auth module to the new API, test everything, audit the result&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;다만 설정 복잡도가 올라가고, agent-mux 자체가 아직 초기 단계라는 점은 감안해야 해요.&lt;/p&gt;
-&lt;h2&gt;어떤 Usecase에 쓸 수 있을까요?&lt;/h2&gt;
-&lt;p&gt;리서치하면서 정리한 실용적인 적용 포인트예요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;세컨드 오피니언&lt;/strong&gt; — Claude가 작성한 코드를 Codex에 리뷰 요청하거나, 그 반대도 가능해요. 두 모델의 관점이 다르니까 놓치는 부분을 잡아낼 수 있죠.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;강점 기반 routing&lt;/strong&gt; — 아키텍처 설계와 문서 작성은 Claude Opus에, 정밀 코드 변경과 디버깅은 Codex에 맡기는 패턴이에요. MCP 서버를 통해 자연스럽게 위임이 이뤄지거든요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;대규모 refactoring&lt;/strong&gt; — Codex의 넓은 컨텍스트 윈도우로 monorepo 전체를 파악한 뒤, Claude로 세부 구현을 진행하는 방식도 가능해요.&lt;/p&gt;
-&lt;h2&gt;제약사항과 주의할 점&lt;/h2&gt;
-&lt;p&gt;당연히 제약도 있어요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;비용 이중 발생&lt;/strong&gt; — Claude API와 OpenAI API를 동시에 사용하니까 비용이 두 배 가까이 들 수 있어요. 모든 작업에 양쪽 모델을 쓸 필요는 없고, 가치가 큰 작업에만 선별적으로 사용하는 게 현실적이에요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;인증 분리&lt;/strong&gt; — Codex는 ChatGPT 구독 또는 OpenAI API 키가 별도로 필요해요. &lt;code&gt;codex login&lt;/code&gt;으로 ChatGPT 계정 인증을 해두면 편하죠.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;컨텍스트 단절&lt;/strong&gt; — MCP를 통한 호출이라 Claude의 전체 컨텍스트가 Codex로 전달되지 않아요. 프롬프트로 명시한 내용만 넘어가거든요. 중요한 맥락은 프롬프트에 충분히 담아야 해요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;실험적 상태&lt;/strong&gt; — &lt;code&gt;codex mcp-server&lt;/code&gt;에는 아직 experimental 태그가 붙어 있어요. API 변경 가능성을 염두에 두는 게 좋죠.&lt;/p&gt;
-&lt;h2&gt;지금 바로 시작하려면&lt;/h2&gt;
-&lt;p&gt;Quick Win부터 잡으면 돼요. 딱 두 줄이에요.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;npm install -g @openai/codex &amp;amp;&amp;amp; codex login
-claude mcp add --transport stdio --scope user codex -- codex mcp-server
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이후 Claude Code에서 &quot;Codex로 이 함수 리뷰해줘&quot; 같은 자연어 요청을 하면, Claude가 자동으로 Codex MCP 도구를 호출해요. 사용 패턴이 잡히면 slash command로 자주 쓰는 워크플로우를 래핑하고, 더 복잡한 오케스트레이션이 필요해지면 agent-mux를 검토하는 순서가 자연스럽겠죠.&lt;/p&gt;
 </content:encoded></item><item><title>2주 간의 KoELECTRA 개발기 - 2부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part2/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part2/</guid><description>KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.</description><pubDate>Sat, 02 May 2020 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
 &lt;p&gt;이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)&lt;/p&gt;
 &lt;p&gt;2부에는 &lt;strong&gt;Pretraining, Finetuning&lt;/strong&gt; 등을 다룰 예정이다.&lt;/p&gt;
