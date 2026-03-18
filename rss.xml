@@ -341,11 +341,17 @@ claude mcp add --transport stdio --scope user codex -- codex mcp-server
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;저는 tool-filter로 &lt;code&gt;perplexity_ask&lt;/code&gt;, &lt;code&gt;perplexity_research&lt;/code&gt;, &lt;code&gt;perplexity_reason&lt;/code&gt; 3개를 차단하고 가장 저렴한 &lt;code&gt;perplexity_search&lt;/code&gt;만 쓰고 있었어요. 그래도 $5/1K 요청이라 부담이에요.&lt;/p&gt;
-&lt;h2&gt;Brave Search MCP — 무료 티어가 사라졌어요&lt;/h2&gt;
-&lt;p&gt;Brave Search는 한때 무료 월 2,000회 → 5,000회로 꽤 넉넉한 무료 티어를 제공했어요. 그런데 2026년 2월에 독립 무료 티어가 완전히 폐지됐거든요. 지금은 $5 크레딧을 선결제해야 하고, 신용카드도 필수예요.&lt;/p&gt;
+&lt;h2&gt;Brave Search MCP — 무료 티어는 사라졌지만, 월 $5 크레딧이 있어요&lt;/h2&gt;
+&lt;p&gt;Brave Search는 한때 무료 월 2,000회 → 5,000회로 꽤 넉넉한 하드캡 방식의 무료 티어를 제공했어요. 그런데 2026년 2월에 독립 무료 티어가 폐지되고 크레딧 기반 과금 체계로 바뀌었어요.&lt;/p&gt;
+&lt;p&gt;현재는 모든 플랜에 &lt;strong&gt;매달 $5 무료 크레딧이 자동 지급&lt;/strong&gt;돼요. Search 플랜 기준 $5/1,000 requests이니까 월 약 &lt;strong&gt;1,000회까지 무료&lt;/strong&gt;로 검색할 수 있어요. 다만 조건이 있어요.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;신용카드 등록 필수&lt;/strong&gt; — 1,000회 초과 시 바로 과금 (하드캡 없음)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Attribution 필수&lt;/strong&gt; — 프로젝트 웹사이트/about 페이지에 Brave Search API를 명시해야 크레딧 적용&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;과거 무료 티어(5,000회, 하드캡, attribution 불필요)와 비교하면 조건이 까다로워진 셈이에요.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;claude mcp add brave-search -- npx -y @brave/brave-search-mcp-server --env BRAVE_API_KEY=YOUR_KEY
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;도구는 6개(웹/로컬/비디오/이미지/뉴스/AI요약)로 Perplexity보다 다양하고, 독립 인덱스 30B+ 페이지를 가진 점은 강점이에요. 하지만 쿼리당 비용이 ~$0.005로 Perplexity와 거의 동일해요. 비용 절감이 목적이라면 굳이 갈아탈 이유가 없죠.&lt;/p&gt;
+&lt;p&gt;도구는 6개(웹/로컬/비디오/이미지/뉴스/AI요약)로 Perplexity보다 다양하고, 독립 인덱스 30B+ 페이지를 가진 점은 강점이에요. 무료 크레딧 범위(~1,000회/월) 안에서 쓴다면 비용이 $0이라는 점에서 Perplexity보다 낫지만, Tavily나 Exa처럼 신용카드 없이 무료로 쓸 수 있는 대안과 비교하면 진입 장벽이 있어요.&lt;/p&gt;
 &lt;h2&gt;Tavily MCP — Perplexity의 직접 대체 후보&lt;/h2&gt;
 &lt;p&gt;여기서부터 흥미로워져요. Tavily는 무료 1,000 크레딧/월을 제공하는데, 신용카드도 필요 없어요.&lt;/p&gt;
 &lt;p&gt;설치가 정말 간단하거든요. Remote MCP를 지원해서 한 줄이면 끝이에요.&lt;/p&gt;
@@ -462,7 +468,7 @@ claude mcp add exa --transport http &quot;https://mcp.exa.ai/mcp?tools=web_searc
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;무료 티어&lt;/strong&gt;&lt;/td&gt;
 &lt;td&gt;없음&lt;/td&gt;
-&lt;td&gt;폐지됨&lt;/td&gt;
+&lt;td&gt;월 $5 크레딧 (~1,000회)&lt;/td&gt;
 &lt;td&gt;월 1,000 크레딧&lt;/td&gt;
 &lt;td&gt;완전 무료&lt;/td&gt;
 &lt;td&gt;월 1,000회&lt;/td&gt;
@@ -470,7 +476,7 @@ claude mcp add exa --transport http &quot;https://mcp.exa.ai/mcp?tools=web_searc
 &lt;tr&gt;
 &lt;td&gt;&lt;strong&gt;쿼리당 비용&lt;/strong&gt;&lt;/td&gt;
 &lt;td&gt;$0.005&lt;/td&gt;
-&lt;td&gt;~$0.005&lt;/td&gt;
+&lt;td&gt;$0 (무료) / $0.005&lt;/td&gt;
 &lt;td&gt;$0 (무료) / $0.0075&lt;/td&gt;
 &lt;td&gt;$0&lt;/td&gt;
 &lt;td&gt;$0 (무료) / $0.007&lt;/td&gt;
@@ -520,8 +526,8 @@ claude mcp add exa --transport http &quot;https://mcp.exa.ai/mcp?tools=web_searc
 &lt;p&gt;결론부터 말하면요 — 상황에 따라 추천이 달라져요.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;비용 절감이 최우선이라면 Tavily나 Exa&lt;/strong&gt;가 좋아요. 둘 다 무료 1,000회/월에 신용카드 없이 가입 가능하고, Remote MCP 한 줄 설치라 전환 비용도 거의 없어요. Perplexity &lt;code&gt;search&lt;/code&gt;의 직접 대체로는 Tavily가 가장 유사하고, 코드 검색이 많은 개발 워크플로우에는 Exa가 더 적합해요.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;무제한 검색이 필요하면 SearXNG&lt;/strong&gt;가 정답이에요. Docker 관리만 감수한다면 비용이 $0이에요. 242개 엔진을 메타서치하니 결과의 폭도 넓고요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Brave Search는 현 시점에서 추천하기 어려워요.&lt;/strong&gt; 무료 티어 폐지 후 Perplexity와 비용이 동일해졌거든요.&lt;/p&gt;
-&lt;p&gt;Tavily + Exa를 병행하면 월 2,000회까지 무료로 커버할 수 있어요. Perplexity에 $10 쓰던 걸 $0으로 줄일 수 있는 셈이에요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Brave Search는 조건부 추천이에요.&lt;/strong&gt; 매달 $5 무료 크레딧(~1,000회)이 자동 지급되지만, 신용카드 등록과 attribution이 필수예요. 이 조건이 괜찮다면 Perplexity보다 나은 선택이지만, 신용카드 없이 쓰고 싶다면 Tavily나 Exa가 더 편해요.&lt;/p&gt;
+&lt;p&gt;Tavily + Exa를 병행하면 월 2,000회까지 무료로 커버할 수 있어요. Brave까지 추가하면 3,000회까지도 가능하고요. Perplexity에 $10 쓰던 걸 $0으로 줄일 수 있는 셈이에요.&lt;/p&gt;
 </content:encoded></item><item><title>2주 간의 KoELECTRA 개발기 - 2부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part2/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part2/</guid><description>KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.</description><pubDate>Sat, 02 May 2020 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
 &lt;p&gt;이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)&lt;/p&gt;
 &lt;p&gt;2부에는 &lt;strong&gt;Pretraining, Finetuning&lt;/strong&gt; 등을 다룰 예정이다.&lt;/p&gt;
