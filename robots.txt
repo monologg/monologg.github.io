@@ -1,3 +1,7 @@
+# Content Signals (https://contentsignals.org/)
+# Personal blog: explicitly opt in to AI training, search, and inference.
+Content-Signal: ai-train=yes, search=yes, ai-input=yes
+
 User-agent: *
 Disallow: /_astro/
 
