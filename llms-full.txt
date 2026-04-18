@@ -1,0 +1,1376 @@
+# Monologg Blog
+> Jangwon Park의 AI 엔지니어링 블로그. KoELECTRA 개발자, KLUE 벤치마크 공저자(NeurIPS 2021). Claude Code, MCP, AI Agent, Kubernetes, LLMOps 등 AI 에이전트 개발과 인프라 운영 경험을 기록합니다.
+
+Author: Jangwon Park (AI Engineer)
+- https://github.com/monologg
+- https://www.linkedin.com/in/jang-won-park/
+- https://scholar.google.co.kr/citations?user=82GO93wAAAAJ/
+- https://huggingface.co/monologg
+
+This file contains the full markdown source of every published post on this blog,
+concatenated for easy consumption by LLMs. For the index-only version see /llms.txt.
+
+---
+
+# Claude Code에서 Notion MCP를 read-only로 제한하는 방법
+
+URL: https://monologg.kr/posts/2026/03/20/2026-03-20-notion-mcp-read-only-setup/
+Published: 2026-03-20
+Category: tech
+Tags: claude-code, notion, mcp, read-only
+
+> Notion MCP가 read+write 권한을 모두 갖고 있어서, Notion Integration의 Capabilities를 조정해 read-only로 전환한 과정을 정리했어요.
+
+Claude Code에서 Notion MCP를 연결하면 페이지 읽기뿐 아니라 생성, 수정, 삭제까지 전부 가능하다는 걸 알고 계셨나요? 저는 `/mcp` 커맨드로 Notion을 연결한 뒤 도구 목록을 보고서야 write 권한이 포함되어 있다는 걸 깨달았어요. 읽기만 하고 싶었는데 말이죠.
+
+## 문제: Notion MCP는 기본적으로 read+write
+
+Claude Code에서 Notion MCP를 연결하는 가장 간편한 방법은 공식 HTTP endpoint를 쓰는 거예요.
+
+```json
+{
+  "notion": {
+    "type": "http",
+    "url": "https://mcp.notion.com/mcp"
+  }
+}
+```
+
+이렇게 연결하면 OAuth 인증을 거쳐 Notion workspace에 접근할 수 있어요. 문제는 이 방식이 페이지 조회뿐 아니라 생성(`API-post-page`), 수정(`API-patch-page`), 삭제(`API-delete-a-block`) 도구까지 전부 노출한다는 거예요. [공식 README](https://github.com/makenotion/notion-mcp-server)에서도 이런 경고를 하고 있어요.
+
+> "While we limit the scope of Notion API's exposed (for example, you will not be able to delete databases via MCP), there is a non-zero risk to workspace data by exposing it to LLMs."
+
+MCP 서버 자체가 database 삭제 같은 일부 위험한 작업은 이미 차단하고 있지만, 페이지 생성이나 수정은 여전히 가능하거든요. 실수로 Claude가 Notion 페이지를 수정하는 상황이 충분히 생길 수 있죠. 공식 문서에서도 보안이 중요한 사용자에게는 Integration의 Capabilities를 제한하라고 권장하고 있어요.
+
+## 세 가지 선택지
+
+read-only로 제한하는 방법을 세 가지 검토해 봤어요.
+
+### 1. Claude Code permissions에서 deny 설정
+
+`settings.json`의 permissions에 write 계열 도구를 하나씩 deny하는 방식이에요.
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "mcp__notion__API-post-page",
+      "mcp__notion__API-patch-page",
+      "mcp__notion__API-update-a-block",
+      "mcp__notion__API-delete-a-block"
+    ]
+  }
+}
+```
+
+간단하긴 한데, Notion MCP 서버가 도구를 추가하면 deny 목록도 계속 업데이트해야 해요. 새로운 write 도구가 생겨도 모르고 지나칠 수 있거든요.
+
+### 2. tool-filter-mcp proxy
+
+Perplexity MCP에서 이미 쓰고 있는 `@respawn-app/tool-filter-mcp`로 write 도구를 필터링하는 방법이에요. 다만 현재 Notion이 HTTP 타입이라 stdio 기반인 tool-filter를 직접 끼울 수 없어요. `mcp-remote`로 HTTP → stdio bridge를 만들고 그 위에 tool-filter를 씌워야 하는데, proxy가 2중으로 걸려서 좀 무거워요.
+
+### 3. Notion Integration을 read-only로 생성
+
+Notion Integration 자체의 Capabilities를 **Read content만** 허용하고, `@notionhq/notion-mcp-server` (stdio 방식)로 전환하는 방법이에요. 서버 레벨에서 write가 원천 차단되니까 가장 확실하죠.
+
+결론부터 말하면요, 3번이 제일 깔끔했어요.
+
+## 설정 방법
+
+### Notion Internal Integration 생성
+
+1. [notion.so/profile/integrations](https://www.notion.so/profile/integrations)에 접속해요.
+2. **New integration**을 클릭하고 이름을 지정해요 (예: `Claude Code Read-only`).
+3. **Configuration** 탭에서 Capabilities를 **Read content만** 체크해요. Insert content, Update content, Delete content는 전부 해제하면 돼요.
+4. **Secrets** 탭에서 `ntn_****` 형식의 API token을 복사해요.
+
+여기서 잠깐, 이게 중요한데요. 현재 쓰고 있는 `mcp.notion.com` (OAuth 방식)에서는 이 Capabilities 설정을 할 수 없어요. 반드시 Internal Integration token 방식으로 전환해야 해요.
+
+### 페이지에 Integration 연결
+
+읽고 싶은 Notion 페이지에서 **⋯ → Connect to → 방금 만든 integration**을 선택해요. 상위 페이지에 연결하면 하위 페이지도 자동으로 접근 권한이 생기거든요.
+
+### Claude Code MCP 설정 변경
+
+`.claude.json`의 프로젝트별 `mcpServers` 설정을 변경해요.
+
+**변경 전 (HTTP, OAuth):**
+
+```json
+{
+  "notion": {
+    "type": "http",
+    "url": "https://mcp.notion.com/mcp"
+  }
+}
+```
+
+**변경 후 (stdio, API token):**
+
+```json
+{
+  "notion": {
+    "command": "npx",
+    "args": ["-yq", "@notionhq/notion-mcp-server"],
+    "env": {
+      "NOTION_TOKEN": "ntn_your_token_here"
+    }
+  }
+}
+```
+
+설정을 바꾼 뒤 Claude Code를 재시작하면 read-only Notion MCP가 적용돼요. `/mcp` 커맨드로 연결 상태를 확인할 수 있어요.
+
+## OAuth vs API token, 뭐가 다를까요?
+
+| 항목 | OAuth (`mcp.notion.com`) | API token (`@notionhq/notion-mcp-server`) |
+|------|--------------------------|-------------------------------------------|
+| 인증 방식 | 브라우저 OAuth flow | Integration token (`ntn_***`) |
+| 권한 제어 | 불가 (full access) | Integration Capabilities에서 세밀하게 제어 |
+| 전송 방식 | HTTP (Streamable HTTP) | stdio (기본) 또는 HTTP |
+| 페이지 접근 | OAuth로 승인한 전체 workspace | Integration에 연결한 페이지만 |
+
+API token 방식이 권한 범위도 좁히고, 접근할 수 있는 페이지도 명시적으로 제한할 수 있어서 보안 관점에서 더 나아요.
+
+## 결과
+
+이제 Claude Code에서 Notion 페이지를 읽을 수는 있지만, 실수로 수정하거나 삭제할 위험은 없어요. Integration Capabilities에서 Read content만 허용했기 때문에 서버 자체에서 write 요청을 거부하거든요. Claude Code의 permission 설정에 의존하지 않아도 되니까 훨씬 안전해요.
+
+---
+
+# Antigravity 터미널에서 Claude Code Shift+Enter 개행 설정하기
+
+URL: https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/
+Published: 2026-03-17
+Category: tech
+Tags: claude-code, antigravity, keybindings, ide
+
+> Claude Code를 IDE 내장 터미널에서 쓰다 보면, 여러 줄 입력이 필요할 때가 많아요.
+
+Claude Code를 IDE 내장 터미널에서 쓰다 보면, 여러 줄 입력이 필요할 때가 많아요. 그런데 Shift+Enter를 눌러도 개행이 안 되고 그냥 전송되어 버리는 경험, 한 번쯤 있지 않나요?
+
+저도 Antigravity에서 SSH로 우분투 서버에 접속한 뒤 Claude Code를 사용하는데, Shift+Enter가 먹히지 않아서 한참 삽질했어요. 해결 과정을 정리해 봤어요.
+
+## `/terminal-setup`은 왜 안 될까요?
+
+Claude Code에는 `/terminal-setup`이라는 편리한 명령이 있어요. VS Code 계열 터미널에서 Shift+Enter 단축키를 자동으로 잡아주는 기능이죠.
+
+그런데 Antigravity에서 실행하면 이런 메시지가 뜨거든요.
+
+```
+Terminal setup cannot be run from antigravity.
+```
+
+현재 `/terminal-setup` 자동 설정 대상은 VS Code, Cursor, Windsurf, Zed, Alacritty 정도예요. Antigravity는 VS Code 포크 IDE지만 아직 자동 설정을 지원하지 않아요. 수동 설정이 필요한 거죠.
+
+## 핵심은 로컬 IDE 키바인딩
+
+여기서 잠깐, 중요한 포인트가 있어요. SSH로 원격 서버에 접속해서 Claude Code를 쓰더라도, Shift+Enter 처리는 **서버가 아니라 로컬 IDE**에서 먼저 잡혀요.
+
+VS Code 계열 IDE는 키 입력을 IDE가 먼저 처리한 뒤, `workbench.action.terminal.sendSequence` 같은 방식으로 터미널에 시퀀스를 전달하는 구조거든요. 그래서 서버 쪽 `.bashrc`나 `stty` 설정을 아무리 바꿔도 소용없어요.
+
+바로 이거예요. 로컬 Antigravity의 키바인딩을 건드려야 해요.
+
+## Antigravity keybindings.json 수동 설정
+
+설정 방법은 간단해요.
+
+1. Antigravity에서 `Cmd+Shift+P` (macOS) 또는 `Ctrl+Shift+P` (Linux/Windows) 실행
+2. `Open Keyboard Shortcuts (JSON)` 검색 후 선택
+3. 열린 `keybindings.json` 파일에 아래 항목 추가
+
+```json
+{
+  "key": "shift+enter",
+  "command": "workbench.action.terminal.sendSequence",
+  "args": { "text": "\u001b\r" },
+  "when": "terminalFocus"
+}
+```
+
+이미 `keybindings.json`에 다른 설정이 있다면, 배열 안에 쉼표를 찍고 이 객체만 추가하면 돼요.
+
+```json
+[
+  {
+    "key": "ctrl+l",
+    "command": "workbench.action.terminal.clear"
+  },
+  {
+    "key": "shift+enter",
+    "command": "workbench.action.terminal.sendSequence",
+    "args": { "text": "\u001b\r" },
+    "when": "terminalFocus"
+  }
+]
+```
+
+추가한 뒤에는 Antigravity 창을 완전히 닫고 다시 열어야 적용돼요. `Reload Window`로도 되는 경우가 있지만, 완전 재시작이 확실하더라고요.
+
+## 혹시 `shift+enter`가 이미 다른 기능에 묶여 있다면?
+
+기존에 `shift+enter`를 다른 command에 바인딩해 뒀다면, 새 바인딩이 제대로 안 먹을 수 있어요. 이 경우 기존 항목을 지우거나, `"when"` 조건을 좁혀서 충돌을 피해야 해요. 위 설정의 `"when": "terminalFocus"` 조건 덕분에 터미널에 포커스가 있을 때만 동작하니, 대부분의 경우 충돌이 생기지 않을 거예요.
+
+## 급할 때는 임시 대안도 있어요
+
+설정을 바꾸기 전까지 당장 여러 줄 입력이 필요하면, Claude Code가 기본 제공하는 대안을 쓸 수 있어요.
+
+- `\` + Enter: 백슬래시 치고 Enter를 누르면 개행으로 처리돼요
+- `Ctrl+J`: 멀티라인 입력 전환 단축키로, 일부 터미널에서 바로 동작해요
+
+둘 다 Claude Code 공식 문서에 나와 있는 방법이에요.
+
+Antigravity가 `/terminal-setup` 대상에 포함되면 이 수동 작업이 필요 없어지겠지만, 그 전까지는 `keybindings.json` 한 줄이면 충분히 해결돼요.
+
+---
+
+# MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교
+
+URL: https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/
+Published: 2026-03-16
+Category: tech
+Tags: MCP, Claude Code, tool-filter-mcp, context-engineering
+
+> Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했어요.
+
+MCP 서버를 여러 개 연결하다 보면 도구 수가 순식간에 폭발해요. Atlassian MCP 하나만 연결해도 72개 도구가 딸려오거든요. 여기에 Perplexity, Slack, Plane 같은 MCP를 추가하면 금세 100개를 넘겨버리죠. Antigravity처럼 100개 tool 제한이 걸린 환경에서는 Atlassian 하나 켜면 다른 MCP를 붙일 수조차 없어요.
+
+이 문제를 해결하는 방법은 크게 세 가지예요. 하나씩 살펴볼게요.
+
+## Claude Code 빌트인: MCP Tool Search
+
+Claude Code에는 이미 **MCP Tool Search**라는 기능이 내장되어 있어요. MCP 도구 설명이 context window의 일정 비율을 넘으면 자동으로 활성화되는데, 모든 도구를 미리 로드하지 않고 필요할 때만 검색해서 불러오는 방식이에요.
+
+```bash
+# 기본값: context window의 10% 초과 시 자동 활성화
+ENABLE_TOOL_SEARCH=auto claude
+
+# 더 공격적으로: 5% 초과 시 활성화
+ENABLE_TOOL_SEARCH=auto:5 claude
+
+# 항상 켜기
+ENABLE_TOOL_SEARCH=true claude
+```
+
+context token 절약 측면에서는 효과적이에요. 하지만 여기서 중요한 점이 있어요. Tool Search는 context에 로드되는 도구 설명을 줄여줄 뿐, **도구 수 자체를 줄이지는 않아요.** Antigravity의 100개 제한 같은 하드 리밋에는 소용이 없다는 뜻이죠.
+
+## Claude Code 빌트인: settings.json deny
+
+특정 도구 몇 개만 차단하고 싶다면 `settings.json`의 deny 권한이 가장 간단해요.
+
+```json
+{
+  "permissions": {
+    "deny": [
+      "mcp__perplexity__perplexity_ask",
+      "mcp__atlassian__unused_tool_name"
+    ]
+  }
+}
+```
+
+예를 들어 Perplexity MCP에서 `perplexity_ask`는 크레딧이 많이 나가니까 차단하고 `perplexity_search`만 허용하고 싶다면, 위처럼 한 줄 추가하면 끝이에요. 도구가 2-3개뿐인 MCP에서 하나만 빼는 용도로는 이게 최선이에요.
+
+## tool-filter-mcp: 대량 필터링이 필요할 때
+
+Atlassian처럼 72개 도구 중 대부분을 걸러내야 하는 경우, [respawn-app/tool-filter-mcp](https://github.com/respawn-app/tool-filter-mcp)가 효과적이에요. upstream MCP 서버 앞에 proxy를 두고 regex 기반 deny list로 도구를 필터링하는 방식이거든요.
+
+### 사용 가능한 도구 먼저 확인하기
+
+```bash
+npx @respawn-app/tool-filter-mcp \
+  --upstream http://localhost:3000/sse \
+  --list-tools --format names
+```
+
+`--format table`로 하면 설명까지 볼 수 있고, `--format names`는 콤마 구분 목록으로 뽑아줘서 deny 패턴을 만들기 편해요.
+
+### HTTP/SSE upstream 설정
+
+`.mcp.json`에 이렇게 추가하면 돼요.
+
+```json
+{
+  "mcpServers": {
+    "atlassian-filtered": {
+      "command": "npx",
+      "args": [
+        "@respawn-app/tool-filter-mcp",
+        "--upstream", "http://localhost:3000/sse",
+        "--deny", "pattern1,pattern2,.*_file$"
+      ],
+      "type": "stdio"
+    }
+  }
+}
+```
+
+### stdio upstream 설정
+
+upstream MCP가 npx 기반 stdio 서버라면 `--upstream-stdio`를 쓰면 돼요.
+
+```json
+{
+  "mcpServers": {
+    "atlassian-filtered": {
+      "command": "npx",
+      "args": [
+        "@respawn-app/tool-filter-mcp",
+        "--upstream-stdio",
+        "--deny", "unused_tool_pattern",
+        "--",
+        "npx", "@anthropic/atlassian-mcp"
+      ],
+      "type": "stdio"
+    }
+  }
+}
+```
+
+`--` 뒤에 원래 MCP 서버의 실행 명령어를 그대로 넣으면 돼요.
+
+## 어떤 방법을 언제 쓸까요?
+
+감이 오시나요? 정리하면 이래요.
+
+| 상황 | 추천 방법 |
+|---|---|
+| 특정 도구 몇 개만 차단 | `settings.json` deny |
+| context token 절약 | MCP Tool Search |
+| 도구 수 자체를 대량으로 줄여야 함 | tool-filter-mcp |
+| 100개 같은 하드 리밋 회피 | tool-filter-mcp |
+
+여기서 잠깐, 한 가지 더 중요한 포인트가 있어요.
+
+## Claude Code가 아닌 다른 클라이언트에서는?
+
+`settings.json` deny와 MCP Tool Search는 **Claude Code 전용** 기능이에요. OpenAI Codex, Cursor, Windsurf, Claude Desktop 같은 다른 MCP 클라이언트에는 이런 빌트인 필터링이 없거든요.
+
+| 클라이언트 | 빌트인 도구 필터링 | tool-filter-mcp 필요 여부 |
+|---|---|---|
+| Claude Code | settings.json deny, Tool Search | 대량 필터링 아니면 불필요 |
+| OpenAI Codex | 없음 | 필요 |
+| Cursor | 없음 | 필요 |
+| Windsurf | 없음 | 필요 |
+| Claude Desktop | 없음 | 필요 |
+
+MCP 프로토콜 자체가 "서버가 제공하는 도구를 클라이언트가 전부 받는" 구조예요. 클라이언트 쪽에서 필터링을 지원하지 않으면, 서버 앞에 proxy를 두는 것이 유일한 방법이에요.
+
+여러 MCP 클라이언트를 동시에 사용한다면 오히려 **tool-filter-mcp로 통일하는 게 관리가 편해요.** 클라이언트마다 각각의 설정 방식을 외울 필요 없이, MCP 서버 설정 한 곳에서 필터링을 관리할 수 있으니까요.
+
+```
+[Atlassian MCP] → [tool-filter-mcp] → Claude Code
+                                     → Codex
+                                     → Cursor
+```
+
+필터링된 MCP 서버를 각 클라이언트에 동일하게 연결하면 돼요. 설정 한 번으로 모든 클라이언트에서 동일한 도구 세트를 사용할 수 있죠.
+
+MCP 생태계가 커질수록 도구 수 관리는 점점 중요해질 거예요. 지금은 Claude Code의 빌트인 기능과 tool-filter-mcp를 상황에 맞게 조합하는 것이 가장 현실적인 접근이에요.
+
+---
+
+# Perplexity MCP 대신 쓸 수 있는 웹 검색 MCP 5종 비교
+
+URL: https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/
+Published: 2026-03-15
+Category: tech
+Tags: mcp, claude-code, web-search, tavily, exa
+
+> Perplexity MCP의 비용 부담을 줄이기 위해 Brave Search, Tavily, SearXNG, Exa, ChatGPT MCP 5종을 비교하고 무료 티어 기준 최적 조합을 정리했습니다.
+
+Claude Code에서 웹 검색용으로 Perplexity MCP를 쓰고 있었는데요, 크레딧이 눈에 띄게 줄어들더라고요. 쿼리당 \$0.005라 한 번에 큰 돈은 아니지만, 하루에도 수십 번씩 검색하다 보면 월말에 청구서가 꽤 나와요. 무료 API 티어도 없고, Pro 플랜 \$20/월에 포함되는 \$5 크레딧으로는 1,000번 남짓 검색하면 끝이거든요.
+
+그래서 비용 효율적인 대안을 찾아봤어요. Brave Search, Tavily, SearXNG, Exa, 그리고 ChatGPT/OpenAI MCP까지 총 5종을 검토한 결과를 공유해요.
+
+## 현재 상태: Perplexity MCP는 얼마나 비싼가요?
+
+먼저 기준선을 정리해 볼게요. Perplexity MCP 서버(`@perplexity-ai/mcp-server`)는 4개 도구를 제공해요.
+
+| Tool | 모델 | 용도 | 비용 |
+|------|------|------|------|
+| `perplexity_search` | Search API | 순위별 웹 결과 (title, URL, snippet) | \$0.005/쿼리 |
+| `perplexity_ask` | sonar-pro | 대화형 AI + 웹 검색 | ~\$0.01-0.05/쿼리 |
+| `perplexity_research` | sonar-deep-research | 심층 멀티소스 조사 | ~\$0.05-0.41/쿼리 |
+| `perplexity_reason` | sonar-reasoning-pro | 복잡한 분석, 단계별 추론 | ~\$0.02-0.10/쿼리 |
+
+저는 tool-filter로 `perplexity_ask`, `perplexity_research`, `perplexity_reason` 3개를 차단하고 가장 저렴한 `perplexity_search`만 쓰고 있었어요. 그래도 \$5/1K 요청이라 부담이에요.
+
+## Brave Search MCP — 무료 티어는 사라졌지만, 월 \$5 크레딧이 있어요
+
+Brave Search는 한때 무료 월 2,000회 → 5,000회로 꽤 넉넉한 하드캡 방식의 무료 티어를 제공했어요. 그런데 2026년 2월에 독립 무료 티어가 폐지되고 크레딧 기반 과금 체계로 바뀌었어요.
+
+현재는 모든 플랜에 **매달 \$5 무료 크레딧이 자동 지급**돼요. Search 플랜 기준 \$5/1,000 requests이니까 월 약 **1,000회까지 무료**로 검색할 수 있어요. 다만 조건이 있어요.
+
+- **신용카드 등록 필수** — 1,000회 초과 시 바로 과금 (하드캡 없음)
+- **Attribution 필수** — 프로젝트 웹사이트/about 페이지에 Brave Search API를 명시해야 크레딧 적용
+
+과거 무료 티어(5,000회, 하드캡, attribution 불필요)와 비교하면 조건이 까다로워진 셈이에요.
+
+```bash
+claude mcp add brave-search -- npx -y @brave/brave-search-mcp-server --env BRAVE_API_KEY=YOUR_KEY
+```
+
+도구는 6개(웹/로컬/비디오/이미지/뉴스/AI요약)로 Perplexity보다 다양하고, 독립 인덱스 30B+ 페이지를 가진 점은 강점이에요. 무료 크레딧 범위(~1,000회/월) 안에서 쓴다면 비용이 \$0이라는 점에서 Perplexity보다 낫지만, Tavily나 Exa처럼 신용카드 없이 무료로 쓸 수 있는 대안과 비교하면 진입 장벽이 있어요.
+
+## Tavily MCP — Perplexity의 직접 대체 후보
+
+여기서부터 흥미로워져요. Tavily는 무료 1,000 크레딧/월을 제공하는데, 신용카드도 필요 없어요.
+
+설치가 정말 간단하거든요. Remote MCP를 지원해서 한 줄이면 끝이에요.
+
+```bash
+claude mcp add tavily --transport http https://mcp.tavily.com/mcp/
+```
+
+API 키 발급도 필요 없고 OAuth 인증으로 브라우저에서 승인만 하면 돼요. 로컬 npm으로 설치하려면 API 키가 필요하지만, Remote MCP 방식이면 그마저도 생략 가능해요.
+
+제공하는 도구 4개도 알차요.
+
+| Tool | 설명 |
+|------|------|
+| `tavily-search` | 웹 검색 (basic/advanced depth, 토픽 필터, AI 답변 포함 옵션) |
+| `tavily-extract` | URL에서 클린 콘텐츠 추출 |
+| `tavily-map` | 웹사이트 구조 맵 생성 |
+| `tavily-crawl` | 내부 링크 따라가며 체계적 크롤링 |
+
+검색 외에 extract/crawl 기능이 있다는 게 Perplexity와의 차별점이에요. 무료 티어에서 basic search는 1 크레딧, advanced search는 2 크레딧을 소비하니까 월 500~1,000회 검색이 가능해요. 유료로 넘어가면 \$0.0075/쿼리로 Perplexity보다 50% 비싸지만, 무료 범위 안에서 쓴다면 \$0이에요.
+
+## SearXNG MCP — 비용은 0원, 단 Docker가 필요해요
+
+비용만 따지면 SearXNG가 압도적이에요. 완전 무료에 무제한이거든요.
+
+SearXNG는 오픈소스 메타서치 엔진이에요. 최대 242개 검색 엔진(Google, Bing, DuckDuckGo, Brave, Wikipedia, GitHub, arXiv 등)에 동시 쿼리해서 결과를 합치고 중복을 제거하죠. 단일 검색 엔진보다 40-60% 더 포괄적인 결과를 돌려줘요.
+
+대신 셀프호스팅이 필요해요. Docker로 10-15분이면 설치할 수 있어요.
+
+```bash
+# SearXNG 설정
+mkdir -p searxng
+cat > searxng/settings.yml << 'EOF'
+use_default_settings: true
+server:
+  bind_address: "0.0.0.0"
+  secret_key: "CHANGE_THIS_TO_SOMETHING_SECURE"
+search:
+  formats:
+    - html
+    - json
+server.limiter: false
+EOF
+
+# Docker 실행
+docker run -d \
+  --name searxng \
+  -p 8080:8080 \
+  -v "$(pwd)/searxng:/etc/searxng" \
+  --restart always \
+  searxng/searxng
+
+# MCP 연결
+claude mcp add searxng -e SEARXNG_URL=http://localhost:8080 -- npx -y mcp-searxng
+```
+
+이 부분이 중요한데요 — `settings.yml`에서 JSON 포맷 활성화(`formats: - json`)와 limiter 비활성화(`server.limiter: false`)를 반드시 설정해야 MCP 서버가 정상 동작해요.
+
+도구는 `searxng_web_search`와 `web_url_read` 2개뿐이지만, 메타서치의 폭넓은 결과가 그 단순함을 보상해요. 다만 업스트림 검색 엔진이 셀프호스팅 인스턴스 IP를 rate limit할 수 있다는 리스크가 있어요. Docker 컨테이너 관리가 익숙하지 않다면 유지 부담도 고려해야 하죠.
+
+## Exa MCP — 개발자에게 가장 매력적인 선택지
+
+Exa는 조금 다른 접근을 해요. 기존 검색 엔진이 키워드 매칭 기반인 반면, Exa는 임베딩 기반 시맨틱/뉴럴 검색을 제공하거든요.
+
+"papers about using transformer attention for time series forecasting" 같은 쿼리를 던지면 SEO 최적화된 블로그 대신 실제 관련 연구 논문이 나와요. 개발자 입장에서 꽤 매력적이죠.
+
+```bash
+claude mcp add exa --transport http https://mcp.exa.ai/mcp
+```
+
+Tavily처럼 Remote MCP 지원이라 한 줄 설치예요. API 키도 필요 없고 신용카드도 불필요해요. 무료 1,000회/월이고요.
+
+기본 활성 도구 3개가 이래요.
+
+| Tool | 설명 |
+|------|------|
+| `web_search_exa` | 실시간 시맨틱 웹 검색 |
+| `get_code_context_exa` | GitHub, StackOverflow, docs에서 코드 예제 검색 |
+| `company_research_exa` | 비즈니스 정보, 뉴스 검색 |
+
+여기서 잠깐 — `get_code_context_exa`가 특히 눈에 들어와요. 수십억 GitHub repo, docs, StackOverflow에서 토큰 효율적인 코드 컨텍스트를 검색해 주거든요. Claude Code에서 개발 워크플로우를 돌릴 때 정말 유용할 것 같아요.
+
+선택적 도구도 5개 더 있어요. URL 파라미터로 활성화할 수 있죠.
+
+```bash
+# 특정 도구만 활성화
+claude mcp add exa --transport http "https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa,people_search_exa"
+```
+
+## 그래서 뭐가 가장 나을까요?
+
+종합 비교표를 정리해 봤어요.
+
+| 항목 | Perplexity (현재) | Brave Search | Tavily | SearXNG | Exa |
+|------|-------------------|--------------|--------|---------|-----|
+| **무료 티어** | 없음 | 월 \$5 크레딧 (~1,000회) | 월 1,000 크레딧 | 완전 무료 | 월 1,000회 |
+| **쿼리당 비용** | \$0.005 | \$0 (무료) / \$0.005 | \$0 (무료) / \$0.0075 | \$0 | \$0 (무료) / \$0.007 |
+| **검색 방식** | 자체 API | 독립 인덱스 키워드 | 다중 소스 + AI 후처리 | 메타서치 242개 엔진 | 시맨틱/뉴럴 |
+| **AI 요약** | ask/research/reason | brave_summarizer | includeAnswer | 없음 | deep_search |
+| **도구 수** | 4개 (1개만 활성) | 6개 | 4개 | 2개 | 3+5개 |
+| **설치 난이도** | 보통 | 쉬움 | 매우 쉬움 | 보통 (Docker) | 매우 쉬움 |
+| **CC 필요** | Yes | Yes | **No** | No | **No** |
+
+결론부터 말하면요 — 상황에 따라 추천이 달라져요.
+
+**비용 절감이 최우선이라면 Tavily나 Exa**가 좋아요. 둘 다 무료 1,000회/월에 신용카드 없이 가입 가능하고, Remote MCP 한 줄 설치라 전환 비용도 거의 없어요. Perplexity `search`의 직접 대체로는 Tavily가 가장 유사하고, 코드 검색이 많은 개발 워크플로우에는 Exa가 더 적합해요.
+
+**무제한 검색이 필요하면 SearXNG**가 정답이에요. Docker 관리만 감수한다면 비용이 \$0이에요. 242개 엔진을 메타서치하니 결과의 폭도 넓고요.
+
+**Brave Search는 조건부 추천이에요.** 매달 \$5 무료 크레딧(~1,000회)이 자동 지급되지만, 신용카드 등록과 attribution이 필수예요. 이 조건이 괜찮다면 Perplexity보다 나은 선택이지만, 신용카드 없이 쓰고 싶다면 Tavily나 Exa가 더 편해요.
+
+Tavily + Exa를 병행하면 월 2,000회까지 무료로 커버할 수 있어요. Brave까지 추가하면 3,000회까지도 가능하고요. Perplexity에 \$10 쓰던 걸 \$0으로 줄일 수 있는 셈이에요.
+
+---
+
+# Claude Code에서 OpenAI Codex를 호출하는 4가지 방법
+
+URL: https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/
+Published: 2026-03-15
+Category: tech
+Tags: claude-code, codex, mcp, multi-agent, ai-tooling
+
+> Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 워크플로우를 소개합니다.
+
+Claude Code를 쓰다 보면 가끔 다른 모델의 의견이 궁금할 때가 있어요. "이 구현, Codex한테 한 번 더 검증받아 볼까?" 같은 생각이 드는 순간이죠. 실제로 Claude Code 안에서 OpenAI Codex를 호출할 수 있는 방법이 여러 가지 존재하더라고요. 직접 리서치하고 정리한 4가지 방법을 공유해요.
+
+## 방법 한눈에 보기
+
+| 방법 | 난이도 | 핵심 |
+| --- | --- | --- |
+| Codex 내장 MCP 서버 | 쉬움 | `codex mcp-server` stdio 연결 |
+| 커뮤니티 MCP 래퍼 | 쉬움 | npx 원클릭 설치 |
+| Custom Slash Command | 쉬움 | 단방향 CLI 호출 |
+| agent-mux | 중간 | 멀티엔진 orchestrator |
+
+결론부터 말하면요, 가장 간단하고 강력한 건 첫 번째 방법이에요.
+
+## Codex 내장 MCP 서버 — 가장 추천하는 방법
+
+Codex CLI에는 `codex mcp-server`라는 내장 MCP 서버가 포함되어 있어요. stdio 방식으로 Claude Code에 직접 연결할 수 있거든요. 별도 서버를 띄울 필요가 없어요.
+
+```bash
+# Codex CLI 설치 및 인증
+npm install -g @openai/codex
+codex login
+
+# Claude Code에 MCP 서버 등록
+claude mcp add --transport stdio --scope user codex -- codex mcp-server
+```
+
+이렇게 하면 Claude Code 안에서 두 개의 MCP 도구가 생겨요.
+
+- `codex` — 새 Codex 세션을 시작해요. prompt, approval-policy, sandbox, model 파라미터를 지정할 수 있죠.
+- `codex-reply` — `threadId`로 기존 세션을 이어가요. 대화형 컨텍스트가 유지되니까 후속 질문도 가능해요.
+
+등록이 잘 됐는지 확인하려면 `claude mcp list`를 실행하면 돼요. `codex: codex mcp-server - Connected`가 보이면 성공이에요.
+
+여기서 잠깐, approval-policy 파라미터가 꽤 중요한데요. `untrusted`, `on-request`, `on-failure`, `never` 중에서 선택할 수 있어요. 자동화 파이프라인에서는 `never`로 설정하면 Codex가 별도 승인 없이 작업을 수행하죠.
+
+## 커뮤니티 MCP 래퍼 — 세션 관리가 필요할 때
+
+공식 내장 서버가 부족하다고 느낀다면 커뮤니티에서 만든 MCP 래퍼도 있어요.
+
+```bash
+claude mcp add codex-cli -- npx -y codex-mcp-server
+```
+
+이 래퍼는 세션 관리, 모델 선택, resume 기능 같은 추가 기능을 제공해요. npm 패키지라서 설치도 간단하고요. agency-ai-solutions/openai-codex-mcp 같은 프로젝트는 `write_code`, `explain_code`, `review_code` 같은 특화 메서드도 제공하더라고요.
+
+다만 서드파티인 만큼 업데이트 주기나 모델 지원 범위를 확인하는 게 좋아요.
+
+## Custom Slash Command — 단순하게 쓰고 싶을 때
+
+MCP 서버까지는 필요 없고 특정 작업만 Codex에 맡기고 싶다면 slash command가 적합해요.
+
+```markdown
+<!-- ~/.claude/commands/codex-write.md -->
+---
+description: "Generate code using OpenAI Codex CLI"
+---
+codex write --language $2 --task "$3" --model o4-mini
+```
+
+```markdown
+<!-- ~/.claude/commands/codex-explain.md -->
+---
+description: "Get code explanations from Codex CLI"
+---
+codex explain @$1 --focus "$2" --detail comprehensive
+```
+
+Claude Code에서 `/codex-write python "피보나치 수열 생성 함수"` 처럼 호출하면 돼요. 간단하죠.
+
+단점도 명확해요. Claude와의 양방향 상호작용이 안 되거든요. Codex의 출력이 Claude의 컨텍스트로 돌아오긴 하지만, Claude가 Codex 결과를 보고 후속 질문을 던지는 흐름은 만들기 어려워요. 단발성 작업에 적합한 방식이에요.
+
+## agent-mux — 풀 오케스트레이션이 필요할 때
+
+여기서부터 좀 흥미로워져요. agent-mux는 Claude, Codex, OpenCode 등 여러 AI 엔진을 하나의 CLI로 통합하는 orchestrator예요.
+
+```bash
+# Codex로 정밀 코드 변경
+agent-mux --engine codex --reasoning high --effort high \
+  "Refactor auth module in src/auth/"
+
+# Claude로 아키텍처 설계
+agent-mux --engine claude --effort high \
+  "Design the rollback strategy for the payments migration"
+```
+
+핵심은 Claude Code의 subagent 시스템과 결합한다는 거예요. Claude가 아키텍처 설계를 하고, 실제 코드 변경은 Codex에 위임하고, 또 다른 Claude가 리뷰하는 pipeline을 구성할 수 있죠.
+
+감이 오시나요? 엔진별 강점을 태스크에 맞게 routing하는 거예요. Claude Opus는 설계와 추론에 강하고, Codex는 정밀한 코드 변경에 강하잖아요. agent-mux의 GSD(Get Shit Done) coordinator는 각 태스크에 엔진뿐 아니라 적절한 skill과 MCP 서버까지 자동으로 주입해요.
+
+```bash
+# Codex 안에서 Claude를 coordinator로 실행
+agent-mux --engine codex --coordinator get-shit-done-agent \
+  --effort xhigh --full \
+  "Migrate the auth module to the new API, test everything, audit the result"
+```
+
+다만 설정 복잡도가 올라가고, agent-mux 자체가 아직 초기 단계라는 점은 감안해야 해요.
+
+## 어떤 Usecase에 쓸 수 있을까요?
+
+리서치하면서 정리한 실용적인 적용 포인트예요.
+
+**세컨드 오피니언** — Claude가 작성한 코드를 Codex에 리뷰 요청하거나, 그 반대도 가능해요. 두 모델의 관점이 다르니까 놓치는 부분을 잡아낼 수 있죠.
+
+**강점 기반 routing** — 아키텍처 설계와 문서 작성은 Claude Opus에, 정밀 코드 변경과 디버깅은 Codex에 맡기는 패턴이에요. MCP 서버를 통해 자연스럽게 위임이 이뤄지거든요.
+
+**대규모 refactoring** — Codex의 넓은 컨텍스트 윈도우로 monorepo 전체를 파악한 뒤, Claude로 세부 구현을 진행하는 방식도 가능해요.
+
+## 제약사항과 주의할 점
+
+당연히 제약도 있어요.
+
+**비용 이중 발생** — Claude API와 OpenAI API를 동시에 사용하니까 비용이 두 배 가까이 들 수 있어요. 모든 작업에 양쪽 모델을 쓸 필요는 없고, 가치가 큰 작업에만 선별적으로 사용하는 게 현실적이에요.
+
+**인증 분리** — Codex는 ChatGPT 구독 또는 OpenAI API 키가 별도로 필요해요. `codex login`으로 ChatGPT 계정 인증을 해두면 편하죠.
+
+**컨텍스트 단절** — MCP를 통한 호출이라 Claude의 전체 컨텍스트가 Codex로 전달되지 않아요. 프롬프트로 명시한 내용만 넘어가거든요. 중요한 맥락은 프롬프트에 충분히 담아야 해요.
+
+**실험적 상태** — `codex mcp-server`에는 아직 experimental 태그가 붙어 있어요. API 변경 가능성을 염두에 두는 게 좋죠.
+
+## 지금 바로 시작하려면
+
+Quick Win부터 잡으면 돼요. 딱 두 줄이에요.
+
+```bash
+npm install -g @openai/codex && codex login
+claude mcp add --transport stdio --scope user codex -- codex mcp-server
+```
+
+이후 Claude Code에서 "Codex로 이 함수 리뷰해줘" 같은 자연어 요청을 하면, Claude가 자동으로 Codex MCP 도구를 호출해요. 사용 패턴이 잡히면 slash command로 자주 쓰는 워크플로우를 래핑하고, 더 복잡한 오케스트레이션이 필요해지면 agent-mux를 검토하는 순서가 자연스럽겠죠.
+
+---
+
+# 2주 간의 KoELECTRA 개발기 - 2부
+
+URL: https://monologg.kr/posts/2020/05/02/koelectra-part2/
+Published: 2020-05-02
+Category: NLP
+Tags: nlp, electra, pretraining, finetuning
+
+> KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.
+
+**2주 간의 KoELECTRA 개발**을 마치고, 그 과정을 글로 남기려고 한다.
+
+이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)
+
+2부에는 **Pretraining, Finetuning** 등을 다룰 예정이다.
+
+> **Github Repo:** [https://github.com/monologg/KoELECTRA](https://github.com/monologg/KoELECTRA)
+
+## Training
+
+😀 드디어 모든 삽질들을 끝내고, Pretraining을 시작하였다 😀
+
+### Loss
+
+![base loss](./base_loss.png)
+![small loss](./small_loss.png)
+
+약 300k step 까지의 `base`와 `small`의 loss 추이이다. 첫 100k까지는 매우 빠르게 줄어들다가, 그 이후에는 조금씩 줄어드는 모습을 보인다.
+
+### Benchmark
+
+학습 중간중간 성능 체크는 `nsmc` 데이터셋을 가지고 간단하게 평가하였다 (사실 GPU가 1개 밖에 없어 `nsmc`만 테스트한 건 비밀😢)
+
+| Acc(%) | 25K   | 75K   | 90K   | 125K  | 150K  | 250K  | 300K  | 450K  |
+| ------ | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
+| `Base` | 88.10 | 88.48 | 88.67 | 88.92 | 88.97 | 89.51 | 89.65 | 90.16 |
+
+Step이 증가할수록 accuracy가 오르는 것이 눈에 띄게 보이니 신기하긴 했다. (이것이 Pretraining의 힘인가....)
+
+### Training Time
+
+데이터의 경우 **14GB**로 총 `2.6B Token`이다. BERT와 ELECTRA에서는 `3.3B Token`을 사용한 것에 비하면 데이터의 양이 조금 모자란 게 아쉽긴 하지만, 이것이 개인 단위에서 모을 수 있었던 최선의 데이터양이었다😵
+
+**TPU v3-8** 기준으로 `Base` 모델은 **약 7일**, `Small` 모델은 **약 3일**이 소요되었다. 그래서 이 기간 동안 **Finetuning** 코드를 짜는 것으로 시간을 절약하였다.
+
+## Finetuning 코드 제작
+
+코드의 경우는 [Transformers의 Example 코드](https://github.com/huggingface/transformers/tree/master/examples)를 참고하여 제작하였다.
+
+**Finetuning의 경우 총 7개의 task에 대해 진행하였다.** (때마침 얼마 전 카카오브레인에서 `KorNLI`와 `KorSTS` 데이터셋을 공개해주었다👍 1년 전과 비교했을 때 벤치마크를 평가할 수 있는 한국어 데이터셋이 많아진 것은 정말 좋은 일이라 할 수 있다.)
+
+|            |   NSMC   |   PAWS   | QuestionPair | KorNLI |  KorSTS  |  NaverNER  | KorQuad  |
+| ---------- | :------: | :------: | :----------: | :----: | :------: | :--------: | :------: |
+| **Task**   | 감정분석 | 유사문장 |   유사문장   |  추론  | 유사문장 | 개체명인식 | 기계독해 |
+| **Metric** |   Acc    |   Acc    |     Acc      |  Acc   | Spearman |     F1     |  EM/F1   |
+
+기존의 연구들에서는 `Bert-Multilingual-Cased`를 가지고 많이 비교하였는데, 이번 연구에서는 `XLM-Roberta-Base` 모델로 평가를 시도하였다. 확실히 xlm-roberta가 bert보다는 성능이 좋았기에, 적어도 `KoELECTRA`가 xlm-roberta는 뛰어넘어야 유의미하지 않을까라고 생각해서 였다.
+
+[Deview에서 발표한 Larva](https://deview.kr/2019/schedule/291)의 경우 Benchmark pipeline을 만들어서 ckpt가 들어올 때마다 계속 evaluation을 해주었다고 하는데, 앞에서도 말했듯이 나에게는 GPU가 1개 밖에 없고, GCP에서 GPU를 많이 빌릴 수도 없기에 **가장 최근 5개의 ckpt를 가지고 평가**하였고, 그 중에서 평균값이 가장 좋았던 것을 최종 모델로 선정하였다.
+
+**Finetuning용 코드 및 사용법**은 [여기](https://github.com/monologg/KoELECTRA/tree/master/finetune)에서 직접 확인해볼 수 있다.
+
+## Convert from Tensorflow to Pytorch
+
+Huggingface에서 `ElectraModel`을 구현하면서 tensorflow를 pytorch로 변환하는 코드도 함께 만들어줬다😍
+
+관련 내용은 [내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기](/posts/2020/05/01/transformers-porting/)를 읽어보길 바란다. (**여기서도 굉장히 삽질을 많이 해본 입장으로서 꼭 읽어보길 권한다**)
+
+## Result
+
+![Base result](./base_result.png)
+![Small result](./small_result.png)
+
+처음에 이 프로젝트를 계획할 때 가장 걱정되었던 점이 **"성능이 안 나오면 어쩌나"**였다. (성능이 너무 안 좋으면 사실 2주를 제대로 날린 셈이기에....)
+
+**결과는 예상했던 것보다 훨씬 좋았다.** 애초에 데이터의 양이나 Tokenizer 등을 고려했을 때 `HanBERT`를 완벽히 따라잡는 것은 무리라고 생각했지만, `KoBERT`보다 전반적으로 성능이 많이 좋을 줄은 몰랐다. `HanBERT`와도 실질적인 결과는 비슷하거나 오히려 더 좋은 케이스도 있어서 이 정도면 **대성공**이라고 봐도 될 꺼 같다.
+
+`KoELECTRA-Small`의 성능이 가장 인상적이었는데, 모델의 사이즈가 `DistilKoBERT`의 절반임에도 불구하고 우수한 성능을 보였다. **경량화 모델에서 충분히 사용할 만한 가치가 있을 것 같다.**
+
+## How to Use
+
+이 프로젝트를 처음 계획했을 때의 고려사항 중 아래 사항들이 가장 중요했었다.
+
+> "**모든 OS**에서 사용 가능"
+> "**tokenization 파일을 만들 필요 없이** 곧바로 사용 가능"
+
+그리고 이제 `transformers` 라이브러리만 있으면 어떠한 환경에서도 `한국어 PLM`을 사용할 수 있게된 것이다🤗
+
+```bash
+$ pip3 install -U transformers
+```
+
+```python
+from transformers import ElectraModel, ElectraTokenizer
+
+# KoELECTRA-Base
+model = ElectraModel.from_pretrained("monologg/koelectra-base-discriminator")
+tokenizer = ElectraTokenizer.from_pretrained("monologg/koelectra-base-discriminator")
+
+# KoELECTRA-Small
+model = ElectraModel.from_pretrained("monologg/koelectra-small-discriminator")
+tokenizer = ElectraTokenizer.from_pretrained("monologg/koelectra-small-discriminator")
+```
+
+## 맺으며
+
+![와우!](./facebook-reaction.png)
+
+솔직히 이렇게까지 반응이 좋을 줄은 몰랐다🙄 개발자로서 이럴 때가 가장 보람있지 않은가 싶다.
+
+처음 계획할 때부터 **"이거 만들면 다른 분들에게도 큰 도움이 되겠다"**라 생각했는데, 실제로도 그런 것 같아 기분이 (굉장히) 좋다 😀
+
+> "내가 불편해하는 것은 분명 다른 누군가도 불편해한다. 그런 부분을 해결해주는 것이 개발자의 역할이라고 생각한다."
+
+## Reference
+
+- [ELECTRA Official Code](https://github.com/google-research/electra)
+- [Huggingface Transformers](https://github.com/huggingface/transformers)
+- [Deview 2019 Larva Presentation](https://deview.kr/data/deview/2019/presentation/[111]+%E1%84%8B%E1%85%A5%E1%86%B7_%E1%84%8E%E1%85%A5%E1%86%BC+%E1%84%8F%E1%85%B3%E1%86%AB+%E1%84%8B%E1%85%A5%E1%86%AB%E1%84%8B%E1%85%A5+%E1%84%86%E1%85%A9%E1%84%83%E1%85%A6%E1%86%AF+%E1%84%80%E1%85%A9%E1%86%BC%E1%84%8C%E1%85%A1%E1%86%BC+%E1%84%80%E1%85%A1%E1%84%83%E1%85%A2%E1%84%83%E1%85%B3%E1%84%80%E1%85%B5.pdf)
+- [KorNLI, KorSTS](https://github.com/kakaobrain/KorNLUDatasets)
+
+## Related Posts
+
+- [내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기](/posts/2020/05/01/transformers-porting/)
+- [2주 간의 KoELECTRA 개발기 - 1부](/posts/2020/05/02/koelectra-part1/)
+
+---
+
+# 2주 간의 KoELECTRA 개발기 - 1부
+
+URL: https://monologg.kr/posts/2020/05/02/koelectra-part1/
+Published: 2020-05-02
+Category: NLP
+Tags: nlp, electra, preprocess
+
+> KoELECTRA 개발 과정 1부. 기존 한국어 PLM의 한계점 분석, Wordpiece Tokenizer 제작, 14GB 한국어 데이터 전처리, TPU 세팅 및 Configuration 설정까지의 과정을 기록합니다.
+
+**2주 간의 KoELECTRA 개발**을 마치고, 그 과정을 글로 남기려고 한다.
+
+이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)
+
+1부에는 **실제 학습을 돌리기 전까지의 과정**을 다룰 예정이다.
+
+> **Github Repo:** [https://github.com/monologg/KoELECTRA](https://github.com/monologg/KoELECTRA)
+
+## 문제 의식
+
+한국에 Public하게 공개되어 있는 `한국어 PLM(Pretrained Language Model)`에는 크게 3가지가 있다.
+
+1. SKT의 `KoBERT`
+2. TwoBlock AI의 `HanBERT`
+3. ETRI의 `KorBERT`
+
+3가지 모두 좋은 성능을 보이지만, 3가지 모두 단점이 존재한다. 각각의 단점을 정리하면 아래와 같다.
+
+|             | 단점                                             |
+| :---------- | :----------------------------------------------- |
+| **KoBERT**  | **Vocab size (8002개)**가 상대적으로 작음        |
+| **HanBERT** | Tokenizer로 인해 **Ubuntu 환경**에서만 사용 가능 |
+| **KorBERT** | **API 신청** 등의 과정 필요                      |
+
+특히 3가지 모두 공통적으로 `Huggingface Transformers` 라이브러리에서 사용하려면 **tokenization 파일을 따로 만들어야 하는 단점**이 있다.
+
+[KoBERT](https://github.com/monologg/DistilKoBERT)와 [HanBERT](https://github.com/monologg/HanBert-Transformers)의 경우 내가 직접 tokenization 파일을 만들어서 github에 배포했지만, 일부 사용자들이 불편함을 토로하기도 했다.
+
+그래서 이번 기회에 위의 단점들을 모두 해결한 `한국어 PLM`을 개발하고 싶었다.
+
+> 1. **Vocab size**가 어느 정도 커야 함 (30000개 정도)
+> 2. **모든 OS**에서 사용 가능
+> 3. **tokenization 파일을 만들 필요 없이** 곧바로 사용 가능
+> 4. 어느 정도 **성능**까지 보장되어야 함
+
+위의 4가지를 모두 만족시키기 위하여 시작한 프로젝트가 바로 `KoELECTRA` 이다.
+
+## Tokenizer
+
+실제 현업에서도 좋은 성능을 위해 `Mecab + Sentencepiece`를 많이 사용하는 것으로 알고 있다. 그러나 공식 BERT, ELECTRA 등은 `Wordpiece`를 사용하고 있으며, `transformers`에서도 공식적으로 Wordpiece만 지원하고 있다.
+
+즉, ELECTRA에서 Mecab이나 Sentencepiece를 사용하려면 추가적으로 `tokenization` 파일을 만들어야 하며, `transformers` 라이브러리의 api가 바뀌면 내가 직접 그에 맞게 tokenization 파일을 바꿔줘야 한다는 것이다. (KoBERT의 경우 실제로도 그렇게 하고 있다ㅠ)
+
+**이러한 문제들 때문에 이번 프로젝트에서는 무조건으로 `Wordpiece`를 사용하는 방안으로 진행하였다.**
+
+### Wordpiece
+
+> "Wordpiece vocab을 만들 때 Huggingface의 [`Tokenizers`](https://github.com/huggingface/tokenizers) 라이브러리를 쓰는 것이 가장 좋다."
+
+```python
+import argparse
+from tokenizers import BertWordPieceTokenizer
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("--corpus_file", type=str)
+parser.add_argument("--vocab_size", type=int, default=32000)
+parser.add_argument("--limit_alphabet", type=int, default=6000)
+
+args = parser.parse_args()
+
+tokenizer = BertWordPieceTokenizer(
+    vocab_file=None,
+    clean_text=True,
+    handle_chinese_chars=True,
+    strip_accents=False, # Must be False if cased model
+    lowercase=False,
+    wordpieces_prefix="##"
+)
+
+tokenizer.train(
+    files=[args.corpus_file],
+    limit_alphabet=args.limit_alphabet,
+    vocab_size=args.vocab_size
+)
+
+tokenizer.save("./", "bert-wordpiece")
+```
+
+> - Vocab size의 경우 관례적으로 많이 쓰이는 **약 3만개**로 세팅하였다.
+> - **전처리 없이** 원본 Corpus만 가지고 vocab 만들면 **성능이 굉장히 안 좋음**
+> - character coverage를 최대한 높게 잡는 것이 좋다고 판단 (**즉, corpus에서 등장했던 모든 character를 vocab에 포함시킴**)
+>   - 예를 들어 `퀭메일`이란 단어가 있다고 가정하자.
+>   - 만일 `퀭`이 vocab에 없다면 `퀭메일` 전체를 `[UNK]`로 처리하게 된다.
+>   - 만일 `퀭`이 vocab 안에 있으면 `퀭 + ##메일`로 tokenize가 될 수 있어 `##메일`이란 단어의 의미를 가져갈 수 있다.
+
+(자세한 내용은 이전에 포스팅한 [나만의 BERT Wordpiece Vocab 만들기](/posts/2020/04/27/wordpiece-vocab/)을 참고)
+
+## 전처리 (Preprocessing)
+
+> "첫째도 **전처리**! 둘째도 **전처리**! 셋째도 **전처리**!"
+> "PLM의 성능에 가장 큰 영향을 주는 것은 `corpus quality`이다!"
+
+**크롤링한 뉴스의 문장 하나**를 살펴보자
+
+> [주요기사] ☞ [포토 스토리] 무허가 도시광산 을 아시나요? ☞ [따뜻한 사진 한 장] 사랑, 하나가 되어 가는 길 <찰나의 기록, 순간의 진실 / KPPA 바로가기> Copyrightsⓒ 한국사진기자협회(www.kppa.or.kr), powered by castnet. 무단 전재 및 재배포 금지 보내기
+
+문제는 이런 문장이 매우 많은데다가, 이걸 Pretrain에 넣을 시 성능이 나빠질 게 뻔하다....
+
+이렇게 noise가 많은 Corpus로 vocab을 만들고 pretrain까지 하면 성능이 좋을 리가 없다.
+
+아래는 내가 적용한 대표적인 전처리 기준이다.
+
+> - 한자, 일부 특수문자 제거
+> - **한국어 문장 분리기** ([kss](https://github.com/likejazz/korean-sentence-splitter)) 사용
+> - 뉴스 관련 문장은 제거 (`무단전재`, `(서울=뉴스1)` 등 포함되면 무조건 제외)
+
+사실 전처리의 기준에 정답은 없다. 가장 중요한 것은 **자신의 Task에 맞게 전처리 기준을 세우는 것이다**. 내가 생각했던 Task 들에는 한자는 중요하지 않다고 판단해서 지운 것이지, 한자가 꼭 필요한 Task의 경우에는 지우면 안 될 것이다.
+
+## TPU 사용 관련 Tip
+
+(자세한 내용은 이전에 포스팅한 [TPU를 이용하여 Electra Pretraining하기](/posts/2020/04/20/tpu-electra/)을 참고)
+
+### 1. Tensorflow Research Cloud(TFRC)를 쓰면 TPU가 무료
+
+→ 이미 [공식 코드](https://github.com/google-research/electra)가 TPU를 완벽히 지원하기에, 직접 ELECTRA를 만들고 싶다면 **GPU보다는 TPU를 쓰는 것을 강력히 권장한다.**
+
+### 2. VM Instance는 작은 것(`n1-standard-1`)을 써도 상관 없다
+
+→ ELECTRA를 GCP에서 학습하려면 `TPU`, `Bucket`, `VM Instance` 이렇게 3개가 필요하다. 그런데 **저장소는 Bucket이, 연산은 TPU가 처리**하기 때문에 VM Instance는 가벼운 것을 써도 된다.
+→ `n1-standard-1`는 시간당 약 $0.037, `n1-standard-4`는 시간당 약 $0.14이다. (**비용이 무려 2배 차이!!**)
+
+### 3. TPU를 쓰는 경우 모든 input file은 Cloud storage bucket을 통해야만 한다
+
+→ 이것도 처음에 몰랐다가 고생했던 삽질 중 하나다. `tf.estimator.tpu` 쪽 코드를 쓰는 경우 로컬 데이터가 아닌 `Bucket`을 통해야만 한다. ([관련 FAQ](https://cloud.google.com/tpu/docs/troubleshooting?hl=ko#common-errors))
+→ 다행히도 Bucket의 비용이 비싸지가 않다 (특정 리전에 만들어 놓으면 1GB당 월 약 \$0.03)
+
+### 4. VM Instance와 TPU를 만들 때 `ctpu up` 명령어를 사용해라
+
+→ VM Instance와 TPU를 따로 따로 생성하면 처음에 정상적으로 작동하지 않는 경우가 있었다. 아래와 같이 `cloud shell`로 명령어를 한 번만 치면 VM과 TPU가 동시에 생성된다😃
+
+```bash
+$ ctpu up --zone=europe-west4-a --tf-version=1.15 \
+          --tpu-size=v3-8 --machine-type=n1-standard-2 \
+          --disk-size-gb=20 --name={$VM_NAME}
+```
+
+## Configuration의 함정
+
+앞에서도 언급했듯이 ELECTRA Pretraining은 [공식 코드](https://github.com/google-research/electra)를 그대로 가져다 쓰는 것이 좋다. 공식 코드를 가져다쓰기 전에 `논문`과 `코드 분석`을 어느 정도 하고 진행하는 것을 권장한다.
+
+그럼에도 좀 헷갈렸던 부분이 있어 여기서 언급하려 한다.
+
+### 1. 공식 레포에서 제공하는 `small` 모델은 정확히는 `small++` 모델이다
+
+![](./small_notice.png)
+![](./small_gen_size.png)
+
+공식 코드에서도 알 수 있듯이 `small`로 공개된 모델은 정확히 말하면 `small++` 모델이다. 둘의 차이점은 아래와 같다.
+
+|             | max_seq_len | generator_hidden_size |
+| :---------- | ----------- | --------------------- |
+| **small**   | 128         | 0.25                  |
+| **small++** | 512         | 1.0                   |
+
+(`generator_hidden_size=1.0`이란 것은 `discriminator`와 `generator`의 hidden_size가 같다는 것이다)
+
+이러한 부분이 논문에 자세히 나와 있지 않아 처음에 small 모델을 만들 때 진짜 small로 만들었다가 다시 small++로 만드는 수고를 거쳤다.... (이 글을 읽은 분들은 이 삽질을 안 하길 빈다.)
+
+```json
+{
+  "tpu_name": "electra-small",
+  "tpu_zone": "europe-west4-a",
+  "num_train_steps": 1000000,
+  "save_checkpoints_steps": 50000,
+  "train_batch_size": 128,
+  "learning_rate": 5e-4,
+  "vocab_size": 32200,
+  "max_seq_length": 512,
+  "generator_hidden_size": 1.0
+}
+```
+
+### 2. max_seq_length를 128로 줄인다면 max_position_embeddings도 128로 줄여야 한다
+
+간혹 커스터마이즈된 모델을 만들 때 `max_seq_length`를 줄이고자 하는 경우가 있다.
+
+그럴 시 `max_seq_length`만 줄이면 해결된다고 오해할 수 있는데, `max_position_embeddings`도 줄여줘야 transformers 라이브러리에 맞게 변환할 때 문제가 생기지 않는다. (transformers가 max_position_embeddings으로 최대 길이를 알아내기 때문!)
+
+더 큰 함정은 아래와 같이 `model_hparam_overrides`라는 attribute 안에 `max_position_embeddings`를 넣어줘야 하는 것이다!
+
+```json
+{
+  "max_seq_length": 128,
+  "model_hparam_overrides": {
+    "max_position_embeddings": 128
+  }
+}
+```
+
+## 마치며
+
+1부에서는 **실제 Pretraining을 시작하기 전의 준비 과정**을 다뤘다.
+
+[2주 간의 KoELECTRA 개발기 - 2부](/posts/2020/05/02/koelectra-part2/) 에서는 실제 Pretraining, Transformers 포팅, Finetuning 등을 다룰 예정이다:)
+
+## Reference
+
+- [ELECTRA Official Code](https://github.com/google-research/electra)
+- [Huggingface Tokenizers](https://github.com/huggingface/tokenizers)
+- [Cloud TPU Documentation](https://cloud.google.com/tpu/docs?hl=ko)
+
+## Related Posts
+
+- [TPU를 이용하여 Electra Pretraining하기](/posts/2020/04/20/tpu-electra/)
+- [나만의 BERT Wordpiece Vocab 만들기](/posts/2020/04/27/wordpiece-vocab/)
+- [2주 간의 KoELECTRA 개발기 - 2부](/posts/2020/05/02/koelectra-part2/)
+
+---
+
+# 내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기
+
+URL: https://monologg.kr/posts/2020/05/01/transformers-porting/
+Published: 2020-05-01
+Category: NLP
+Tags: nlp, electra, transformers, pytorch
+
+> 직접 Pretrain한 ELECTRA 모델의 Tensorflow ckpt를 Huggingface Transformers의 PyTorch ckpt로 변환하는 방법. config 설정부터 weight 변환까지 단계별로 안내합니다.
+
+`BERT`, `ALBERT`, `ELECTRA` 등을 직접 Pretrain하게 되면 모델이 Tensorflow의 ckpt 형태로 저장이 된다.
+
+이번 글에서는 `tensorflow ckpt`를 transformers의 `pytorch ckpt`로 변환하는 법을 알아보겠다🤗
+
+## Intro
+
+- 이번 글에서는 `ELECTRA-Small`을 기준으로 실습을 해본다. (`BERT` 등도 방법은 크게 다르지 않다)
+- `transformers v2.8.0`을 기준으로 작성하였다. 이후 버전에서 호환되지 않는 경우가 있을 수 있다.
+- `Transformers`의 `ELECTRA`는 `discriminator`와 `generator`를 **각각 따로 만들어줘야 한다!**
+
+## Prerequisite
+
+### 1. Original Tensorflow Checkpoint
+
+당연히 **Tensorflow로 학습한 결과물**을 가지고 있어야 한다.
+
+```
+.
+├── koelectra-small-tf
+│   ├── checkpoint
+│   ├── events.out.tfevents.1586942968.koelectra-small
+│   ├── graph.pbtxt
+│   ├── ...
+│   ├── model.ckpt-700000.data-00000-of-00001
+│   ├── model.ckpt-700000.index
+│   └── model.ckpt-700000.meta
+└── ...
+```
+
+```text
+model_checkpoint_path: "model.ckpt-700000"
+all_model_checkpoint_paths: "model.ckpt-600000"
+all_model_checkpoint_paths: "model.ckpt-625000"
+all_model_checkpoint_paths: "model.ckpt-650000"
+all_model_checkpoint_paths: "model.ckpt-675000"
+all_model_checkpoint_paths: "model.ckpt-700000"
+```
+
+주의할 점은 `checkpoint` 파일에서 `model_checkpoint_path` 값을 **"원하는 step의 ckpt"**로 바꿔줘야 한다는 것이다.
+
+### 2. config.json
+
+> **(주의!) `transformers` 라이브러리가 업데이트되면서 API가 변경되는 경우가 있고, 이에 따라 `config.json`의 attribute가 추가/변경되는 경우가 있다.**
+
+> [https://huggingface.co/models](https://huggingface.co/models)로 가서 대표 모델의 `config.json`을 보면서 직접 만들어야 한다.
+
+- `vocab_size` 변경에만 주의하면 충분함
+- 만일 `max_seq_length`를 바꿨다면 `max_position_embeddings`도 바꿔야 함
+
+```json
+{
+  "architectures": ["ElectraForPreTraining"],
+  "attention_probs_dropout_prob": 0.1,
+  "embedding_size": 128,
+  "hidden_act": "gelu",
+  "hidden_dropout_prob": 0.1,
+  "hidden_size": 256,
+  "initializer_range": 0.02,
+  "intermediate_size": 1024,
+  "layer_norm_eps": 1e-12,
+  "max_position_embeddings": 512,
+  "model_type": "electra",
+  "num_attention_heads": 4,
+  "num_hidden_layers": 12,
+  "pad_token_id": 0,
+  "type_vocab_size": 2,
+  "vocab_size": 32200
+}
+```
+
+### 3. tokenizer_config.json
+
+`cased` 모델의 경우 그냥 tokenizer를 load하면 매번 `do_lower_case=False`를 직접 추가해줘야 한다.
+
+```python
+from transformers import ElectraTokenizer
+
+tokenizer = ElectraTokenizer.from_pretrained("monologg/koelectra-small-discriminator",
+                                             do_lower_case=False)
+```
+
+`tokenizer_config.json`을 만들어주면 이러한 번거로움을 없앨 수 있다.
+
+```json
+{
+  "do_lower_case": false,
+  "model_max_length": 512
+}
+```
+
+### 4. vocab.txt
+
+tensorflow에서 학습했을 때 쓴 `vocab.txt`를 그대로 쓰면 된다.
+
+### 5. 최종적인 디렉토리 형태
+
+```
+.
+├── koelectra-small-tf
+│   ├── checkpoint
+│   ├── events.out.tfevents.1586942968.koelectra-small
+│   ├── graph.pbtxt
+│   ├── ...
+│   ├── model.ckpt-700000.data-00000-of-00001
+│   ├── model.ckpt-700000.index
+│   └── model.ckpt-700000.meta
+│
+├── electra-small-discriminator
+│   ├── config.json
+│   ├── tokenizer_config.json
+│   └── vocab.txt
+│
+├── electra-small-generator
+│   ├── config.json
+│   ├── tokenizer_config.json
+│   └── vocab.txt
+└── ...
+```
+
+- `electra-small-discriminator`와 `electra-small-generator` 폴더를 각각 만든다.
+- `config.json`은 discriminator용과 generator용을 **따로** 만들어서 폴더 안에 넣는다.
+- `tokenizer_config.json`과 `vocab.txt`는 discriminator와 generator 둘 다 **동일한 파일**을 넣으면 된다.
+
+## Convert
+
+```python
+import os
+import argparse
+from transformers.convert_electra_original_tf_checkpoint_to_pytorch import convert_tf_checkpoint_to_pytorch
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("--tf_ckpt_path", type=str, default="koelectra-small-tf")
+parser.add_argument("--pt_discriminator_path", type=str, default="koelectra-small-discriminator")
+parser.add_argument("--pt_generator_path", type=str, default="koelectra-small-generator")
+
+args = parser.parse_args()
+
+convert_tf_checkpoint_to_pytorch(tf_checkpoint_path=args.tf_ckpt_path,
+                                 config_file=os.path.join(args.pt_discriminator_path, "config.json"),
+                                 pytorch_dump_path=os.path.join(args.pt_discriminator_path, "pytorch_model.bin"),
+                                 discriminator_or_generator="discriminator")
+
+convert_tf_checkpoint_to_pytorch(tf_checkpoint_path=args.tf_ckpt_path,
+                                 config_file=os.path.join(args.pt_generator_path, "config.json"),
+                                 pytorch_dump_path=os.path.join(args.pt_generator_path, "pytorch_model.bin"),
+                                 discriminator_or_generator="generator")
+```
+
+## Upload your model to Huggingface s3
+
+1. 먼저 [huggingface.co](https://huggingface.co/)로 가서 **회원가입**을 해야 함
+2. 아래의 명령어로 s3에 업로드 진행
+
+```bash
+$ transformers-cli login
+$ transformers-cli upload koelectra-small-discriminator
+$ transformers-cli upload koelectra-small-generator
+```
+
+## Now Let's Use It
+
+```python
+from transformers import ElectraModel, ElectraTokenizer
+
+model = ElectraModel.from_pretrained("monologg/koelectra-small-discriminator")
+tokenizer = ElectraTokenizer.from_pretrained("monologg/koelectra-small-discriminator")
+```
+
+## 맺으며
+
+![생각보다 많이 사용하시네...](./model_download.png)
+
+사실 Model Porting과 관련하여 **명확한 Documentation이 없어** 나도 삽질을 상당히 했던 부분이다. 이번 내용이 다른 분들에게 도움이 되었으면 한다😛
+
+또한 **Huggingface s3에 모델을 업로드**하는 것은 꼭 사용해보길 권한다. 이 기능이 생긴지 얼마되지 않아서 모르시는 분들이 있는데, **업로드 용량의 제한도 없고** 여러모로 라이브러리 사용도 편해진다. (모델을 100개 이상 올린다고 Huggingface 팀에서 뭐라고 하지 않으니 많이들 쓰셨으면ㅎㅎ)
+
+---
+
+# 나만의 BERT Wordpiece Vocab 만들기
+
+URL: https://monologg.kr/posts/2020/04/27/wordpiece-vocab/
+Published: 2020-04-27
+Category: NLP
+Tags: nlp, wordpiece, tokenization
+
+> BERT와 ELECTRA에 사용되는 Wordpiece 방식의 한국어 Vocab을 직접 만드는 방법. Sentencepiece, Mecab과의 차이점과 Huggingface Tokenizers 라이브러리 활용법을 설명합니다.
+
+개인적으로 Pretrained Language Model 성능에 큰 영향을 주는 것 중 하나로 `Vocab quality`라고 생각한다.
+
+이번 포스트에서는 tokenization의 방법 중 하나인 `Wordpiece`를 이용하여 어떻게 vocab을 만드는지 알아보려 한다:)
+
+## Introduction
+
+한국어 Tokenizer의 대안으로는 크게 `Sentencepiece`, `Mecab`, `Wordpiece`가 있다. (_여기서의 wordpiece는 Google의 BERT에서 사용된 wordpiece로 가정한다._)
+
+BERT, ELECTRA 등은 기본적으로 `Wordpiece`를 사용하기에 공식 코드에서 기본적으로 제공되는 Tokenizer 역시 이에 호환되게 코드가 작성되었다. 즉, `Sentencepiece`나 `Mecab`을 사용하려면 **별도의 Tokenizer**를 직접 만들어야 하고, 이렇게 되면 `transformers` 등의 라이브러리에서 모델을 곧바로 사용하는데 불편함이 생기게 된다.
+
+## Original wordpiece code is NOT available!
+
+![](https://user-images.githubusercontent.com/28896432/80015023-19f7e680-850c-11ea-90d3-436ca253a7a1.png)
+
+**공식 BERT에서 사용된 Wordpiece Builder는 제공되지 않고 있다**. BERT 공식 Github에서 다른 대안들을 제시해줬지만, 완전히 동일한 Wordpiece Vocab이 나오지 않았다.
+
+몇몇 오픈소스들이 Wordpiece vocab builder를 구현하였지만 **input file이 매우 클 시 메모리, 속도 등의 이슈**가 종종 발생한다ㅠ
+
+## Huggingface Tokenizers
+
+![](https://user-images.githubusercontent.com/28896432/80016455-1c5b4000-850e-11ea-8432-3c356c11f932.png)
+
+최종적으로, 최근 Huggingface에서 발표한 `Tokenizers` 라이브러리를 이용하여 Wordpiece Vocabulary를 만드는게 제일 좋았다.
+
+해당 라이브러리를 사용하면 Corpus가 매우 커도 메모리 이슈가 발생하지 않으며, `Rust`로 구현이 되어있어 속도 또한 Python보다 빠르다😃
+
+## Code for building Wordpiece vocab
+
+**(tokenizer v0.7.0 기준으로 작성하였다. 현재도 라이브러리가 업데이트 중이어서 api가 달라질 수도...)**
+
+```python
+import argparse
+from tokenizers import BertWordPieceTokenizer
+
+parser = argparse.ArgumentParser()
+
+parser.add_argument("--corpus_file", type=str)
+parser.add_argument("--vocab_size", type=int, default=32000)
+parser.add_argument("--limit_alphabet", type=int, default=6000)
+
+args = parser.parse_args()
+
+tokenizer = BertWordPieceTokenizer(
+    vocab_file=None,
+    clean_text=True,
+    handle_chinese_chars=True,
+    strip_accents=False, # Must be False if cased model
+    lowercase=False,
+    wordpieces_prefix="##"
+)
+
+tokenizer.train(
+    files=[args.corpus_file],
+    limit_alphabet=args.limit_alphabet,
+    vocab_size=args.vocab_size
+)
+
+tokenizer.save("./", "ch-{}-wpm-{}".format(args.limit_alphabet, args.vocab_size))
+```
+
+- 주의해야할 점은 `lowercase=False`로 할 시 `strip_accent=False`로 해줘야 한다는 것!
+
+- `[UNK]`의 비중을 최대한 줄이기 위해 **모든 character를 커버**할 수 있도록 처리하였다. (`limit_alphabet`)
+
+- Corpus의 전처리가 완료되었다는 전제하에 sentencepiece와 비교했을 때 **UNK Ratio가 훨씬 낮았다.**
+
+## Reference
+
+- [Sentencepiece vs Wordpiece](https://wikidocs.net/22592)
+- [Learning a new WordPiece vocabulary](https://github.com/google-research/bert#learning-a-new-wordpiece-vocabulary)
+- [kwonmha's bert-vocab-builder](https://github.com/kwonmha/bert-vocab-builder)
+- [Huggingface Tokenizers](https://github.com/huggingface/tokenizers)
+
+---
+
+# TPU를 이용하여 Electra Pretraining하기
+
+URL: https://monologg.kr/posts/2020/04/20/tpu-electra/
+Published: 2020-04-20
+Category: NLP
+Tags: nlp, tpu, electra
+
+> GCP에서 TPU를 이용하여 ELECTRA 모델을 Pretraining하는 방법. TFRC 신청부터 VM 세팅, TPU 연결, Pretraining 실행까지의 전체 과정을 다룹니다.
+
+최근 [ELECTRA](https://openreview.net/forum?id=r1xMH1BtvB)의 공식 코드가 공개되면서 한국어 Corpus에 직접 Electra를 만들게 되었다.
+
+이번 글에서는 GCP에서 TPU를 어떻게 사용했는지 그 과정을 공유해보려 한다.
+
+## Tensorflow Research Cloud 신청
+
+Tensorflow Research Cloud (TFRC)는 **1달 동안 TPU를 무료**로 사용할 수 있게 해주는 프로그램이다.
+
+해당 [링크](https://www.tensorflow.org/tfrc?hl=ko)로 가서 신청을 하게 되면 메일이 하나 오게 된다.
+
+![](https://user-images.githubusercontent.com/28896432/79709907-61a92300-82fe-11ea-9773-9ac63b5ebbb6.png)
+
+해당 메일에서 요구하는 대로 신청서를 추가로 작성한 후 제출하면 얼마 후 아래와 같이 답장이 오게 되고, 그 때부터 GCP에서 TPU를 무료로 사용할 수 있게 된다:)
+
+![](https://user-images.githubusercontent.com/28896432/79709997-9ddc8380-82fe-11ea-9040-06d8ef9c1f1b.png)
+
+## Bucket에 Data 업로드
+
+TPU를 쓰는 경우 모든 input file을 **Cloud storage bucket을 통해야만 한다.** ([관련 FAQ](https://cloud.google.com/tpu/docs/troubleshooting?hl=ko#common-errors))
+
+### Bucket 생성
+
+- 예제상 Bucket의 이름을 `test-for-electra`로 만들어 보겠다.
+
+- GCP 메인 페이지 좌측의 `[Storage]` - `[브라우저]` 로 이동
+
+- `버킷 만들기` 클릭
+
+- **사용할 TPU와 동일한 Region**에 Bucket 만드는 것을 권장
+
+  ![](https://user-images.githubusercontent.com/28896432/79711012-a84c4c80-8301-11ea-955c-39dc604f5c10.png)
+
+### File Upload
+
+- 준비한 `pretrain_tfrecords`와 `vocab.txt`를 Bucket에 업로드
+
+  ![](https://user-images.githubusercontent.com/28896432/79739355-0a747400-8339-11ea-8de2-f78f8ade887f.png)
+
+## GCP VM & TPU 생성
+
+- VM과 TPU를 각각 따로 만드는 것보다, 우측 상단의 `cloud shell`을 열어 아래의 명령어를 입력하는 것을 추천한다.
+- 저장소는 Bucket이, 연산은 TPU에서 처리하기 때문에 **VM Instance는 가벼운 것을 써도 상관이 없다.**
+
+```bash
+$ ctpu up --zone=europe-west4-a --tf-version=1.15 \
+          --tpu-size=v3-8 --machine-type=n1-standard-1 \
+          --disk-size-gb=20 --name={$VM_NAME}
+```
+
+![](https://user-images.githubusercontent.com/28896432/79740137-24fb1d00-833a-11ea-9be8-e317521fa178.png)
+
+## Electra 학습 진행
+
+```bash
+$ git clone https://github.com/google-research/electra
+$ cd electra
+$ python3 run_pretraining.py --data-dir gs://{$BUCKET_NAME} \
+                             --model-name {$MODEL_NAME} \
+                             --hparams {$CONFIG_PATH}
+```
+
+## 학습 완료 후 Instance, Bucket 삭제
+
+```bash
+$ ctpu delete --zone=europe-west4-a --name={$VM_NAME}
+$ gsutil rm -r gs://test-for-electra
+```
+
+## Reference
+
+- [ELECTRA official github](https://github.com/google-research/electra)
+- [A Pipeline Of Pretraining Bert On Google TPU](https://github.com/pren1/A_Pipeline_Of_Pretraining_Bert_On_Google_TPU)
+- [Official TPU Documentation](https://cloud.google.com/tpu/docs)
+
+---
