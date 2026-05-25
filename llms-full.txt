@@ -370,6 +370,148 @@ MCP 생태계가 커질수록 도구 수 관리는 점점 중요해질 거예요
 
 ---
 
+# Claude Code에서 OpenAI Codex를 호출하는 4가지 방법
+
+URL: https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/
+Published: 2026-03-15
+Category: tech
+Tags: claude-code, codex, mcp, multi-agent, ai-tooling
+
+> Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 워크플로우를 소개합니다.
+
+Claude Code를 쓰다 보면 가끔 다른 모델의 의견이 궁금할 때가 있어요. "이 구현, Codex한테 한 번 더 검증받아 볼까?" 같은 생각이 드는 순간이죠. 실제로 Claude Code 안에서 OpenAI Codex를 호출할 수 있는 방법이 여러 가지 존재하더라고요. 직접 리서치하고 정리한 4가지 방법을 공유해요.
+
+## 방법 한눈에 보기
+
+| 방법 | 난이도 | 핵심 |
+| --- | --- | --- |
+| Codex 내장 MCP 서버 | 쉬움 | `codex mcp-server` stdio 연결 |
+| 커뮤니티 MCP 래퍼 | 쉬움 | npx 원클릭 설치 |
+| Custom Slash Command | 쉬움 | 단방향 CLI 호출 |
+| agent-mux | 중간 | 멀티엔진 orchestrator |
+
+결론부터 말하면요, 가장 간단하고 강력한 건 첫 번째 방법이에요.
+
+## Codex 내장 MCP 서버 — 가장 추천하는 방법
+
+Codex CLI에는 `codex mcp-server`라는 내장 MCP 서버가 포함되어 있어요. stdio 방식으로 Claude Code에 직접 연결할 수 있거든요. 별도 서버를 띄울 필요가 없어요.
+
+```bash
+# Codex CLI 설치 및 인증
+npm install -g @openai/codex
+codex login
+
+# Claude Code에 MCP 서버 등록
+claude mcp add --transport stdio --scope user codex -- codex mcp-server
+```
+
+이렇게 하면 Claude Code 안에서 두 개의 MCP 도구가 생겨요.
+
+- `codex` — 새 Codex 세션을 시작해요. prompt, approval-policy, sandbox, model 파라미터를 지정할 수 있죠.
+- `codex-reply` — `threadId`로 기존 세션을 이어가요. 대화형 컨텍스트가 유지되니까 후속 질문도 가능해요.
+
+등록이 잘 됐는지 확인하려면 `claude mcp list`를 실행하면 돼요. `codex: codex mcp-server - Connected`가 보이면 성공이에요.
+
+여기서 잠깐, approval-policy 파라미터가 꽤 중요한데요. `untrusted`, `on-request`, `on-failure`, `never` 중에서 선택할 수 있어요. 자동화 파이프라인에서는 `never`로 설정하면 Codex가 별도 승인 없이 작업을 수행하죠.
+
+## 커뮤니티 MCP 래퍼 — 세션 관리가 필요할 때
+
+공식 내장 서버가 부족하다고 느낀다면 커뮤니티에서 만든 MCP 래퍼도 있어요.
+
+```bash
+claude mcp add codex-cli -- npx -y codex-mcp-server
+```
+
+이 래퍼는 세션 관리, 모델 선택, resume 기능 같은 추가 기능을 제공해요. npm 패키지라서 설치도 간단하고요. agency-ai-solutions/openai-codex-mcp 같은 프로젝트는 `write_code`, `explain_code`, `review_code` 같은 특화 메서드도 제공하더라고요.
+
+다만 서드파티인 만큼 업데이트 주기나 모델 지원 범위를 확인하는 게 좋아요.
+
+## Custom Slash Command — 단순하게 쓰고 싶을 때
+
+MCP 서버까지는 필요 없고 특정 작업만 Codex에 맡기고 싶다면 slash command가 적합해요.
+
+```markdown
+<!-- ~/.claude/commands/codex-write.md -->
+---
+description: "Generate code using OpenAI Codex CLI"
+---
+codex write --language $2 --task "$3" --model o4-mini
+```
+
+```markdown
+<!-- ~/.claude/commands/codex-explain.md -->
+---
+description: "Get code explanations from Codex CLI"
+---
+codex explain @$1 --focus "$2" --detail comprehensive
+```
+
+Claude Code에서 `/codex-write python "피보나치 수열 생성 함수"` 처럼 호출하면 돼요. 간단하죠.
+
+단점도 명확해요. Claude와의 양방향 상호작용이 안 되거든요. Codex의 출력이 Claude의 컨텍스트로 돌아오긴 하지만, Claude가 Codex 결과를 보고 후속 질문을 던지는 흐름은 만들기 어려워요. 단발성 작업에 적합한 방식이에요.
+
+## agent-mux — 풀 오케스트레이션이 필요할 때
+
+여기서부터 좀 흥미로워져요. agent-mux는 Claude, Codex, OpenCode 등 여러 AI 엔진을 하나의 CLI로 통합하는 orchestrator예요.
+
+```bash
+# Codex로 정밀 코드 변경
+agent-mux --engine codex --reasoning high --effort high \
+  "Refactor auth module in src/auth/"
+
+# Claude로 아키텍처 설계
+agent-mux --engine claude --effort high \
+  "Design the rollback strategy for the payments migration"
+```
+
+핵심은 Claude Code의 subagent 시스템과 결합한다는 거예요. Claude가 아키텍처 설계를 하고, 실제 코드 변경은 Codex에 위임하고, 또 다른 Claude가 리뷰하는 pipeline을 구성할 수 있죠.
+
+감이 오시나요? 엔진별 강점을 태스크에 맞게 routing하는 거예요. Claude Opus는 설계와 추론에 강하고, Codex는 정밀한 코드 변경에 강하잖아요. agent-mux의 GSD(Get Shit Done) coordinator는 각 태스크에 엔진뿐 아니라 적절한 skill과 MCP 서버까지 자동으로 주입해요.
+
+```bash
+# Codex 안에서 Claude를 coordinator로 실행
+agent-mux --engine codex --coordinator get-shit-done-agent \
+  --effort xhigh --full \
+  "Migrate the auth module to the new API, test everything, audit the result"
+```
+
+다만 설정 복잡도가 올라가고, agent-mux 자체가 아직 초기 단계라는 점은 감안해야 해요.
+
+## 어떤 Usecase에 쓸 수 있을까요?
+
+리서치하면서 정리한 실용적인 적용 포인트예요.
+
+**세컨드 오피니언** — Claude가 작성한 코드를 Codex에 리뷰 요청하거나, 그 반대도 가능해요. 두 모델의 관점이 다르니까 놓치는 부분을 잡아낼 수 있죠.
+
+**강점 기반 routing** — 아키텍처 설계와 문서 작성은 Claude Opus에, 정밀 코드 변경과 디버깅은 Codex에 맡기는 패턴이에요. MCP 서버를 통해 자연스럽게 위임이 이뤄지거든요.
+
+**대규모 refactoring** — Codex의 넓은 컨텍스트 윈도우로 monorepo 전체를 파악한 뒤, Claude로 세부 구현을 진행하는 방식도 가능해요.
+
+## 제약사항과 주의할 점
+
+당연히 제약도 있어요.
+
+**비용 이중 발생** — Claude API와 OpenAI API를 동시에 사용하니까 비용이 두 배 가까이 들 수 있어요. 모든 작업에 양쪽 모델을 쓸 필요는 없고, 가치가 큰 작업에만 선별적으로 사용하는 게 현실적이에요.
+
+**인증 분리** — Codex는 ChatGPT 구독 또는 OpenAI API 키가 별도로 필요해요. `codex login`으로 ChatGPT 계정 인증을 해두면 편하죠.
+
+**컨텍스트 단절** — MCP를 통한 호출이라 Claude의 전체 컨텍스트가 Codex로 전달되지 않아요. 프롬프트로 명시한 내용만 넘어가거든요. 중요한 맥락은 프롬프트에 충분히 담아야 해요.
+
+**실험적 상태** — `codex mcp-server`에는 아직 experimental 태그가 붙어 있어요. API 변경 가능성을 염두에 두는 게 좋죠.
+
+## 지금 바로 시작하려면
+
+Quick Win부터 잡으면 돼요. 딱 두 줄이에요.
+
+```bash
+npm install -g @openai/codex && codex login
+claude mcp add --transport stdio --scope user codex -- codex mcp-server
+```
+
+이후 Claude Code에서 "Codex로 이 함수 리뷰해줘" 같은 자연어 요청을 하면, Claude가 자동으로 Codex MCP 도구를 호출해요. 사용 패턴이 잡히면 slash command로 자주 쓰는 워크플로우를 래핑하고, 더 복잡한 오케스트레이션이 필요해지면 agent-mux를 검토하는 순서가 자연스럽겠죠.
+
+---
+
 # Perplexity MCP 대신 쓸 수 있는 웹 검색 MCP 5종 비교
 
 URL: https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/
@@ -527,148 +669,6 @@ claude mcp add exa --transport http "https://mcp.exa.ai/mcp?tools=web_search_exa
 **Brave Search는 조건부 추천이에요.** 매달 \$5 무료 크레딧(~1,000회)이 자동 지급되지만, 신용카드 등록과 attribution이 필수예요. 이 조건이 괜찮다면 Perplexity보다 나은 선택이지만, 신용카드 없이 쓰고 싶다면 Tavily나 Exa가 더 편해요.
 
 Tavily + Exa를 병행하면 월 2,000회까지 무료로 커버할 수 있어요. Brave까지 추가하면 3,000회까지도 가능하고요. Perplexity에 \$10 쓰던 걸 \$0으로 줄일 수 있는 셈이에요.
-
----
-
-# Claude Code에서 OpenAI Codex를 호출하는 4가지 방법
-
-URL: https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/
-Published: 2026-03-15
-Category: tech
-Tags: claude-code, codex, mcp, multi-agent, ai-tooling
-
-> Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 워크플로우를 소개합니다.
-
-Claude Code를 쓰다 보면 가끔 다른 모델의 의견이 궁금할 때가 있어요. "이 구현, Codex한테 한 번 더 검증받아 볼까?" 같은 생각이 드는 순간이죠. 실제로 Claude Code 안에서 OpenAI Codex를 호출할 수 있는 방법이 여러 가지 존재하더라고요. 직접 리서치하고 정리한 4가지 방법을 공유해요.
-
-## 방법 한눈에 보기
-
-| 방법 | 난이도 | 핵심 |
-| --- | --- | --- |
-| Codex 내장 MCP 서버 | 쉬움 | `codex mcp-server` stdio 연결 |
-| 커뮤니티 MCP 래퍼 | 쉬움 | npx 원클릭 설치 |
-| Custom Slash Command | 쉬움 | 단방향 CLI 호출 |
-| agent-mux | 중간 | 멀티엔진 orchestrator |
-
-결론부터 말하면요, 가장 간단하고 강력한 건 첫 번째 방법이에요.
-
-## Codex 내장 MCP 서버 — 가장 추천하는 방법
-
-Codex CLI에는 `codex mcp-server`라는 내장 MCP 서버가 포함되어 있어요. stdio 방식으로 Claude Code에 직접 연결할 수 있거든요. 별도 서버를 띄울 필요가 없어요.
-
-```bash
-# Codex CLI 설치 및 인증
-npm install -g @openai/codex
-codex login
-
-# Claude Code에 MCP 서버 등록
-claude mcp add --transport stdio --scope user codex -- codex mcp-server
-```
-
-이렇게 하면 Claude Code 안에서 두 개의 MCP 도구가 생겨요.
-
-- `codex` — 새 Codex 세션을 시작해요. prompt, approval-policy, sandbox, model 파라미터를 지정할 수 있죠.
-- `codex-reply` — `threadId`로 기존 세션을 이어가요. 대화형 컨텍스트가 유지되니까 후속 질문도 가능해요.
-
-등록이 잘 됐는지 확인하려면 `claude mcp list`를 실행하면 돼요. `codex: codex mcp-server - Connected`가 보이면 성공이에요.
-
-여기서 잠깐, approval-policy 파라미터가 꽤 중요한데요. `untrusted`, `on-request`, `on-failure`, `never` 중에서 선택할 수 있어요. 자동화 파이프라인에서는 `never`로 설정하면 Codex가 별도 승인 없이 작업을 수행하죠.
-
-## 커뮤니티 MCP 래퍼 — 세션 관리가 필요할 때
-
-공식 내장 서버가 부족하다고 느낀다면 커뮤니티에서 만든 MCP 래퍼도 있어요.
-
-```bash
-claude mcp add codex-cli -- npx -y codex-mcp-server
-```
-
-이 래퍼는 세션 관리, 모델 선택, resume 기능 같은 추가 기능을 제공해요. npm 패키지라서 설치도 간단하고요. agency-ai-solutions/openai-codex-mcp 같은 프로젝트는 `write_code`, `explain_code`, `review_code` 같은 특화 메서드도 제공하더라고요.
-
-다만 서드파티인 만큼 업데이트 주기나 모델 지원 범위를 확인하는 게 좋아요.
-
-## Custom Slash Command — 단순하게 쓰고 싶을 때
-
-MCP 서버까지는 필요 없고 특정 작업만 Codex에 맡기고 싶다면 slash command가 적합해요.
-
-```markdown
-<!-- ~/.claude/commands/codex-write.md -->
----
-description: "Generate code using OpenAI Codex CLI"
----
-codex write --language $2 --task "$3" --model o4-mini
-```
-
-```markdown
-<!-- ~/.claude/commands/codex-explain.md -->
----
-description: "Get code explanations from Codex CLI"
----
-codex explain @$1 --focus "$2" --detail comprehensive
-```
-
-Claude Code에서 `/codex-write python "피보나치 수열 생성 함수"` 처럼 호출하면 돼요. 간단하죠.
-
-단점도 명확해요. Claude와의 양방향 상호작용이 안 되거든요. Codex의 출력이 Claude의 컨텍스트로 돌아오긴 하지만, Claude가 Codex 결과를 보고 후속 질문을 던지는 흐름은 만들기 어려워요. 단발성 작업에 적합한 방식이에요.
-
-## agent-mux — 풀 오케스트레이션이 필요할 때
-
-여기서부터 좀 흥미로워져요. agent-mux는 Claude, Codex, OpenCode 등 여러 AI 엔진을 하나의 CLI로 통합하는 orchestrator예요.
-
-```bash
-# Codex로 정밀 코드 변경
-agent-mux --engine codex --reasoning high --effort high \
-  "Refactor auth module in src/auth/"
-
-# Claude로 아키텍처 설계
-agent-mux --engine claude --effort high \
-  "Design the rollback strategy for the payments migration"
-```
-
-핵심은 Claude Code의 subagent 시스템과 결합한다는 거예요. Claude가 아키텍처 설계를 하고, 실제 코드 변경은 Codex에 위임하고, 또 다른 Claude가 리뷰하는 pipeline을 구성할 수 있죠.
-
-감이 오시나요? 엔진별 강점을 태스크에 맞게 routing하는 거예요. Claude Opus는 설계와 추론에 강하고, Codex는 정밀한 코드 변경에 강하잖아요. agent-mux의 GSD(Get Shit Done) coordinator는 각 태스크에 엔진뿐 아니라 적절한 skill과 MCP 서버까지 자동으로 주입해요.
-
-```bash
-# Codex 안에서 Claude를 coordinator로 실행
-agent-mux --engine codex --coordinator get-shit-done-agent \
-  --effort xhigh --full \
-  "Migrate the auth module to the new API, test everything, audit the result"
-```
-
-다만 설정 복잡도가 올라가고, agent-mux 자체가 아직 초기 단계라는 점은 감안해야 해요.
-
-## 어떤 Usecase에 쓸 수 있을까요?
-
-리서치하면서 정리한 실용적인 적용 포인트예요.
-
-**세컨드 오피니언** — Claude가 작성한 코드를 Codex에 리뷰 요청하거나, 그 반대도 가능해요. 두 모델의 관점이 다르니까 놓치는 부분을 잡아낼 수 있죠.
-
-**강점 기반 routing** — 아키텍처 설계와 문서 작성은 Claude Opus에, 정밀 코드 변경과 디버깅은 Codex에 맡기는 패턴이에요. MCP 서버를 통해 자연스럽게 위임이 이뤄지거든요.
-
-**대규모 refactoring** — Codex의 넓은 컨텍스트 윈도우로 monorepo 전체를 파악한 뒤, Claude로 세부 구현을 진행하는 방식도 가능해요.
-
-## 제약사항과 주의할 점
-
-당연히 제약도 있어요.
-
-**비용 이중 발생** — Claude API와 OpenAI API를 동시에 사용하니까 비용이 두 배 가까이 들 수 있어요. 모든 작업에 양쪽 모델을 쓸 필요는 없고, 가치가 큰 작업에만 선별적으로 사용하는 게 현실적이에요.
-
-**인증 분리** — Codex는 ChatGPT 구독 또는 OpenAI API 키가 별도로 필요해요. `codex login`으로 ChatGPT 계정 인증을 해두면 편하죠.
-
-**컨텍스트 단절** — MCP를 통한 호출이라 Claude의 전체 컨텍스트가 Codex로 전달되지 않아요. 프롬프트로 명시한 내용만 넘어가거든요. 중요한 맥락은 프롬프트에 충분히 담아야 해요.
-
-**실험적 상태** — `codex mcp-server`에는 아직 experimental 태그가 붙어 있어요. API 변경 가능성을 염두에 두는 게 좋죠.
-
-## 지금 바로 시작하려면
-
-Quick Win부터 잡으면 돼요. 딱 두 줄이에요.
-
-```bash
-npm install -g @openai/codex && codex login
-claude mcp add --transport stdio --scope user codex -- codex mcp-server
-```
-
-이후 Claude Code에서 "Codex로 이 함수 리뷰해줘" 같은 자연어 요청을 하면, Claude가 자동으로 Codex MCP 도구를 호출해요. 사용 패턴이 잡히면 slash command로 자주 쓰는 워크플로우를 래핑하고, 더 복잡한 오케스트레이션이 필요해지면 agent-mux를 검토하는 순서가 자연스럽겠죠.
 
 ---
 
