@@ -1,7 +1,7 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>ghcord 개발기: Discord에 없는 GitHub 통합, 직접 만든 이야기</title><link>https://monologg.kr/posts/2026/07/17/2026-07-17-ghcord-dev-story/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/17/2026-07-17-ghcord-dev-story/</guid><description>Slack에서 Discord로 옮기고 나서 아쉬웠던 GitHub 통합을 GitHub App 기반 셀프호스팅 서버로 직접 만들었습니다. 설계 결정과 공개 과정을 정리했습니다.</description><pubDate>Fri, 17 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Slack을 떠나 Discord로 왔더니&lt;/h2&gt;
-&lt;p&gt;이번 달에 개인 워크스페이스를 Slack에서 Discord로 옮겼습니다. 혼자 쓰는 워크스페이스에 매달 돈을 내자니 아깝고, 무료 플랜은 90일이 지난 메시지가 사라지니 이래저래 아쉬웠거든요. Discord로 옮기고 나서는 대부분 만족하며 쓰고 있는데, 딱 하나 계속 걸리는 게 있었습니다. &lt;strong&gt;GitHub 통합&lt;/strong&gt;이요.&lt;/p&gt;
-&lt;p&gt;Slack에는 GitHub 공식 앱이 있습니다. &lt;code&gt;/github subscribe owner/repo&lt;/code&gt; 한 줄이면 채널에 알림이 들어오고, 브랜치·라벨 필터도 되고, 채팅에서 이슈를 닫을 수도 있죠. 재미있는 건 이 앱을 &lt;strong&gt;GitHub이 직접 만들어서 운영한다&lt;/strong&gt;는 점입니다. Slack용뿐 아니라 &lt;a href=&quot;https://github.com/integrations/microsoft-teams&quot;&gt;Microsoft Teams용 공식 통합&lt;/a&gt;도 GitHub이 직접 만들고(&quot;built and maintained by GitHub&quot;) 있어요. 기업 고객이 쓰는 협업 도구에는 GitHub이 발벗고 들어가는 겁니다. 심지어 Slack 앱은 2025년 10월에 Copilot이 통합된 새 버전이 나왔을 정도로 지금도 활발히 투자되고 있습니다.&lt;/p&gt;
-&lt;p&gt;그런데 Discord용은 없습니다. Discord는 2024년에 &quot;커뮤니티 챗 앱&quot;으로의 확장을 접고 게임에 재집중하겠다고 선언했고, 2026년 1월에는 IPO를 신청했습니다. 회사의 방향이 그러니 개발 도구 통합이 우선순위에 오를 일은 앞으로도 없어 보입니다. 반면 정작 개발자들은 Discord로 몰려들고 있죠. 오픈소스 프로젝트 커뮤니티, 개발 도구 회사들의 서포트 서버, 심지어 Midjourney처럼 제품 전체가 Discord 위에서 돌아가는 경우까지 있습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>ghcord 개발기: Discord에 없는 GitHub 연동, 직접 만든 이야기</title><link>https://monologg.kr/posts/2026/07/17/2026-07-17-ghcord-dev-story/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/17/2026-07-17-ghcord-dev-story/</guid><description>Slack에서 Discord로 옮기고 나서 아쉬웠던 GitHub 연동을 GitHub App 기반 셀프호스팅 서버로 직접 만들었습니다. 설계 결정과 공개 과정을 정리했습니다.</description><pubDate>Fri, 17 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;Slack을 떠나 Discord로 왔더니&lt;/h2&gt;
+&lt;p&gt;이번 달에 개인 워크스페이스를 Slack에서 Discord로 옮겼습니다. 혼자 쓰는 워크스페이스에 매달 돈을 내자니 아깝고, 무료 플랜은 90일이 지난 메시지가 사라지니 이래저래 아쉬웠거든요. Discord로 옮기고 나서는 대부분 만족하며 쓰고 있는데, 딱 하나 계속 걸리는 게 있었습니다. &lt;strong&gt;GitHub 연동&lt;/strong&gt;이요.&lt;/p&gt;
+&lt;p&gt;Slack에는 GitHub 공식 앱이 있습니다. &lt;code&gt;/github subscribe owner/repo&lt;/code&gt; 한 줄이면 채널에 알림이 들어오고, 브랜치·라벨 필터도 되고, 채팅에서 이슈를 닫을 수도 있죠. 재미있는 건 이 앱을 &lt;strong&gt;GitHub이 직접 만들어서 운영한다&lt;/strong&gt;는 점입니다. Slack용뿐 아니라 &lt;a href=&quot;https://github.com/integrations/microsoft-teams&quot;&gt;Microsoft Teams용 공식 연동&lt;/a&gt;도 GitHub이 직접 만들고(&quot;built and maintained by GitHub&quot;) 있어요. 기업 고객이 쓰는 협업 도구에는 GitHub이 발벗고 들어가는 겁니다. 심지어 Slack 앱은 2025년 10월에 Copilot이 통합된 새 버전이 나왔을 정도로 지금도 활발히 투자되고 있습니다.&lt;/p&gt;
+&lt;p&gt;그런데 Discord용은 없습니다. Discord는 2024년에 &quot;커뮤니티 챗 앱&quot;으로의 확장을 접고 게임에 재집중하겠다고 선언했고, 2026년 1월에는 IPO를 신청했습니다. 회사의 방향이 그러니 개발 도구 연동이 우선순위에 오를 일은 앞으로도 없어 보입니다. 반면 정작 개발자들은 Discord로 몰려들고 있죠. 오픈소스 프로젝트 커뮤니티, 개발 도구 회사들의 서포트 서버, 심지어 Midjourney처럼 제품 전체가 Discord 위에서 돌아가는 경우까지 있습니다.&lt;/p&gt;
 &lt;p&gt;GitHub은 안 만들어주고, Discord도 안 만들어줄 이 공백을, 결국 직접 메우기로 했습니다. 저는 오픈소스를 만들 때 항상 &quot;나에게 필요한 거면 다른 사람에게도 필요하다&quot;는 생각으로 시작하는데, 이번에도 같았습니다. 그렇게 만든 게 &lt;a href=&quot;https://github.com/monologg/ghcord&quot;&gt;ghcord&lt;/a&gt;입니다.&lt;/p&gt;
 &lt;p&gt;&amp;lt;div style=&quot;max-width: 520px; margin: 0 auto;&quot;&amp;gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;./hero-channel.png&quot; alt=&quot;Discord 채널에 도착한 ghcord 알림 — PR 생성, 머지, push&quot; /&gt;&lt;/p&gt;
@@ -109,7 +109,7 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;img src=&quot;./architecture.svg&quot; alt=&quot;ghcord 아키텍처 — 게이트웨이 연결 없이 HTTP만으로 GitHub과 Discord를 잇는다&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./architecture.png&quot; alt=&quot;ghcord 아키텍처 — 게이트웨이 연결 없이 HTTP만으로 GitHub과 Discord를 잇는다&quot; /&gt;&lt;/p&gt;
 &lt;h2&gt;스펙은 새로 짜지 않았습니다&lt;/h2&gt;
 &lt;p&gt;기능 스펙을 정할 때는 고민을 거의 안 했습니다. &lt;strong&gt;GitHub for Slack의 명령어 체계를 그대로 목표로 삼았거든요.&lt;/strong&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;/github subscribe owner/repo reviews comments
@@ -133,7 +133,7 @@
 &lt;li&gt;Discord 서버의 Manage Server 권한&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;처음 설정에 30분 정도 걸리고, 단계별 가이드는 &lt;a href=&quot;https://github.com/monologg/ghcord/blob/main/docs/README.md&quot;&gt;레포의 Setup Guide&lt;/a&gt;에 정리해 뒀습니다.&lt;/p&gt;
-&lt;p&gt;저는 지금 제 모든 GitHub 알림을 ghcord로 받고 있습니다. 저처럼 Slack에서 Discord로 넘어왔는데 GitHub 통합이 아쉬웠던 분이라면, 한번 띄워 보세요. 🙂&lt;/p&gt;
+&lt;p&gt;저는 지금 제 모든 GitHub 알림을 ghcord로 받고 있습니다. 저처럼 Slack에서 Discord로 넘어왔는데 GitHub 연동이 아쉬웠던 분이라면, 한번 띄워 보세요. 🙂&lt;/p&gt;
 </content:encoded></item><item><title>httpx2, Pydantic이 이어받은 httpx — 바꿔도 될까, 얼마나 빨라졌을까</title><link>https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/</guid><description>Pydantic이 포크한 httpx2의 등장 배경과 httpx 대비 개선점, drop-in 호환성의 함정, 그리고 aiohttp까지 포함한 async 벤치마크 결과를 실제 마이그레이션 경험과 함께 정리했어요.</description><pubDate>Fri, 17 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;FastAPI 프로젝트에서 테스트를 돌리는데 낯선 warning이 떴어요.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;StarletteDeprecationWarning: Using `httpx` with `starlette.testclient`
 is deprecated; install `httpx2` instead.
