@@ -3,7 +3,9 @@
 &lt;p&gt;Slack에는 GitHub 공식 앱이 있습니다. &lt;code&gt;/github subscribe owner/repo&lt;/code&gt; 한 줄이면 채널에 알림이 들어오고, 브랜치·라벨 필터도 되고, 채팅에서 이슈를 닫을 수도 있죠. 재미있는 건 이 앱을 &lt;strong&gt;GitHub이 직접 만들어서 운영한다&lt;/strong&gt;는 점입니다. Slack용뿐 아니라 &lt;a href=&quot;https://github.com/integrations/microsoft-teams&quot;&gt;Microsoft Teams용 공식 통합&lt;/a&gt;도 GitHub이 직접 만들고(&quot;built and maintained by GitHub&quot;) 있어요. 기업 고객이 쓰는 협업 도구에는 GitHub이 발벗고 들어가는 겁니다. 심지어 Slack 앱은 2025년 10월에 Copilot이 통합된 새 버전이 나왔을 정도로 지금도 활발히 투자되고 있습니다.&lt;/p&gt;
 &lt;p&gt;그런데 Discord용은 없습니다. Discord는 2024년에 &quot;커뮤니티 챗 앱&quot;으로의 확장을 접고 게임에 재집중하겠다고 선언했고, 2026년 1월에는 IPO를 신청했습니다. 회사의 방향이 그러니 개발 도구 통합이 우선순위에 오를 일은 앞으로도 없어 보입니다. 반면 정작 개발자들은 Discord로 몰려들고 있죠. 오픈소스 프로젝트 커뮤니티, 개발 도구 회사들의 서포트 서버, 심지어 Midjourney처럼 제품 전체가 Discord 위에서 돌아가는 경우까지 있습니다.&lt;/p&gt;
 &lt;p&gt;GitHub은 안 만들어주고, Discord도 안 만들어줄 이 공백을, 결국 직접 메우기로 했습니다. 저는 오픈소스를 만들 때 항상 &quot;나에게 필요한 거면 다른 사람에게도 필요하다&quot;는 생각으로 시작하는데, 이번에도 같았습니다. 그렇게 만든 게 &lt;a href=&quot;https://github.com/monologg/ghcord&quot;&gt;ghcord&lt;/a&gt;입니다.&lt;/p&gt;
+&lt;p&gt;&amp;lt;div style=&quot;max-width: 520px; margin: 0 auto;&quot;&amp;gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;./hero-channel.png&quot; alt=&quot;Discord 채널에 도착한 ghcord 알림 — PR 생성, 머지, push&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;h2&gt;이미 있는 선택지들은 왜 아쉬운가&lt;/h2&gt;
 &lt;h3&gt;Discord 내장 webhook&lt;/h3&gt;
 &lt;p&gt;사실 Discord에는 GitHub 알림을 받는 내장 기능이 있습니다. 채널 webhook URL 끝에 &lt;code&gt;/github&lt;/code&gt;을 붙여서 GitHub 레포의 webhook으로 등록하면, Discord가 GitHub payload를 알아서 메시지로 변환해 줍니다. 간단한 용도로는 이걸로 충분하고, 저도 처음엔 이걸 썼습니다.&lt;/p&gt;
