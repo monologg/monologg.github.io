@@ -10,6 +10,7 @@
 - https://huggingface.co/monologg
 
 ## Articles
+- [ghcord 개발기: Discord에 없는 GitHub 통합, 직접 만든 이야기](https://monologg.kr/posts/2026/07/17/2026-07-17-ghcord-dev-story/): Slack에서 Discord로 옮기고 나서 아쉬웠던 GitHub 통합을 GitHub App 기반 셀프호스팅 서버로 직접 만들었습니다. 설계 결정과 공개 과정을 정리했습니다.
 - [httpx2, Pydantic이 이어받은 httpx — 바꿔도 될까, 얼마나 빨라졌을까](https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/): Pydantic이 포크한 httpx2의 등장 배경과 httpx 대비 개선점, drop-in 호환성의 함정, 그리고 aiohttp까지 포함한 async 벤치마크 결과를 실제 마이그레이션 경험과 함께 정리했어요.
 - [Claude Code에서 Notion MCP를 read-only로 제한하는 방법](https://monologg.kr/posts/2026/03/20/2026-03-20-notion-mcp-read-only-setup/): Notion MCP가 read+write 권한을 모두 갖고 있어서, Notion Integration의 Capabilities를 조정해 read-only로 전환한 과정을 정리했어요.
 - [Antigravity 터미널에서 Claude Code Shift+Enter 개행 설정하기](https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/): Claude Code를 IDE 내장 터미널에서 쓰다 보면, 여러 줄 입력이 필요할 때가 많아요.

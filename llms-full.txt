@@ -12,6 +12,119 @@ concatenated for easy consumption by LLMs. For the index-only version see /llms.
 
 ---
 
+# ghcord 개발기: Discord에 없는 GitHub 통합, 직접 만든 이야기
+
+URL: https://monologg.kr/posts/2026/07/17/2026-07-17-ghcord-dev-story/
+Published: 2026-07-17
+Category: tech
+Tags: ghcord, discord, github-app, self-hosted, open-source
+
+> Slack에서 Discord로 옮기고 나서 아쉬웠던 GitHub 통합을 GitHub App 기반 셀프호스팅 서버로 직접 만들었습니다. 설계 결정과 공개 과정을 정리했습니다.
+
+## Slack을 떠나 Discord로 왔더니
+
+이번 달에 개인 워크스페이스를 Slack에서 Discord로 옮겼습니다. 혼자 쓰는 워크스페이스에 매달 돈을 내자니 아깝고, 무료 플랜은 90일이 지난 메시지가 사라지니 이래저래 아쉬웠거든요. Discord로 옮기고 나서는 대부분 만족하며 쓰고 있는데, 딱 하나 계속 걸리는 게 있었습니다. **GitHub 통합**이요.
+
+Slack에는 GitHub 공식 앱이 있습니다. `/github subscribe owner/repo` 한 줄이면 채널에 알림이 들어오고, 브랜치·라벨 필터도 되고, 채팅에서 이슈를 닫을 수도 있죠. 재미있는 건 이 앱을 **GitHub이 직접 만들어서 운영한다**는 점입니다. Slack용뿐 아니라 [Microsoft Teams용 공식 통합](https://github.com/integrations/microsoft-teams)도 GitHub이 직접 만들고("built and maintained by GitHub") 있어요. 기업 고객이 쓰는 협업 도구에는 GitHub이 발벗고 들어가는 겁니다. 심지어 Slack 앱은 2025년 10월에 Copilot이 통합된 새 버전이 나왔을 정도로 지금도 활발히 투자되고 있습니다.
+
+그런데 Discord용은 없습니다. Discord는 2024년에 "커뮤니티 챗 앱"으로의 확장을 접고 게임에 재집중하겠다고 선언했고, 2026년 1월에는 IPO를 신청했습니다. 회사의 방향이 그러니 개발 도구 통합이 우선순위에 오를 일은 앞으로도 없어 보입니다. 반면 정작 개발자들은 Discord로 몰려들고 있죠. 오픈소스 프로젝트 커뮤니티, 개발 도구 회사들의 서포트 서버, 심지어 Midjourney처럼 제품 전체가 Discord 위에서 돌아가는 경우까지 있습니다.
+
+GitHub은 안 만들어주고, Discord도 안 만들어줄 이 공백을, 결국 직접 메우기로 했습니다. 저는 오픈소스를 만들 때 항상 "나에게 필요한 거면 다른 사람에게도 필요하다"는 생각으로 시작하는데, 이번에도 같았습니다. 그렇게 만든 게 [ghcord](https://github.com/monologg/ghcord)입니다.
+
+![Discord 채널에 도착한 ghcord 알림 — PR 생성, 머지, push](./hero-channel.png)
+
+## 이미 있는 선택지들은 왜 아쉬운가
+
+### Discord 내장 webhook
+
+사실 Discord에는 GitHub 알림을 받는 내장 기능이 있습니다. 채널 webhook URL 끝에 `/github`을 붙여서 GitHub 레포의 webhook으로 등록하면, Discord가 GitHub payload를 알아서 메시지로 변환해 줍니다. 간단한 용도로는 이걸로 충분하고, 저도 처음엔 이걸 썼습니다.
+
+다만 써보면 한계가 명확합니다.
+
+- **레포마다 webhook을 등록해야 합니다.** 레포가 수십 개면 수십 번 반복해야 하고, 새 레포를 만들 때마다 또 해야 합니다. 제가 포기한 직접적인 이유입니다.
+- 어떤 이벤트를 보낼지는 GitHub webhook 설정에서 고를 수 있지만, 거기까지입니다. Discord가 처리하는 이벤트는 [18종으로 고정](https://docs.discord.com/developers/resources/webhook#execute-githubcompatible-webhook)돼 있고, 지원하지 않는 이벤트(예: workflow 관련)는 [조용히 무시됩니다](https://github.com/discord/discord-api-docs/issues/6203).
+- 메시지 포맷을 바꿀 수 없고, 브랜치·라벨 필터도 없고, 당연히 단방향입니다. Discord에서 이슈를 닫는다든가 하는 건 불가능합니다.
+
+### 서드파티 봇들은 왜 오래가지 못했나
+
+"그럼 누가 봇을 만들지 않았을까?" 싶어서 오픈소스 지형을 꽤 철저히 뒤졌습니다. GitHub 키워드·토픽 검색, top.gg, awesome 리스트까지. 결론부터 말하면 **GitHub for Slack의 Discord판 등가물은 존재하지 않았고**, 부분적인 시도들은 대부분 관리가 멈춘 상태였습니다.
+
+몇 개만 살펴보면:
+
+- [ijsKoud/gitcord](https://github.com/ijsKoud/gitcord) — GitHub 알림 embed를 보기 좋게 바꿔주는 봇이었는데, 2025년 1월에 아카이브됐습니다.
+- [MichaelZhao21/pr-discord-notif](https://github.com/MichaelZhao21/pr-discord-notif) — 2년 정도 유지되다 2022년 11월에 멈췄습니다. Discord가 구버전 API(v6/v7)를 종료하고 [message content 접근을 별도 승인제로 전환](https://github.com/discord/discord-api-docs/discussions/5412)한 시기와 겹칩니다.
+- [holmityd/GitHub-Issues-Discord-Threads-Bot](https://github.com/holmityd/GitHub-Issues-Discord-Threads-Bot) — GitHub 이슈와 Discord 스레드의 양방향 실시간 동기화라는 야심찬 스코프였는데, "댓글 하나를 지우면 Discord 포스트 전체가 삭제되는" 버그가 미해결인 채로 7개월 만에 멈췄습니다.
+- [facebookarchive/mention-bot](https://github.com/facebookarchive/mention-bot) — 스타 3.3k의 유명 프로젝트였지만, 모두가 중앙 호스팅 인스턴스 하나에 의존하는 구조라 운영이 중단되자 모든 사용자가 함께 쓸 수 없게 됐습니다.
+
+이유는 제각각처럼 보이지만 공통점이 있습니다. Discord 플랫폼은 2020년 인텐트 도입, 2022년 구버전 API 종료와 message content 접근 제한, 슬래시 커맨드 전환까지 몇 년 사이 큰 변화를 여러 번 겪었습니다. 게이트웨이(상시 WebSocket 연결)에 의존하는 봇은 이런 변화가 있을 때마다 코드를 손봐야 했고, 취미로 유지되던 프로젝트들은 그 시점마다 하나둘 업데이트가 끊겼습니다. 중앙에서 인스턴스를 호스팅하는 모델도 문제였습니다. 사용자가 늘수록 서버 비용과 운영 부담이 메인테이너 한 사람에게 몰리는 구조라, 운영자가 손을 놓는 순간 모든 사용자가 함께 서비스를 잃게 됩니다.
+
+## 앞선 프로젝트들에게 배운 설계
+
+ghcord의 설계는 앞선 프로젝트들이 겪은 문제를 피하는 방향으로 정해졌습니다.
+
+**첫째, GitHub App 하나로 전체 레포를 커버합니다.** 레포별 webhook 대신 GitHub App을 계정에 한 번 설치하면("All repositories") 지금 있는 레포 전부는 물론, 앞으로 만들 레포까지 자동으로 커버됩니다. 어떤 채널이 어떤 레포를 구독할지는 Discord 쪽에서 슬래시 커맨드로 관리하고요. "레포마다 등록"이라는 내장 webhook의 가장 큰 불편이 여기서 사라집니다.
+
+**둘째, 게이트웨이를 쓰지 않습니다.** 알림 발신은 REST와 webhook으로, 슬래시 커맨드는 HTTP interactions endpoint로 처리합니다. Discord가 커맨드 호출을 서버로 HTTP POST해 주는 방식이라 상시 연결이 아예 필요 없습니다. 부수 효과가 재미있는데, 이 구조에서는 봇이 채널의 메시지를 **읽을 권한이 없는 게 아니라 읽을 통로 자체가 없습니다.** 게이트웨이 연결도, message content 접근도 원천적으로 안 쓰니까요. 앞서 본 플랫폼 변화가 대부분 게이트웨이 쪽에서 일어났다는 걸 생각하면, 애초에 게이트웨이를 쓰지 않는 것이 가장 확실한 대비이기도 했습니다.
+
+**셋째, 셀프호스팅 전용입니다.** 호스팅 인스턴스를 제공하지 않습니다. GitHub App도, private key도, 봇 토큰도 전부 사용자 본인이 발급해서 본인 서버에 둡니다. 자격 증명이 남의 서버를 거치지 않고, 들어오는 요청은 전부 서명 검증에 실패하면 버리는(fail-closed) 구조입니다. 각자 자기 인스턴스를 띄우는 모델이라 Discord의 봇 검증 심사를 받을 일도, 다른 사용자를 위해 서버를 24시간 운영할 일도 없습니다. 중앙 인스턴스 하나가 멈추면 모두가 멈추는 문제도 애초에 생기지 않고요.
+
+정리하면 이렇게 비교할 수 있습니다.
+
+| | Discord 내장 webhook | GitHub for Slack | ghcord |
+|---|:---:|:---:|:---:|
+| 이벤트 알림 | ✅ 포맷 고정 | ✅ | ✅ 상세한 embed |
+| 채널별 이벤트 선택 | 제한적 | ✅ | ✅ |
+| 브랜치 / 라벨 필터 | ❌ | ✅ | ✅ |
+| 계정 전체 구독 (신규 레포 포함) | ❌ 레포별 등록 | ✅ | ✅ |
+| 슬래시 커맨드로 구독 관리 | ❌ | ✅ | ✅ |
+| 개인 DM 알림 (리뷰 요청, 멘션) | ❌ | ✅ | ✅ |
+| 채팅에서 이슈 열기/닫기 | ❌ | ✅ | ✅ |
+| 리뷰 리마인더 | ❌ | ✅ | ✅ |
+| 링크 미리보기 | ❌ | ✅ 자동 | ➖ `/github preview`로 온디맨드 |
+| 이슈/PR별 스레드 그룹핑 | ❌ | ✅ | ❌ |
+| 호스팅 | — | GitHub이 호스팅 | 셀프호스팅 |
+
+![ghcord 아키텍처 — 게이트웨이 연결 없이 HTTP만으로 GitHub과 Discord를 잇는다](./architecture.svg)
+
+## 스펙은 새로 짜지 않았습니다
+
+기능 스펙을 정할 때는 고민을 거의 안 했습니다. **GitHub for Slack의 명령어 체계를 그대로 목표로 삼았거든요.**
+
+```
+/github subscribe owner/repo reviews comments
+/github unsubscribe owner/repo commits
+/github subscribe owner            # 계정 단위 구독
+/github open · close · reopen · preview
+/github signin · signout
+```
+
+기본 구독은 `issues`, `pulls`, `commits`, `releases`, `deployments`, 옵트인은 `reviews`, `comments`, `branches`, `commits:<branch-glob>` — feature 토큰의 이름과 의미까지 Slack 앱의 어휘를 따랐습니다. 이렇게 한 이유는 단순합니다. 이미 수년간 검증된 UX가 있는데 새로 발명할 이유가 없고, 무엇보다 저처럼 Slack에서 넘어온 사람이라면 **배울 게 하나도 없기 때문**입니다. 그게 그 자체로 기능이라고 생각했습니다.
+
+Slack 앱을 기준으로 삼으니 설계를 점검하는 잣대도 생겼습니다. 예를 들어 개인 DM 알림을 처음 만들 때는 GitHub 계정과 Discord 유저를 config 파일에 손으로 매핑하는 방식이었는데, "Slack 앱은 이걸 어떻게 하지?" 하고 보니 `/github signin`으로 OAuth 연결을 하더라고요. 그대로 따라 만들었고, 당연히 훨씬 나은 방식이었습니다. 반대로 나란히 놓고 비교하다 보니 발견한 개선 여지도 있습니다. Slack 앱의 라벨 필터는 레포당 하나만 걸 수 있고 새로 걸면 덮어써지는데, 이런 부분은 굳이 따라 하지 않아도 되는 거죠.
+
+![/github subscribe 명령과 확인 응답](./subscribe-command.png)
+
+## 만들고 공개하기까지
+
+개발은 Claude Code와 함께 했습니다. 설계 문서를 먼저 쓰고, 작업을 이슈 단위로 쪼개서 PR마다 테스트와 함께 머지하는 흐름을 유지했더니, 며칠 만에 첫 버전을 서버에 올릴 수 있었습니다. 애플리케이션 코드는 약 2,200줄(Python/FastAPI)로 생각보다 아담합니다. 테스트가 본체보다 큰 프로젝트가 됐는데, webhook payload를 받아서 변환하는 코드 특성상 이게 맞는 방향이라고 봅니다.
+
+어느 정도 만들고 나서는 공개 준비를 했습니다. 라이선스는 MIT로 정하고, README와 스크린샷과 로고를 다듬고, CI·커버리지 배지를 붙이고, v0.1.0을 릴리즈했습니다. 코드를 공개하는 것과 프로젝트를 공개하는 것 사이에는 생각보다 할 일이 많더라고요.
+
+## 직접 써보기
+
+ghcord는 셀프호스팅 방식이라 초대 링크 같은 건 없고, 직접 띄워야 합니다. 필요한 건 네 가지입니다.
+
+- Docker가 도는 작은 서버 (RAM 256MB면 여유 있게 돕니다)
+- 공개 HTTPS 엔드포인트 (도메인 + 리버스 프록시, 또는 Cloudflare Tunnel / Tailscale Funnel 같은 터널)
+- GitHub App을 만들 수 있는 계정/조직 권한
+- Discord 서버의 Manage Server 권한
+
+처음 설정에 30분 정도 걸리고, 단계별 가이드는 [레포의 Setup Guide](https://github.com/monologg/ghcord/blob/main/docs/README.md)에 정리해 뒀습니다.
+
+저는 지금 제 모든 GitHub 알림을 ghcord로 받고 있습니다. 저처럼 Slack에서 Discord로 넘어왔는데 GitHub 통합이 아쉬웠던 분이라면, 한번 띄워 보세요. 🙂
+
+---
+
 # httpx2, Pydantic이 이어받은 httpx — 바꿔도 될까, 얼마나 빨라졌을까
 
 URL: https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/
