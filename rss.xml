@@ -134,28 +134,28 @@
 &lt;/ul&gt;
 &lt;p&gt;처음 설정에 30분 정도 걸리고, 단계별 가이드는 &lt;a href=&quot;https://github.com/monologg/ghcord/blob/main/docs/README.md&quot;&gt;레포의 Setup Guide&lt;/a&gt;에 정리해 뒀습니다.&lt;/p&gt;
 &lt;p&gt;저는 지금 제 모든 GitHub 알림을 ghcord로 받고 있습니다. 저처럼 Slack에서 Discord로 넘어왔는데 GitHub 연동이 아쉬웠던 분이라면, 한번 띄워 보세요. 🙂&lt;/p&gt;
-</content:encoded></item><item><title>httpx2, Pydantic이 이어받은 httpx — 바꿔도 될까, 얼마나 빨라졌을까</title><link>https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/</guid><description>Pydantic이 포크한 httpx2의 등장 배경과 httpx 대비 개선점, drop-in 호환성의 함정, 그리고 aiohttp까지 포함한 async 벤치마크 결과를 실제 마이그레이션 경험과 함께 정리했어요.</description><pubDate>Fri, 17 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;FastAPI 프로젝트에서 테스트를 돌리는데 낯선 warning이 떴어요.&lt;/p&gt;
+</content:encoded></item><item><title>httpx2, Pydantic이 이어받은 httpx — 바꿔도 될까, 얼마나 빨라졌을까</title><link>https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/</guid><description>Pydantic이 포크한 httpx2의 등장 배경과 httpx 대비 개선점, drop-in 호환성의 함정, aiohttp까지 포함한 async 벤치마크 결과를 실제 마이그레이션 경험과 함께 정리합니다.</description><pubDate>Fri, 17 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;FastAPI 프로젝트에서 테스트를 돌리다가 낯선 warning을 만났습니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;StarletteDeprecationWarning: Using `httpx` with `starlette.testclient`
 is deprecated; install `httpx2` instead.
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;httpx2라니, httpx 2.0이 나온 건가 싶었는데 아니더라고요. Pydantic 팀이 httpx를 통째로 포크한 별도 패키지였어요. Starlette 1.2+의 TestClient가 이미 httpx2 기반으로 넘어가면서 기존 httpx 경로를 deprecated 처리한 상황이었죠. 그래서 이참에 httpx2가 뭔지, 기존 httpx와 뭐가 다른지, 그냥 바꿔도 되는지를 제대로 조사해봤어요.&lt;/p&gt;
-&lt;h2&gt;httpx2는 어쩌다 나왔을까요?&lt;/h2&gt;
-&lt;p&gt;httpx2는 Pydantic 팀이 2026년 5월에 시작한 encode/httpx의 공식 후속 포크예요. 원본 httpx는 requests의 뒤를 잇는 표준 HTTP 클라이언트로 자리 잡았지만, 정작 유지보수 활동은 한동안 뜸했거든요. 그 공백을 Pydantic이 &quot;신뢰할 수 있는 유지보수 경로와 신속한 보안 업데이트&quot;를 내걸고 이어받은 거예요.&lt;/p&gt;
-&lt;p&gt;첫 릴리스 v2.0.0이 2026년 5월 12일에 나왔고, 두 달 만에 v2.7.0까지 왔어요. 속도가 상당하죠. 커뮤니티 반응도 재밌는데, Pydantic보다 먼저 httpxyz라는 별도 포크를 만들었던 그룹조차 &quot;httpx2가 &apos;blessed&apos; 포크가 되어야 한다&quot;며 자기 포크 대신 httpx2를 지지하고 나섰어요. 사실상 생태계의 합의가 끝난 셈이에요.&lt;/p&gt;
-&lt;h2&gt;뭐가 좋아졌을까요?&lt;/h2&gt;
-&lt;p&gt;API 자체는 포크 시점의 최신 httpx와 완전 호환이고, 그 위에 개선이 쌓였어요.&lt;/p&gt;
+&lt;p&gt;httpx 2.0이 나온 건가 싶었는데 아니더라고요. &lt;code&gt;httpx2&lt;/code&gt;는 Pydantic 팀이 httpx를 통째로 포크한 별도 패키지였습니다. Starlette 1.2+의 TestClient가 이미 httpx2 기반으로 넘어가면서 기존 httpx 경로를 deprecated 처리한 상황이었습니다. 이참에 httpx2가 무엇인지, 기존 httpx와 무엇이 다른지, 그대로 바꿔도 되는지를 제대로 조사했고 이 글에 그 결과를 정리합니다.&lt;/p&gt;
+&lt;h2&gt;httpx2가 나온 배경&lt;/h2&gt;
+&lt;p&gt;httpx2는 Pydantic 팀이 2026년 5월에 시작한 encode/httpx의 공식 후속 포크입니다. 원본 httpx는 requests의 뒤를 잇는 표준 HTTP 클라이언트로 자리 잡았지만, 정작 유지보수 활동은 한동안 뜸했습니다. 그 공백을 Pydantic이 &quot;신뢰할 수 있는 유지보수 경로와 신속한 보안 업데이트&quot;를 내걸고 이어받은 것입니다.&lt;/p&gt;
+&lt;p&gt;첫 릴리스 v2.0.0이 2026년 5월 12일에 나왔고, 두 달 만에 v2.7.0까지 왔습니다. 상당히 빠른 속도입니다. 커뮤니티 반응도 흥미로운데, Pydantic보다 먼저 httpxyz라는 별도 포크를 만들었던 그룹조차 &quot;httpx2가 &apos;blessed&apos; 포크가 되어야 한다&quot;며 자기 포크 대신 httpx2를 지지하고 나섰습니다. 사실상 생태계의 합의가 끝난 셈이죠.&lt;/p&gt;
+&lt;h2&gt;httpx 대비 달라진 점&lt;/h2&gt;
+&lt;p&gt;API 자체는 포크 시점의 최신 httpx와 완전 호환이고, 그 위에 개선이 쌓였습니다.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;인증서&lt;/strong&gt;: &lt;code&gt;certifi&lt;/code&gt; 대신 &lt;code&gt;truststore&lt;/code&gt;를 사용해서 OS 신뢰 저장소를 그대로 따라가요&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;압축&lt;/strong&gt;: Python 3.14+에서 stdlib &lt;code&gt;compression.zstd&lt;/code&gt;로 zstd를 기본 활성화했어요&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;구조&lt;/strong&gt;: 별도 패키지였던 httpcore를 저장소에 병합해서 의존성이 단순해졌고요&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;인증서&lt;/strong&gt;: &lt;code&gt;certifi&lt;/code&gt; 대신 &lt;code&gt;truststore&lt;/code&gt;를 사용해 OS 신뢰 저장소를 그대로 따라갑니다&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;압축&lt;/strong&gt;: Python 3.14+에서 stdlib &lt;code&gt;compression.zstd&lt;/code&gt;로 zstd를 기본 활성화했습니다&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;구조&lt;/strong&gt;: 별도 패키지였던 httpcore를 저장소에 병합해 의존성이 단순해졌습니다&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;성능&lt;/strong&gt;: memoryview 기반 버퍼 처리, anyio &lt;code&gt;fast_acquire&lt;/code&gt; 최적화 (v2.3.0)&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;동시성&lt;/strong&gt;: RLock 기반 스레드 안전성 개선, HTTP/2 semaphore 버그 수정 (v2.4.0)&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;보안&lt;/strong&gt;: 연쇄 Content-Encoding 디코더를 5개로 제한해 압축 폭탄을 방어해요 (v2.4.0)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;보안&lt;/strong&gt;: 연쇄 Content-Encoding 디코더를 5개로 제한해 압축 폭탄을 방어합니다 (v2.4.0)&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;신기능&lt;/strong&gt;: 네이티브 WebSocket 지원(httpx-ws 벤더링), &lt;code&gt;QUERY&lt;/code&gt; 메서드 지원 (v2.6.0)&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;여기서 눈여겨볼 게 anyio &lt;code&gt;fast_acquire&lt;/code&gt;예요. 원래 encode/httpcore에 PR로 올라와 있었는데 방치되던 최적화를 httpx2가 흡수한 거거든요. 유지보수가 살아있는 포크의 장점이 바로 이런 데서 드러나요.&lt;/p&gt;
-&lt;h2&gt;그냥 바꿔도 될까요?&lt;/h2&gt;
-&lt;p&gt;결론부터 말하면요, 직접 작성한 코드에서는 사실상 drop-in이에요. 패키지 이름과 모듈 이름이 &lt;code&gt;httpx2&lt;/code&gt;로 바뀌었으니 import만 고치면 돼요.&lt;/p&gt;
+&lt;p&gt;이 중에서 눈여겨볼 것이 anyio &lt;code&gt;fast_acquire&lt;/code&gt;입니다. 원래 encode/httpcore에 PR로 올라와 있었는데 방치되던 최적화를 httpx2가 흡수한 것이거든요. 유지보수가 살아있는 포크의 장점이 바로 이런 데서 드러납니다.&lt;/p&gt;
+&lt;h2&gt;직접 작성한 코드는 사실상 drop-in&lt;/h2&gt;
+&lt;p&gt;직접 작성한 코드에서는 사실상 drop-in입니다. 패키지 이름과 모듈 이름이 &lt;code&gt;httpx2&lt;/code&gt;로 바뀌었으니 import만 고치면 됩니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# before
 import httpx
 
@@ -172,15 +172,15 @@ async with httpx2.AsyncClient(
 ) as client:
     ...
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;실제로 &lt;code&gt;:%s/httpx/httpx2&lt;/code&gt; 치환만으로 업그레이드를 끝냈다는 보고가 있을 정도예요. 저도 FastAPI 프로젝트의 테스트 코드를 이 방식으로 옮겼고, 185개 테스트가 전부 그대로 통과했어요.&lt;/p&gt;
-&lt;p&gt;다만 함정이 하나 있어요. &lt;strong&gt;httpx 객체를 주고받는 서드파티 라이브러리는 여전히 &lt;code&gt;httpx&lt;/code&gt; 타입에 바인딩되어 있다&lt;/strong&gt;는 점이에요. 제 프로젝트에서 딱 그런 코드가 나왔는데요.&lt;/p&gt;
+&lt;p&gt;실제로 &lt;code&gt;:%s/httpx/httpx2&lt;/code&gt; 치환만으로 업그레이드를 끝냈다는 보고가 있을 정도입니다. 저도 FastAPI 프로젝트의 테스트 코드를 이 방식으로 옮겼고, 185개 테스트가 전부 그대로 통과했습니다.&lt;/p&gt;
+&lt;p&gt;다만 함정이 하나 있습니다. &lt;strong&gt;httpx 객체를 주고받는 서드파티 라이브러리는 여전히 &lt;code&gt;httpx&lt;/code&gt; 타입에 바인딩되어 있다&lt;/strong&gt;는 점입니다. 제 프로젝트에서 딱 그런 코드가 나왔습니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# OpenAI SDK 호출을 감싼 어댑터 코드
 except httpx.TimeoutException as exc:
     ...
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이 예외는 OpenAI SDK가 내부에서 던지는 거라서, &lt;code&gt;httpx2.TimeoutException&lt;/code&gt;으로 바꾸면 오히려 예외를 못 잡게 돼요. 다른 클래스거든요. &lt;code&gt;opentelemetry-instrumentation-httpx&lt;/code&gt;처럼 httpx 자체를 계측하는 라이브러리도 마찬가지고요. 이런 코드는 해당 SDK가 httpx2로 넘어갈 때까지 httpx로 남겨둬야 해요. 다행히 두 패키지는 모듈 이름이 달라서 충돌 없이 공존할 수 있어요. 당분간 둘 다 설치되어 있는 게 정상인 거예요.&lt;/p&gt;
-&lt;h2&gt;속도 차이는 있을까요?&lt;/h2&gt;
-&lt;p&gt;궁금하잖아요. 마침 httpx vs httpx2 vs aiohttp를 같은 조건에서 돌린 벤치마크가 있어요 (Python 3.14.6, httpx 0.28.1 / httpx2 2.4.0 / aiohttp 3.14.1, 로컬 서버). 코드까지 직접 확인해봤는데 &lt;code&gt;AsyncClient&lt;/code&gt; + &lt;code&gt;asyncio.gather()&lt;/code&gt; 기반, 즉 &lt;strong&gt;전부 async 기준&lt;/strong&gt;이에요.&lt;/p&gt;
+&lt;p&gt;이 예외는 OpenAI SDK가 내부에서 던지는 것이라서, &lt;code&gt;httpx2.TimeoutException&lt;/code&gt;으로 바꾸면 오히려 예외를 못 잡게 됩니다. 이름만 같을 뿐 다른 클래스거든요. &lt;code&gt;opentelemetry-instrumentation-httpx&lt;/code&gt;처럼 httpx 자체를 계측하는 라이브러리도 마찬가지입니다. 이런 코드는 해당 SDK가 httpx2로 넘어갈 때까지 httpx로 남겨둬야 합니다. 다행히 두 패키지는 모듈 이름이 달라서 충돌 없이 공존할 수 있고, 당분간 둘 다 설치되어 있는 것이 정상적인 상태입니다.&lt;/p&gt;
+&lt;h2&gt;벤치마크로 본 속도 차이&lt;/h2&gt;
+&lt;p&gt;마침 httpx vs httpx2 vs aiohttp를 같은 조건에서 돌린 벤치마크가 있습니다 (Python 3.14.6, httpx 0.28.1 / httpx2 2.4.0 / aiohttp 3.14.1, 로컬 서버). 코드까지 직접 확인해봤는데 &lt;code&gt;AsyncClient&lt;/code&gt; + &lt;code&gt;asyncio.gather()&lt;/code&gt; 기반, 즉 &lt;strong&gt;전부 async 기준&lt;/strong&gt;입니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -211,28 +211,24 @@ except httpx.TimeoutException as exc:
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;두 가지가 보이시나요? 첫째, 직렬 요청에서 httpx와 httpx2는 거의 같아요. 둘째, 병렬 + 커넥션 풀링 조합에서 격차가 폭발해요. httpx2가 httpx보다 5.7배 빠르거든요.&lt;/p&gt;
-&lt;p&gt;이 마지막 줄이 핵심이에요. 원본 httpx는 커넥션 풀링을 켜고 동시 요청을 쏘면 오히려 성능이 붕괴하는 병목이 있었어요. median이 704ms까지 치솟아서 풀링을 끈 것보다 6배 이상 느려지는, 말이 안 되는 상황이었죠. encode 저장소에 &quot;not production ready under load&quot;라는 제목으로 보고됐던 바로 그 문제예요. httpx2는 락 경합의 원인을 anyio &lt;code&gt;fast_acquire&lt;/code&gt;와 RLock 전환으로 고쳐서 이 병목을 제거했어요.&lt;/p&gt;
-&lt;p&gt;sync 클라이언트는 어떨까요? 별도 벤치마크는 없지만 사실상 httpx와 동일하다고 보면 돼요. fast_acquire는 async 경로 전용 개선이고, sync에 해당하는 변경은 memoryview(소폭)와 RLock(속도가 아닌 멀티스레드 안전성) 정도거든요.&lt;/p&gt;
-&lt;h2&gt;aiohttp가 훨씬 빠른데, 왜 다들 httpx를 쓸까요?&lt;/h2&gt;
-&lt;p&gt;표를 다시 보면 aiohttp가 httpx2보다도 직렬 5배, 병렬 18배 빨라요. httpx2가 고친 건 httpx의 병적인 풀링 병목이지, aiohttp를 따라잡은 게 아니에요. 격차의 원인은 구조적이에요. aiohttp는 asyncio 전용으로 설계된 단일 목적 클라이언트에 C 확장 가속까지 얹었고, httpx 계열은 sync/async 겸용 추상화 레이어(transport 계층, anyio, 순수 파이썬 sans-IO 파서)를 거치니까요.&lt;/p&gt;
-&lt;p&gt;그런데도 생태계의 기본값은 httpx예요. 이유가 있어요.&lt;/p&gt;
+&lt;p&gt;표에서 두 가지가 드러납니다. 직렬 요청에서는 httpx와 httpx2가 거의 같고, 병렬 + 커넥션 풀링 조합에서는 격차가 폭발합니다. httpx2가 httpx보다 5.7배 빠릅니다.&lt;/p&gt;
+&lt;p&gt;이 마지막 줄이 핵심입니다. 원본 httpx는 커넥션 풀링을 켜고 동시 요청을 쏘면 오히려 성능이 붕괴하는 병목이 있었습니다. median이 704ms까지 치솟아서 풀링을 끈 것보다 6배 이상 느려지는, 납득하기 어려운 상황이었죠. encode 저장소에 &quot;not production ready under load&quot;라는 제목으로 보고됐던 바로 그 문제입니다. httpx2는 락 경합의 원인을 anyio &lt;code&gt;fast_acquire&lt;/code&gt;와 RLock 전환으로 고쳐서 이 병목을 제거했습니다.&lt;/p&gt;
+&lt;p&gt;sync 클라이언트는 별도 벤치마크가 없지만 사실상 httpx와 동일하다고 보면 됩니다. &lt;code&gt;fast_acquire&lt;/code&gt;는 async 경로 전용 개선이고, sync에 해당하는 변경은 memoryview(소폭)와 RLock(속도가 아닌 멀티스레드 안전성) 정도이기 때문입니다.&lt;/p&gt;
+&lt;h2&gt;aiohttp가 더 빠른데도 생태계 기본값은 httpx인 이유&lt;/h2&gt;
+&lt;p&gt;표를 다시 보면 aiohttp가 httpx2보다도 직렬 5배, 병렬 18배 빠릅니다. httpx2가 고친 것은 httpx의 병적인 풀링 병목이지, aiohttp를 따라잡은 것이 아닙니다. 격차의 원인은 구조적입니다. aiohttp는 asyncio 전용으로 설계된 단일 목적 클라이언트에 C 확장 가속까지 얹었고, httpx 계열은 sync/async 겸용 추상화 레이어(transport 계층, anyio, 순수 파이썬 sans-IO 파서)를 거치기 때문입니다.&lt;/p&gt;
+&lt;p&gt;그런데도 생태계의 기본값은 httpx입니다. 가장 큰 이유는 &lt;strong&gt;requests와 같은 API를 sync/async 양쪽에서 제공한다&lt;/strong&gt;는 점입니다. aiohttp는 async 전용에 API 스타일도 완전히 다릅니다. requests를 알면 바로 쓸 수 있고, async가 필요해져도 같은 라이브러리를 쓴다는 것이 가장 큰 진입 이유입니다.&lt;/p&gt;
+&lt;p&gt;SDK 저자에게 이상적인 구조라는 점도 큽니다. OpenAI, Anthropic SDK가 httpx를 쓰는 이유이기도 한데, sync·async 클라이언트를 하나의 코드베이스로 만들 수 있고 transport 추상화로 HTTP 레이어를 갈아끼울 수 있습니다. &lt;code&gt;openai[aiohttp]&lt;/code&gt;가 정확히 그 패턴입니다. API는 httpx 스타일을 유지하면서, 성능이 필요한 밑단만 aiohttp로 교체하는 것이죠.&lt;/p&gt;
+&lt;p&gt;테스트 생태계의 표준이라는 점도 무시할 수 없습니다. &lt;code&gt;ASGITransport&lt;/code&gt;로 FastAPI/Starlette 앱을 네트워크 없이 인프로세스로 호출할 수 있습니다. Starlette TestClient가 httpx2 기반인 것도, respx 같은 mocking 도구가 붙어 있는 것도 이 때문입니다. 여기에 기본값의 안전함도 더해집니다. 기본 timeout이 있고(requests·aiohttp식 무한 대기 없음), redirect를 명시적으로 처리하며, 전체 타입 힌트와 HTTP/2 지원, trio 호환까지 갖추고 있습니다.&lt;/p&gt;
+&lt;p&gt;그리고 결정적으로, 실제 API 호출은 네트워크 레이턴시가 지배합니다. 수십에서 수백 ms짜리 왕복에서 클라이언트 오버헤드 0.4ms vs 0.09ms는 측정조차 어렵습니다. 위 벤치마크는 로컬호스트 마이크로벤치마크라 격차가 극대화된 값입니다. aiohttp의 우위가 실질적인 것은 대량 크롤링이나 fan-out처럼 초당 수백에서 수천 건 요청을 쏟아내는 워크로드뿐입니다.&lt;/p&gt;
+&lt;h2&gt;그래서 이렇게 정리했습니다&lt;/h2&gt;
+&lt;p&gt;제 프로젝트의 선택 기준은 다음과 같이 정리됐습니다.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;requests와 같은 API를 sync/async 양쪽에서 제공해요.&lt;/strong&gt; aiohttp는 async 전용에 API 스타일도 완전히 다르잖아요. &quot;requests 알면 바로 쓰고, async가 필요해져도 같은 라이브러리&quot;라는 게 가장 큰 진입 이유예요&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;SDK 저자에게 이상적인 구조예요.&lt;/strong&gt; OpenAI, Anthropic SDK가 httpx를 쓰는 이유죠. sync·async 클라이언트를 하나의 코드베이스로 만들고, transport 추상화로 HTTP 레이어를 갈아끼울 수 있어요. &lt;code&gt;openai[aiohttp]&lt;/code&gt;가 정확히 그 패턴이에요 — API는 httpx 스타일, 성능이 필요한 밑단만 aiohttp로 교체&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;테스트 생태계의 표준이에요.&lt;/strong&gt; &lt;code&gt;ASGITransport&lt;/code&gt;로 FastAPI/Starlette 앱을 네트워크 없이 인프로세스로 호출할 수 있어요. Starlette TestClient가 httpx2 기반인 것도, respx 같은 mocking 도구가 붙어 있는 것도 이 때문이에요&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;기본값이 더 안전해요.&lt;/strong&gt; 기본 timeout(requests·aiohttp식 무한 대기 없음), 명시적 redirect 처리, 전체 타입 힌트, HTTP/2 지원, trio 호환까지&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;그리고 결정적으로, 실제 API 호출은 네트워크 레이턴시가 지배해요. 수십에서 수백 ms짜리 왕복에서 클라이언트 오버헤드 0.4ms vs 0.09ms는 측정조차 어렵거든요. 저 벤치마크는 로컬호스트 마이크로벤치마크라 격차가 극대화된 값이에요. aiohttp의 우위가 실질적인 건 대량 크롤링이나 fan-out처럼 초당 수백에서 수천 건 요청을 쏟아내는 워크로드뿐이에요.&lt;/p&gt;
-&lt;h2&gt;그래서 어떻게 정리했나요&lt;/h2&gt;
-&lt;p&gt;제 프로젝트의 선택 기준은 이렇게 정리됐어요.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;기본값은 httpx2&lt;/strong&gt; — 테스트, 저빈도 API 호출, SDK 연동. DX와 생태계가 이유예요&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;기본값은 httpx2&lt;/strong&gt; — 테스트, 저빈도 API 호출, SDK 연동. DX와 생태계가 이유입니다&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;실측된 hot path만 aiohttp&lt;/strong&gt; — 고빈도 아웃바운드 호출은 aiohttp 클라이언트와 &lt;code&gt;openai[aiohttp]&lt;/code&gt; 유지&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;서드파티가 끌어오는 httpx는 억지로 걷어내지 않기&lt;/strong&gt; — SDK들이 httpx2로 넘어갈 때 따라가면 돼요&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;서드파티가 끌어오는 httpx는 억지로 걷어내지 않기&lt;/strong&gt; — SDK들이 httpx2로 넘어갈 때 따라가면 됩니다&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;테스트 코드의 httpx를 httpx2로 옮기는 데 걸린 시간은 import 두 줄 수정이 전부였고, 테스트는 전부 통과했어요. Starlette가 이미 방향을 정했고 Pydantic이 유지보수를 책임지는 이상, 새 프로젝트라면 처음부터 httpx2로 시작하는 게 맞다고 봐요.&lt;/p&gt;
-&lt;p&gt;참고한 자료는 다음과 같아요.&lt;/p&gt;
+&lt;p&gt;테스트 코드의 httpx를 httpx2로 옮기는 데 든 작업은 import 두 줄 수정이 전부였고, 테스트는 전부 통과했습니다. Starlette가 이미 방향을 정했고 Pydantic이 유지보수를 책임지는 이상, 새 프로젝트라면 처음부터 httpx2로 시작하는 것이 맞다고 봅니다.&lt;/p&gt;
+&lt;p&gt;참고한 자료는 다음과 같습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/pydantic/httpx2&quot;&gt;pydantic/httpx2&lt;/a&gt; / &lt;a href=&quot;https://github.com/pydantic/httpx2/releases&quot;&gt;Releases&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/fastapi/fastapi/discussions/15742&quot;&gt;httpx deprecated for starlette TestClient — fastapi/fastapi#15742&lt;/a&gt;&lt;/li&gt;
@@ -241,9 +237,9 @@ except httpx.TimeoutException as exc:
 &lt;li&gt;&lt;a href=&quot;https://github.com/encode/httpcore/pull/953&quot;&gt;anyio fast_acquire 최적화 원본 PR — encode/httpcore#953&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/encode/httpx/discussions/3100&quot;&gt;Httpx not production ready under load — encode/httpx#3100&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>Claude Code에서 Notion MCP를 read-only로 제한하는 방법</title><link>https://monologg.kr/posts/2026/03/20/2026-03-20-notion-mcp-read-only-setup/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/20/2026-03-20-notion-mcp-read-only-setup/</guid><description>Notion MCP가 read+write 권한을 모두 갖고 있어서, Notion Integration의 Capabilities를 조정해 read-only로 전환한 과정을 정리했어요.</description><pubDate>Fri, 20 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code에서 Notion MCP를 연결하면 페이지 읽기뿐 아니라 생성, 수정, 삭제까지 전부 가능하다는 걸 알고 계셨나요? 저는 &lt;code&gt;/mcp&lt;/code&gt; 커맨드로 Notion을 연결한 뒤 도구 목록을 보고서야 write 권한이 포함되어 있다는 걸 깨달았어요. 읽기만 하고 싶었는데 말이죠.&lt;/p&gt;
+</content:encoded></item><item><title>Claude Code에서 Notion MCP를 read-only로 제한하는 방법</title><link>https://monologg.kr/posts/2026/03/20/2026-03-20-notion-mcp-read-only-setup/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/20/2026-03-20-notion-mcp-read-only-setup/</guid><description>Notion MCP가 read+write 권한을 모두 갖고 있어, Notion Integration의 Capabilities를 조정해 read-only로 전환한 과정을 정리합니다.</description><pubDate>Fri, 20 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code에서 Notion MCP를 연결하면 페이지 읽기뿐 아니라 생성, 수정, 삭제까지 전부 가능합니다. 저는 &lt;code&gt;/mcp&lt;/code&gt; 커맨드로 Notion을 연결한 뒤 도구 목록을 보고서야 write 권한이 포함되어 있다는 걸 알았습니다. 읽기만 필요했는데 말이죠. 이 글에서는 Notion MCP를 read-only로 제한하기 위해 검토한 선택지들과 최종 설정 과정을 정리합니다.&lt;/p&gt;
 &lt;h2&gt;문제: Notion MCP는 기본적으로 read+write&lt;/h2&gt;
-&lt;p&gt;Claude Code에서 Notion MCP를 연결하는 가장 간편한 방법은 공식 HTTP endpoint를 쓰는 거예요.&lt;/p&gt;
+&lt;p&gt;Claude Code에서 Notion MCP를 연결하는 가장 간편한 방법은 공식 HTTP endpoint를 쓰는 것입니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;{
   &quot;notion&quot;: {
     &quot;type&quot;: &quot;http&quot;,
@@ -251,15 +247,15 @@ except httpx.TimeoutException as exc:
   }
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이렇게 연결하면 OAuth 인증을 거쳐 Notion workspace에 접근할 수 있어요. 문제는 이 방식이 페이지 조회뿐 아니라 생성(&lt;code&gt;API-post-page&lt;/code&gt;), 수정(&lt;code&gt;API-patch-page&lt;/code&gt;), 삭제(&lt;code&gt;API-delete-a-block&lt;/code&gt;) 도구까지 전부 노출한다는 거예요. &lt;a href=&quot;https://github.com/makenotion/notion-mcp-server&quot;&gt;공식 README&lt;/a&gt;에서도 이런 경고를 하고 있어요.&lt;/p&gt;
+&lt;p&gt;이렇게 연결하면 OAuth 인증을 거쳐 Notion workspace에 접근할 수 있습니다. 문제는 이 방식이 페이지 조회뿐 아니라 생성(&lt;code&gt;API-post-page&lt;/code&gt;), 수정(&lt;code&gt;API-patch-page&lt;/code&gt;), 삭제(&lt;code&gt;API-delete-a-block&lt;/code&gt;) 도구까지 전부 노출한다는 점입니다. &lt;a href=&quot;https://github.com/makenotion/notion-mcp-server&quot;&gt;공식 README&lt;/a&gt;에서도 이런 경고를 하고 있습니다.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&quot;While we limit the scope of Notion API&apos;s exposed (for example, you will not be able to delete databases via MCP), there is a non-zero risk to workspace data by exposing it to LLMs.&quot;&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;MCP 서버 자체가 database 삭제 같은 일부 위험한 작업은 이미 차단하고 있지만, 페이지 생성이나 수정은 여전히 가능하거든요. 실수로 Claude가 Notion 페이지를 수정하는 상황이 충분히 생길 수 있죠. 공식 문서에서도 보안이 중요한 사용자에게는 Integration의 Capabilities를 제한하라고 권장하고 있어요.&lt;/p&gt;
+&lt;p&gt;MCP 서버 자체가 database 삭제 같은 일부 위험한 작업은 이미 차단하고 있지만, 페이지 생성이나 수정은 여전히 가능합니다. 실수로 Claude가 Notion 페이지를 수정하는 상황이 충분히 생길 수 있거든요. 공식 문서에서도 보안이 중요한 사용자에게는 Integration의 Capabilities를 제한하라고 권장하고 있습니다.&lt;/p&gt;
 &lt;h2&gt;세 가지 선택지&lt;/h2&gt;
-&lt;p&gt;read-only로 제한하는 방법을 세 가지 검토해 봤어요.&lt;/p&gt;
+&lt;p&gt;read-only로 제한하는 방법을 세 가지 검토했습니다.&lt;/p&gt;
 &lt;h3&gt;1. Claude Code permissions에서 deny 설정&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;settings.json&lt;/code&gt;의 permissions에 write 계열 도구를 하나씩 deny하는 방식이에요.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;settings.json&lt;/code&gt;의 permissions에 write 계열 도구를 하나씩 deny하는 방식입니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;{
   &quot;permissions&quot;: {
     &quot;deny&quot;: [
@@ -271,25 +267,25 @@ except httpx.TimeoutException as exc:
   }
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;간단하긴 한데, Notion MCP 서버가 도구를 추가하면 deny 목록도 계속 업데이트해야 해요. 새로운 write 도구가 생겨도 모르고 지나칠 수 있거든요.&lt;/p&gt;
+&lt;p&gt;간단하긴 하지만, Notion MCP 서버가 도구를 추가하면 deny 목록도 계속 업데이트해야 합니다. 새로운 write 도구가 생겨도 모르고 지나칠 수 있다는 점이 마음에 걸렸습니다.&lt;/p&gt;
 &lt;h3&gt;2. tool-filter-mcp proxy&lt;/h3&gt;
-&lt;p&gt;Perplexity MCP에서 이미 쓰고 있는 &lt;code&gt;@respawn-app/tool-filter-mcp&lt;/code&gt;로 write 도구를 필터링하는 방법이에요. 다만 현재 Notion이 HTTP 타입이라 stdio 기반인 tool-filter를 직접 끼울 수 없어요. &lt;code&gt;mcp-remote&lt;/code&gt;로 HTTP → stdio bridge를 만들고 그 위에 tool-filter를 씌워야 하는데, proxy가 2중으로 걸려서 좀 무거워요.&lt;/p&gt;
+&lt;p&gt;Perplexity MCP에서 이미 쓰고 있는 &lt;code&gt;@respawn-app/tool-filter-mcp&lt;/code&gt;로 write 도구를 필터링하는 방법입니다. 다만 현재 Notion이 HTTP 타입이라 stdio 기반인 tool-filter를 직접 끼울 수 없습니다. &lt;code&gt;mcp-remote&lt;/code&gt;로 HTTP → stdio bridge를 만들고 그 위에 tool-filter를 씌워야 하는데, proxy가 2중으로 걸려서 구성이 무거워집니다.&lt;/p&gt;
 &lt;h3&gt;3. Notion Integration을 read-only로 생성&lt;/h3&gt;
-&lt;p&gt;Notion Integration 자체의 Capabilities를 &lt;strong&gt;Read content만&lt;/strong&gt; 허용하고, &lt;code&gt;@notionhq/notion-mcp-server&lt;/code&gt; (stdio 방식)로 전환하는 방법이에요. 서버 레벨에서 write가 원천 차단되니까 가장 확실하죠.&lt;/p&gt;
-&lt;p&gt;결론부터 말하면요, 3번이 제일 깔끔했어요.&lt;/p&gt;
+&lt;p&gt;Notion Integration 자체의 Capabilities를 &lt;strong&gt;Read content만&lt;/strong&gt; 허용하고, &lt;code&gt;@notionhq/notion-mcp-server&lt;/code&gt; (stdio 방식)로 전환하는 방법입니다. 서버 레벨에서 write가 원천 차단되기 때문에 가장 확실합니다.&lt;/p&gt;
+&lt;p&gt;저는 3번을 선택했습니다. 클라이언트 쪽 설정에 의존하는 1번이나 proxy를 겹겹이 쌓는 2번과 달리, 권한 자체를 서버에서 제한하는 방식이라 관리할 것이 없었기 때문입니다.&lt;/p&gt;
 &lt;h2&gt;설정 방법&lt;/h2&gt;
 &lt;h3&gt;Notion Internal Integration 생성&lt;/h3&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;a href=&quot;https://www.notion.so/profile/integrations&quot;&gt;notion.so/profile/integrations&lt;/a&gt;에 접속해요.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;New integration&lt;/strong&gt;을 클릭하고 이름을 지정해요 (예: &lt;code&gt;Claude Code Read-only&lt;/code&gt;).&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Configuration&lt;/strong&gt; 탭에서 Capabilities를 &lt;strong&gt;Read content만&lt;/strong&gt; 체크해요. Insert content, Update content, Delete content는 전부 해제하면 돼요.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Secrets&lt;/strong&gt; 탭에서 &lt;code&gt;ntn_****&lt;/code&gt; 형식의 API token을 복사해요.&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://www.notion.so/profile/integrations&quot;&gt;notion.so/profile/integrations&lt;/a&gt;에 접속합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;New integration&lt;/strong&gt;을 클릭하고 이름을 지정합니다 (예: &lt;code&gt;Claude Code Read-only&lt;/code&gt;).&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Configuration&lt;/strong&gt; 탭에서 Capabilities를 &lt;strong&gt;Read content만&lt;/strong&gt; 체크합니다. Insert content, Update content, Delete content는 전부 해제합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Secrets&lt;/strong&gt; 탭에서 &lt;code&gt;ntn_****&lt;/code&gt; 형식의 API token을 복사합니다.&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;여기서 잠깐, 이게 중요한데요. 현재 쓰고 있는 &lt;code&gt;mcp.notion.com&lt;/code&gt; (OAuth 방식)에서는 이 Capabilities 설정을 할 수 없어요. 반드시 Internal Integration token 방식으로 전환해야 해요.&lt;/p&gt;
+&lt;p&gt;한 가지 주의할 점이 있습니다. 현재 쓰고 있는 &lt;code&gt;mcp.notion.com&lt;/code&gt; (OAuth 방식)에서는 이 Capabilities 설정을 할 수 없습니다. 반드시 Internal Integration token 방식으로 전환해야 합니다.&lt;/p&gt;
 &lt;h3&gt;페이지에 Integration 연결&lt;/h3&gt;
-&lt;p&gt;읽고 싶은 Notion 페이지에서 &lt;strong&gt;⋯ → Connect to → 방금 만든 integration&lt;/strong&gt;을 선택해요. 상위 페이지에 연결하면 하위 페이지도 자동으로 접근 권한이 생기거든요.&lt;/p&gt;
+&lt;p&gt;읽고 싶은 Notion 페이지에서 &lt;strong&gt;⋯ → Connect to → 방금 만든 integration&lt;/strong&gt;을 선택합니다. 상위 페이지에 연결하면 하위 페이지도 자동으로 접근 권한이 생깁니다.&lt;/p&gt;
 &lt;h3&gt;Claude Code MCP 설정 변경&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;.claude.json&lt;/code&gt;의 프로젝트별 &lt;code&gt;mcpServers&lt;/code&gt; 설정을 변경해요.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;.claude.json&lt;/code&gt;의 프로젝트별 &lt;code&gt;mcpServers&lt;/code&gt; 설정을 변경합니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;변경 전 (HTTP, OAuth):&lt;/strong&gt;&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;{
   &quot;notion&quot;: {
@@ -309,8 +305,8 @@ except httpx.TimeoutException as exc:
   }
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;설정을 바꾼 뒤 Claude Code를 재시작하면 read-only Notion MCP가 적용돼요. &lt;code&gt;/mcp&lt;/code&gt; 커맨드로 연결 상태를 확인할 수 있어요.&lt;/p&gt;
-&lt;h2&gt;OAuth vs API token, 뭐가 다를까요?&lt;/h2&gt;
+&lt;p&gt;설정을 바꾼 뒤 Claude Code를 재시작하면 read-only Notion MCP가 적용됩니다. &lt;code&gt;/mcp&lt;/code&gt; 커맨드로 연결 상태를 확인할 수 있습니다.&lt;/p&gt;
+&lt;h2&gt;OAuth 방식과 API token 방식의 차이&lt;/h2&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -342,23 +338,19 @@ except httpx.TimeoutException as exc:
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;API token 방식이 권한 범위도 좁히고, 접근할 수 있는 페이지도 명시적으로 제한할 수 있어서 보안 관점에서 더 나아요.&lt;/p&gt;
+&lt;p&gt;API token 방식은 권한 범위를 좁힐 수 있을 뿐 아니라, 접근할 수 있는 페이지도 명시적으로 제한할 수 있어서 보안 관점에서 더 낫습니다.&lt;/p&gt;
 &lt;h2&gt;결과&lt;/h2&gt;
-&lt;p&gt;이제 Claude Code에서 Notion 페이지를 읽을 수는 있지만, 실수로 수정하거나 삭제할 위험은 없어요. Integration Capabilities에서 Read content만 허용했기 때문에 서버 자체에서 write 요청을 거부하거든요. Claude Code의 permission 설정에 의존하지 않아도 되니까 훨씬 안전해요.&lt;/p&gt;
-</content:encoded></item><item><title>Antigravity 터미널에서 Claude Code Shift+Enter 개행 설정하기</title><link>https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/</guid><description>Claude Code를 IDE 내장 터미널에서 쓰다 보면, 여러 줄 입력이 필요할 때가 많아요.</description><pubDate>Tue, 17 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code를 IDE 내장 터미널에서 쓰다 보면, 여러 줄 입력이 필요할 때가 많아요. 그런데 Shift+Enter를 눌러도 개행이 안 되고 그냥 전송되어 버리는 경험, 한 번쯤 있지 않나요?&lt;/p&gt;
-&lt;p&gt;저도 Antigravity에서 SSH로 우분투 서버에 접속한 뒤 Claude Code를 사용하는데, Shift+Enter가 먹히지 않아서 한참 삽질했어요. 해결 과정을 정리해 봤어요.&lt;/p&gt;
-&lt;h2&gt;&lt;code&gt;/terminal-setup&lt;/code&gt;은 왜 안 될까요?&lt;/h2&gt;
-&lt;p&gt;Claude Code에는 &lt;code&gt;/terminal-setup&lt;/code&gt;이라는 편리한 명령이 있어요. VS Code 계열 터미널에서 Shift+Enter 단축키를 자동으로 잡아주는 기능이죠.&lt;/p&gt;
-&lt;p&gt;그런데 Antigravity에서 실행하면 이런 메시지가 뜨거든요.&lt;/p&gt;
+&lt;p&gt;이제 Claude Code에서 Notion 페이지를 읽을 수는 있지만, 실수로 수정하거나 삭제할 위험은 없습니다. Integration Capabilities에서 Read content만 허용했기 때문에 서버 자체에서 write 요청을 거부하거든요. Claude Code의 permission 설정에 의존하지 않아도 되니 구성도 한결 단순해졌습니다.&lt;/p&gt;
+</content:encoded></item><item><title>Antigravity 터미널에서 Claude Code Shift+Enter 개행 설정하기</title><link>https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/</guid><description>Antigravity 내장 터미널에서 Claude Code의 Shift+Enter 개행이 동작하지 않는 문제를 keybindings.json 수동 설정으로 해결하는 과정을 정리했습니다. /terminal-setup이 지원되지 않는 이유와 임시 대안도 함께 다룹니다.</description><pubDate>Tue, 17 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code를 IDE 내장 터미널에서 쓰다 보면 여러 줄 입력이 필요할 때가 많습니다. 그런데 환경에 따라 Shift+Enter를 눌러도 개행이 되지 않고 입력이 그대로 전송되어 버리는 경우가 있습니다. 저도 Antigravity에서 SSH로 우분투 서버에 접속한 뒤 Claude Code를 사용하는데, Shift+Enter가 먹히지 않아서 한참 삽질했습니다. 이 글에서 그 해결 과정을 정리합니다.&lt;/p&gt;
+&lt;h2&gt;&lt;code&gt;/terminal-setup&lt;/code&gt;이 동작하지 않는 이유&lt;/h2&gt;
+&lt;p&gt;Claude Code에는 &lt;code&gt;/terminal-setup&lt;/code&gt;이라는 명령이 있습니다. VS Code 계열 터미널에서 Shift+Enter 단축키를 자동으로 잡아주는 기능입니다. 그런데 Antigravity에서 실행하면 이런 메시지가 뜹니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;Terminal setup cannot be run from antigravity.
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;현재 &lt;code&gt;/terminal-setup&lt;/code&gt; 자동 설정 대상은 VS Code, Cursor, Windsurf, Zed, Alacritty 정도예요. Antigravity는 VS Code 포크 IDE지만 아직 자동 설정을 지원하지 않아요. 수동 설정이 필요한 거죠.&lt;/p&gt;
+&lt;p&gt;현재 &lt;code&gt;/terminal-setup&lt;/code&gt; 자동 설정 대상은 VS Code, Cursor, Windsurf, Zed, Alacritty 정도입니다. Antigravity는 VS Code 포크 IDE지만 아직 자동 설정 대상에 포함되지 않아서, 수동 설정이 필요합니다.&lt;/p&gt;
 &lt;h2&gt;핵심은 로컬 IDE 키바인딩&lt;/h2&gt;
-&lt;p&gt;여기서 잠깐, 중요한 포인트가 있어요. SSH로 원격 서버에 접속해서 Claude Code를 쓰더라도, Shift+Enter 처리는 &lt;strong&gt;서버가 아니라 로컬 IDE&lt;/strong&gt;에서 먼저 잡혀요.&lt;/p&gt;
-&lt;p&gt;VS Code 계열 IDE는 키 입력을 IDE가 먼저 처리한 뒤, &lt;code&gt;workbench.action.terminal.sendSequence&lt;/code&gt; 같은 방식으로 터미널에 시퀀스를 전달하는 구조거든요. 그래서 서버 쪽 &lt;code&gt;.bashrc&lt;/code&gt;나 &lt;code&gt;stty&lt;/code&gt; 설정을 아무리 바꿔도 소용없어요.&lt;/p&gt;
-&lt;p&gt;바로 이거예요. 로컬 Antigravity의 키바인딩을 건드려야 해요.&lt;/p&gt;
+&lt;p&gt;여기서 짚고 넘어갈 포인트가 하나 있습니다. SSH로 원격 서버에 접속해서 Claude Code를 쓰더라도, Shift+Enter 처리는 &lt;strong&gt;서버가 아니라 로컬 IDE&lt;/strong&gt;에서 먼저 잡힙니다. VS Code 계열 IDE는 키 입력을 IDE가 먼저 처리한 뒤 &lt;code&gt;workbench.action.terminal.sendSequence&lt;/code&gt; 같은 방식으로 터미널에 시퀀스를 전달하는 구조거든요. 그래서 서버 쪽 &lt;code&gt;.bashrc&lt;/code&gt;나 &lt;code&gt;stty&lt;/code&gt; 설정을 아무리 바꿔도 소용이 없고, 로컬 Antigravity의 키바인딩을 건드려야 합니다.&lt;/p&gt;
 &lt;h2&gt;Antigravity keybindings.json 수동 설정&lt;/h2&gt;
-&lt;p&gt;설정 방법은 간단해요.&lt;/p&gt;
+&lt;p&gt;설정 절차는 다음과 같습니다.&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;Antigravity에서 &lt;code&gt;Cmd+Shift+P&lt;/code&gt; (macOS) 또는 &lt;code&gt;Ctrl+Shift+P&lt;/code&gt; (Linux/Windows) 실행&lt;/li&gt;
 &lt;li&gt;&lt;code&gt;Open Keyboard Shortcuts (JSON)&lt;/code&gt; 검색 후 선택&lt;/li&gt;
@@ -371,7 +363,7 @@ except httpx.TimeoutException as exc:
   &quot;when&quot;: &quot;terminalFocus&quot;
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이미 &lt;code&gt;keybindings.json&lt;/code&gt;에 다른 설정이 있다면, 배열 안에 쉼표를 찍고 이 객체만 추가하면 돼요.&lt;/p&gt;
+&lt;p&gt;이미 &lt;code&gt;keybindings.json&lt;/code&gt;에 다른 설정이 있다면, 배열 안에 쉼표를 찍고 이 객체만 추가하면 됩니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;[
   {
     &quot;key&quot;: &quot;ctrl+l&quot;,
@@ -385,21 +377,21 @@ except httpx.TimeoutException as exc:
   }
 ]
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;추가한 뒤에는 Antigravity 창을 완전히 닫고 다시 열어야 적용돼요. &lt;code&gt;Reload Window&lt;/code&gt;로도 되는 경우가 있지만, 완전 재시작이 확실하더라고요.&lt;/p&gt;
-&lt;h2&gt;혹시 &lt;code&gt;shift+enter&lt;/code&gt;가 이미 다른 기능에 묶여 있다면?&lt;/h2&gt;
-&lt;p&gt;기존에 &lt;code&gt;shift+enter&lt;/code&gt;를 다른 command에 바인딩해 뒀다면, 새 바인딩이 제대로 안 먹을 수 있어요. 이 경우 기존 항목을 지우거나, &lt;code&gt;&quot;when&quot;&lt;/code&gt; 조건을 좁혀서 충돌을 피해야 해요. 위 설정의 &lt;code&gt;&quot;when&quot;: &quot;terminalFocus&quot;&lt;/code&gt; 조건 덕분에 터미널에 포커스가 있을 때만 동작하니, 대부분의 경우 충돌이 생기지 않을 거예요.&lt;/p&gt;
-&lt;h2&gt;급할 때는 임시 대안도 있어요&lt;/h2&gt;
-&lt;p&gt;설정을 바꾸기 전까지 당장 여러 줄 입력이 필요하면, Claude Code가 기본 제공하는 대안을 쓸 수 있어요.&lt;/p&gt;
+&lt;p&gt;추가한 뒤에는 Antigravity 창을 완전히 닫고 다시 열어야 적용됩니다. &lt;code&gt;Reload Window&lt;/code&gt;로도 되는 경우가 있지만, 제 경험상 완전 재시작이 확실하더라고요.&lt;/p&gt;
+&lt;h2&gt;기존 바인딩과 충돌하는 경우&lt;/h2&gt;
+&lt;p&gt;기존에 &lt;code&gt;shift+enter&lt;/code&gt;를 다른 command에 바인딩해 뒀다면 새 바인딩이 제대로 동작하지 않을 수 있습니다. 이 경우 기존 항목을 지우거나 &lt;code&gt;&quot;when&quot;&lt;/code&gt; 조건을 좁혀서 충돌을 피해야 합니다. 위 설정은 &lt;code&gt;&quot;when&quot;: &quot;terminalFocus&quot;&lt;/code&gt; 조건 덕분에 터미널에 포커스가 있을 때만 동작하므로, 대부분의 경우 충돌이 생기지 않습니다.&lt;/p&gt;
+&lt;h2&gt;설정 전에 쓸 수 있는 임시 대안&lt;/h2&gt;
+&lt;p&gt;설정을 바꾸기 전까지 당장 여러 줄 입력이 필요하면, Claude Code가 기본 제공하는 대안을 쓸 수 있습니다.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;\&lt;/code&gt; + Enter: 백슬래시 치고 Enter를 누르면 개행으로 처리돼요&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Ctrl+J&lt;/code&gt;: 멀티라인 입력 전환 단축키로, 일부 터미널에서 바로 동작해요&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;\&lt;/code&gt; + Enter: 백슬래시를 치고 Enter를 누르면 개행으로 처리됩니다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;Ctrl+J&lt;/code&gt;: 멀티라인 입력 전환 단축키로, 일부 터미널에서 바로 동작합니다.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;둘 다 Claude Code 공식 문서에 나와 있는 방법이에요.&lt;/p&gt;
-&lt;p&gt;Antigravity가 &lt;code&gt;/terminal-setup&lt;/code&gt; 대상에 포함되면 이 수동 작업이 필요 없어지겠지만, 그 전까지는 &lt;code&gt;keybindings.json&lt;/code&gt; 한 줄이면 충분히 해결돼요.&lt;/p&gt;
-</content:encoded></item><item><title>MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교</title><link>https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</guid><description>Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했어요.</description><pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;MCP 서버를 여러 개 연결하다 보면 도구 수가 순식간에 폭발해요. Atlassian MCP 하나만 연결해도 72개 도구가 딸려오거든요. 여기에 Perplexity, Slack, Plane 같은 MCP를 추가하면 금세 100개를 넘겨버리죠. Antigravity처럼 100개 tool 제한이 걸린 환경에서는 Atlassian 하나 켜면 다른 MCP를 붙일 수조차 없어요.&lt;/p&gt;
-&lt;p&gt;이 문제를 해결하는 방법은 크게 세 가지예요. 하나씩 살펴볼게요.&lt;/p&gt;
+&lt;p&gt;둘 다 Claude Code 공식 문서에 나와 있는 방법입니다.&lt;/p&gt;
+&lt;p&gt;Antigravity가 &lt;code&gt;/terminal-setup&lt;/code&gt; 대상에 포함되면 이 수동 작업이 필요 없어지겠지만, 그 전까지는 &lt;code&gt;keybindings.json&lt;/code&gt; 항목 하나로 해결됩니다.&lt;/p&gt;
+</content:encoded></item><item><title>MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교</title><link>https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</guid><description>Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했습니다.</description><pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;MCP 서버를 여러 개 연결하다 보면 도구 수가 순식간에 불어납니다. Atlassian MCP 하나만 연결해도 72개 도구가 딸려오거든요. 여기에 Perplexity, Slack, Plane 같은 MCP를 추가하면 금세 100개를 넘깁니다. Antigravity처럼 100개 tool 제한이 있는 환경에서는 Atlassian 하나를 켜는 순간 다른 MCP를 붙일 수조차 없게 됩니다.&lt;/p&gt;
+&lt;p&gt;이 문제를 푸는 방법은 크게 세 가지입니다. Claude Code에 내장된 기능 두 가지와, 서버 앞에 proxy를 두는 tool-filter-mcp입니다. 이 글에서는 각각의 동작 방식과 언제 어떤 방법이 맞는지를 정리합니다.&lt;/p&gt;
 &lt;h2&gt;Claude Code 빌트인: MCP Tool Search&lt;/h2&gt;
-&lt;p&gt;Claude Code에는 이미 &lt;strong&gt;MCP Tool Search&lt;/strong&gt;라는 기능이 내장되어 있어요. MCP 도구 설명이 context window의 일정 비율을 넘으면 자동으로 활성화되는데, 모든 도구를 미리 로드하지 않고 필요할 때만 검색해서 불러오는 방식이에요.&lt;/p&gt;
+&lt;p&gt;Claude Code에는 이미 &lt;strong&gt;MCP Tool Search&lt;/strong&gt;라는 기능이 내장되어 있습니다. MCP 도구 설명이 context window의 일정 비율을 넘으면 자동으로 활성화되는데, 모든 도구를 미리 로드하지 않고 필요할 때만 검색해서 불러오는 방식입니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# 기본값: context window의 10% 초과 시 자동 활성화
 ENABLE_TOOL_SEARCH=auto claude
 
@@ -409,9 +401,9 @@ ENABLE_TOOL_SEARCH=auto:5 claude
 # 항상 켜기
 ENABLE_TOOL_SEARCH=true claude
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;context token 절약 측면에서는 효과적이에요. 하지만 여기서 중요한 점이 있어요. Tool Search는 context에 로드되는 도구 설명을 줄여줄 뿐, &lt;strong&gt;도구 수 자체를 줄이지는 않아요.&lt;/strong&gt; Antigravity의 100개 제한 같은 하드 리밋에는 소용이 없다는 뜻이죠.&lt;/p&gt;
+&lt;p&gt;context token 절약 측면에서는 효과적입니다. 다만 Tool Search는 context에 로드되는 도구 설명을 줄여줄 뿐, &lt;strong&gt;도구 수 자체를 줄이지는 않습니다.&lt;/strong&gt; Antigravity의 100개 제한 같은 하드 리밋 앞에서는 소용이 없다는 뜻입니다.&lt;/p&gt;
 &lt;h2&gt;Claude Code 빌트인: settings.json deny&lt;/h2&gt;
-&lt;p&gt;특정 도구 몇 개만 차단하고 싶다면 &lt;code&gt;settings.json&lt;/code&gt;의 deny 권한이 가장 간단해요.&lt;/p&gt;
+&lt;p&gt;특정 도구 몇 개만 차단하고 싶다면 &lt;code&gt;settings.json&lt;/code&gt;의 deny 권한이 가장 간단합니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;{
   &quot;permissions&quot;: {
     &quot;deny&quot;: [
@@ -421,17 +413,17 @@ ENABLE_TOOL_SEARCH=true claude
   }
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;예를 들어 Perplexity MCP에서 &lt;code&gt;perplexity_ask&lt;/code&gt;는 크레딧이 많이 나가니까 차단하고 &lt;code&gt;perplexity_search&lt;/code&gt;만 허용하고 싶다면, 위처럼 한 줄 추가하면 끝이에요. 도구가 2-3개뿐인 MCP에서 하나만 빼는 용도로는 이게 최선이에요.&lt;/p&gt;
+&lt;p&gt;예를 들어 Perplexity MCP에서 크레딧이 많이 나가는 &lt;code&gt;perplexity_ask&lt;/code&gt;는 차단하고 &lt;code&gt;perplexity_search&lt;/code&gt;만 허용하고 싶다면, 위처럼 한 줄만 추가하면 됩니다. 도구가 2-3개뿐인 MCP에서 하나만 빼는 용도로는 이 방법이 최선입니다.&lt;/p&gt;
 &lt;h2&gt;tool-filter-mcp: 대량 필터링이 필요할 때&lt;/h2&gt;
-&lt;p&gt;Atlassian처럼 72개 도구 중 대부분을 걸러내야 하는 경우, &lt;a href=&quot;https://github.com/respawn-app/tool-filter-mcp&quot;&gt;respawn-app/tool-filter-mcp&lt;/a&gt;가 효과적이에요. upstream MCP 서버 앞에 proxy를 두고 regex 기반 deny list로 도구를 필터링하는 방식이거든요.&lt;/p&gt;
+&lt;p&gt;Atlassian처럼 72개 도구 중 대부분을 걸러내야 하는 경우에는 &lt;a href=&quot;https://github.com/respawn-app/tool-filter-mcp&quot;&gt;respawn-app/tool-filter-mcp&lt;/a&gt;가 효과적입니다. upstream MCP 서버 앞에 proxy를 두고 regex 기반 deny list로 도구를 필터링하는 구조거든요.&lt;/p&gt;
 &lt;h3&gt;사용 가능한 도구 먼저 확인하기&lt;/h3&gt;
 &lt;pre&gt;&lt;code&gt;npx @respawn-app/tool-filter-mcp \
   --upstream http://localhost:3000/sse \
   --list-tools --format names
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;--format table&lt;/code&gt;로 하면 설명까지 볼 수 있고, &lt;code&gt;--format names&lt;/code&gt;는 콤마 구분 목록으로 뽑아줘서 deny 패턴을 만들기 편해요.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--format table&lt;/code&gt;로 하면 설명까지 볼 수 있고, &lt;code&gt;--format names&lt;/code&gt;는 콤마 구분 목록으로 뽑아줘서 deny 패턴을 만들기 편합니다.&lt;/p&gt;
 &lt;h3&gt;HTTP/SSE upstream 설정&lt;/h3&gt;
-&lt;p&gt;&lt;code&gt;.mcp.json&lt;/code&gt;에 이렇게 추가하면 돼요.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;.mcp.json&lt;/code&gt;에 아래처럼 추가합니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;{
   &quot;mcpServers&quot;: {
     &quot;atlassian-filtered&quot;: {
@@ -447,7 +439,7 @@ ENABLE_TOOL_SEARCH=true claude
 }
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;stdio upstream 설정&lt;/h3&gt;
-&lt;p&gt;upstream MCP가 npx 기반 stdio 서버라면 &lt;code&gt;--upstream-stdio&lt;/code&gt;를 쓰면 돼요.&lt;/p&gt;
+&lt;p&gt;upstream MCP가 npx 기반 stdio 서버라면 &lt;code&gt;--upstream-stdio&lt;/code&gt;를 사용합니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;{
   &quot;mcpServers&quot;: {
     &quot;atlassian-filtered&quot;: {
@@ -464,9 +456,9 @@ ENABLE_TOOL_SEARCH=true claude
   }
 }
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;code&gt;--&lt;/code&gt; 뒤에 원래 MCP 서버의 실행 명령어를 그대로 넣으면 돼요.&lt;/p&gt;
-&lt;h2&gt;어떤 방법을 언제 쓸까요?&lt;/h2&gt;
-&lt;p&gt;감이 오시나요? 정리하면 이래요.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;--&lt;/code&gt; 뒤에 원래 MCP 서버의 실행 명령어를 그대로 넣으면 됩니다.&lt;/p&gt;
+&lt;h2&gt;상황별 선택 기준&lt;/h2&gt;
+&lt;p&gt;지금까지 살펴본 세 가지 방법을 상황별로 정리하면 다음과 같습니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -493,9 +485,9 @@ ENABLE_TOOL_SEARCH=true claude
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;여기서 잠깐, 한 가지 더 중요한 포인트가 있어요.&lt;/p&gt;
-&lt;h2&gt;Claude Code가 아닌 다른 클라이언트에서는?&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;settings.json&lt;/code&gt; deny와 MCP Tool Search는 &lt;strong&gt;Claude Code 전용&lt;/strong&gt; 기능이에요. OpenAI Codex, Cursor, Windsurf, Claude Desktop 같은 다른 MCP 클라이언트에는 이런 빌트인 필터링이 없거든요.&lt;/p&gt;
+&lt;p&gt;다만 이 표에는 전제가 하나 붙습니다. 앞의 두 방법이 Claude Code에서만 동작한다는 점입니다.&lt;/p&gt;
+&lt;h2&gt;다른 MCP 클라이언트라면 선택지가 하나뿐입니다&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;settings.json&lt;/code&gt; deny와 MCP Tool Search는 &lt;strong&gt;Claude Code 전용&lt;/strong&gt; 기능입니다. OpenAI Codex, Cursor, Windsurf, Claude Desktop 같은 다른 MCP 클라이언트에는 이런 빌트인 필터링이 없습니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -532,15 +524,15 @@ ENABLE_TOOL_SEARCH=true claude
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;MCP 프로토콜 자체가 &quot;서버가 제공하는 도구를 클라이언트가 전부 받는&quot; 구조예요. 클라이언트 쪽에서 필터링을 지원하지 않으면, 서버 앞에 proxy를 두는 것이 유일한 방법이에요.&lt;/p&gt;
-&lt;p&gt;여러 MCP 클라이언트를 동시에 사용한다면 오히려 &lt;strong&gt;tool-filter-mcp로 통일하는 게 관리가 편해요.&lt;/strong&gt; 클라이언트마다 각각의 설정 방식을 외울 필요 없이, MCP 서버 설정 한 곳에서 필터링을 관리할 수 있으니까요.&lt;/p&gt;
+&lt;p&gt;MCP 프로토콜 자체가 서버가 제공하는 도구를 클라이언트가 전부 받는 구조입니다. 클라이언트 쪽에서 필터링을 지원하지 않는다면, 서버 앞에 proxy를 두는 것이 유일한 방법입니다.&lt;/p&gt;
+&lt;p&gt;여러 MCP 클라이언트를 동시에 사용한다면 오히려 &lt;strong&gt;tool-filter-mcp로 통일하는 편이 관리하기 낫습니다.&lt;/strong&gt; 클라이언트마다 각각의 설정 방식을 외울 필요 없이 MCP 서버 설정 한 곳에서 필터링을 관리할 수 있고요.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;[Atlassian MCP] → [tool-filter-mcp] → Claude Code
                                      → Codex
                                      → Cursor
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;필터링된 MCP 서버를 각 클라이언트에 동일하게 연결하면 돼요. 설정 한 번으로 모든 클라이언트에서 동일한 도구 세트를 사용할 수 있죠.&lt;/p&gt;
-&lt;p&gt;MCP 생태계가 커질수록 도구 수 관리는 점점 중요해질 거예요. 지금은 Claude Code의 빌트인 기능과 tool-filter-mcp를 상황에 맞게 조합하는 것이 가장 현실적인 접근이에요.&lt;/p&gt;
-</content:encoded></item><item><title>Claude Code에서 OpenAI Codex를 호출하는 4가지 방법</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</guid><description>Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 워크플로우를 소개합니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code를 쓰다 보면 가끔 다른 모델의 의견이 궁금할 때가 있어요. &quot;이 구현, Codex한테 한 번 더 검증받아 볼까?&quot; 같은 생각이 드는 순간이죠. 실제로 Claude Code 안에서 OpenAI Codex를 호출할 수 있는 방법이 여러 가지 존재하더라고요. 직접 리서치하고 정리한 4가지 방법을 공유해요.&lt;/p&gt;
+&lt;p&gt;필터링된 MCP 서버를 각 클라이언트에 동일하게 연결하면, 설정 한 번으로 모든 클라이언트에서 같은 도구 세트를 사용할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;MCP 생태계가 커질수록 도구 수 관리는 점점 중요한 문제가 될 것입니다. 지금으로서는 Claude Code의 빌트인 기능과 tool-filter-mcp를 상황에 맞게 조합하는 것이 가장 현실적인 접근입니다.&lt;/p&gt;
+</content:encoded></item><item><title>Claude Code에서 OpenAI Codex를 호출하는 4가지 방법</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</guid><description>Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 활용 방법을 정리합니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code를 쓰다 보면 가끔 다른 모델의 의견이 궁금할 때가 있습니다. 이 구현을 Codex한테 한 번 더 검증받아 보고 싶다는 생각이 드는 순간이 있거든요. 실제로 리서치해 보니 Claude Code 안에서 OpenAI Codex를 호출하는 방법이 여러 가지 있었고, 이 글에서 직접 정리한 4가지 방법을 비교합니다.&lt;/p&gt;
 &lt;h2&gt;방법 한눈에 보기&lt;/h2&gt;
 &lt;table&gt;
 &lt;thead&gt;
@@ -573,9 +565,9 @@ ENABLE_TOOL_SEARCH=true claude
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;결론부터 말하면요, 가장 간단하고 강력한 건 첫 번째 방법이에요.&lt;/p&gt;
+&lt;p&gt;이 중 &lt;strong&gt;가장 간단하면서도 강력한 것은 첫 번째, 내장 MCP 서버 방식&lt;/strong&gt;입니다.&lt;/p&gt;
 &lt;h2&gt;Codex 내장 MCP 서버 — 가장 추천하는 방법&lt;/h2&gt;
-&lt;p&gt;Codex CLI에는 &lt;code&gt;codex mcp-server&lt;/code&gt;라는 내장 MCP 서버가 포함되어 있어요. stdio 방식으로 Claude Code에 직접 연결할 수 있거든요. 별도 서버를 띄울 필요가 없어요.&lt;/p&gt;
+&lt;p&gt;Codex CLI에는 &lt;code&gt;codex mcp-server&lt;/code&gt;라는 내장 MCP 서버가 포함되어 있습니다. stdio 방식으로 Claude Code에 직접 연결할 수 있어서 별도 서버를 띄울 필요가 없습니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# Codex CLI 설치 및 인증
 npm install -g @openai/codex
 codex login
@@ -583,21 +575,21 @@ codex login
 # Claude Code에 MCP 서버 등록
 claude mcp add --transport stdio --scope user codex -- codex mcp-server
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이렇게 하면 Claude Code 안에서 두 개의 MCP 도구가 생겨요.&lt;/p&gt;
+&lt;p&gt;이렇게 하면 Claude Code 안에 두 개의 MCP 도구가 생깁니다.&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;code&gt;codex&lt;/code&gt; — 새 Codex 세션을 시작해요. prompt, approval-policy, sandbox, model 파라미터를 지정할 수 있죠.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;codex-reply&lt;/code&gt; — &lt;code&gt;threadId&lt;/code&gt;로 기존 세션을 이어가요. 대화형 컨텍스트가 유지되니까 후속 질문도 가능해요.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;codex&lt;/code&gt; — 새 Codex 세션을 시작합니다. prompt, approval-policy, sandbox, model 파라미터를 지정할 수 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;codex-reply&lt;/code&gt; — &lt;code&gt;threadId&lt;/code&gt;로 기존 세션을 이어갑니다. 대화형 컨텍스트가 유지되므로 후속 질문도 가능합니다.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;등록이 잘 됐는지 확인하려면 &lt;code&gt;claude mcp list&lt;/code&gt;를 실행하면 돼요. &lt;code&gt;codex: codex mcp-server - Connected&lt;/code&gt;가 보이면 성공이에요.&lt;/p&gt;
-&lt;p&gt;여기서 잠깐, approval-policy 파라미터가 꽤 중요한데요. &lt;code&gt;untrusted&lt;/code&gt;, &lt;code&gt;on-request&lt;/code&gt;, &lt;code&gt;on-failure&lt;/code&gt;, &lt;code&gt;never&lt;/code&gt; 중에서 선택할 수 있어요. 자동화 파이프라인에서는 &lt;code&gt;never&lt;/code&gt;로 설정하면 Codex가 별도 승인 없이 작업을 수행하죠.&lt;/p&gt;
+&lt;p&gt;등록이 잘 됐는지는 &lt;code&gt;claude mcp list&lt;/code&gt;로 확인합니다. &lt;code&gt;codex: codex mcp-server - Connected&lt;/code&gt;가 보이면 성공입니다.&lt;/p&gt;
+&lt;p&gt;파라미터 중에서는 approval-policy가 꽤 중요합니다. &lt;code&gt;untrusted&lt;/code&gt;, &lt;code&gt;on-request&lt;/code&gt;, &lt;code&gt;on-failure&lt;/code&gt;, &lt;code&gt;never&lt;/code&gt; 중에서 선택할 수 있는데, 자동화 pipeline에서는 &lt;code&gt;never&lt;/code&gt;로 설정하면 Codex가 별도 승인 없이 작업을 수행합니다.&lt;/p&gt;
 &lt;h2&gt;커뮤니티 MCP 래퍼 — 세션 관리가 필요할 때&lt;/h2&gt;
-&lt;p&gt;공식 내장 서버가 부족하다고 느낀다면 커뮤니티에서 만든 MCP 래퍼도 있어요.&lt;/p&gt;
+&lt;p&gt;공식 내장 서버가 부족하다고 느낀다면 커뮤니티에서 만든 MCP 래퍼도 있습니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;claude mcp add codex-cli -- npx -y codex-mcp-server
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이 래퍼는 세션 관리, 모델 선택, resume 기능 같은 추가 기능을 제공해요. npm 패키지라서 설치도 간단하고요. agency-ai-solutions/openai-codex-mcp 같은 프로젝트는 &lt;code&gt;write_code&lt;/code&gt;, &lt;code&gt;explain_code&lt;/code&gt;, &lt;code&gt;review_code&lt;/code&gt; 같은 특화 메서드도 제공하더라고요.&lt;/p&gt;
-&lt;p&gt;다만 서드파티인 만큼 업데이트 주기나 모델 지원 범위를 확인하는 게 좋아요.&lt;/p&gt;
+&lt;p&gt;이 래퍼는 세션 관리, 모델 선택, resume 기능 같은 추가 기능을 제공하고, npm 패키지라서 설치도 간단합니다. agency-ai-solutions/openai-codex-mcp 같은 프로젝트는 &lt;code&gt;write_code&lt;/code&gt;, &lt;code&gt;explain_code&lt;/code&gt;, &lt;code&gt;review_code&lt;/code&gt; 같은 특화 메서드도 제공하더라고요.&lt;/p&gt;
+&lt;p&gt;다만 서드파티인 만큼 업데이트 주기나 모델 지원 범위는 확인하고 쓰는 것이 좋습니다.&lt;/p&gt;
 &lt;h2&gt;Custom Slash Command — 단순하게 쓰고 싶을 때&lt;/h2&gt;
-&lt;p&gt;MCP 서버까지는 필요 없고 특정 작업만 Codex에 맡기고 싶다면 slash command가 적합해요.&lt;/p&gt;
+&lt;p&gt;MCP 서버까지는 필요 없고 특정 작업만 Codex에 맡기고 싶다면 slash command가 적합합니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;&amp;lt;!-- ~/.claude/commands/codex-write.md --&amp;gt;
 ---
 description: &quot;Generate code using OpenAI Codex CLI&quot;
@@ -610,10 +602,10 @@ description: &quot;Get code explanations from Codex CLI&quot;
 ---
 codex explain @$1 --focus &quot;$2&quot; --detail comprehensive
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Claude Code에서 &lt;code&gt;/codex-write python &quot;피보나치 수열 생성 함수&quot;&lt;/code&gt; 처럼 호출하면 돼요. 간단하죠.&lt;/p&gt;
-&lt;p&gt;단점도 명확해요. Claude와의 양방향 상호작용이 안 되거든요. Codex의 출력이 Claude의 컨텍스트로 돌아오긴 하지만, Claude가 Codex 결과를 보고 후속 질문을 던지는 흐름은 만들기 어려워요. 단발성 작업에 적합한 방식이에요.&lt;/p&gt;
+&lt;p&gt;Claude Code에서 &lt;code&gt;/codex-write python &quot;피보나치 수열 생성 함수&quot;&lt;/code&gt; 처럼 호출하면 됩니다.&lt;/p&gt;
+&lt;p&gt;단점도 명확합니다. Claude와의 양방향 상호작용이 안 되거든요. Codex의 출력이 Claude의 컨텍스트로 돌아오긴 하지만, Claude가 Codex 결과를 보고 후속 질문을 던지는 흐름은 만들기 어렵습니다. 단발성 작업에 적합한 방식입니다.&lt;/p&gt;
 &lt;h2&gt;agent-mux — 풀 오케스트레이션이 필요할 때&lt;/h2&gt;
-&lt;p&gt;여기서부터 좀 흥미로워져요. agent-mux는 Claude, Codex, OpenCode 등 여러 AI 엔진을 하나의 CLI로 통합하는 orchestrator예요.&lt;/p&gt;
+&lt;p&gt;agent-mux는 Claude, Codex, OpenCode 등 여러 AI 엔진을 하나의 CLI로 통합하는 orchestrator입니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# Codex로 정밀 코드 변경
 agent-mux --engine codex --reasoning high --effort high \
   &quot;Refactor auth module in src/auth/&quot;
@@ -622,35 +614,35 @@ agent-mux --engine codex --reasoning high --effort high \
 agent-mux --engine claude --effort high \
   &quot;Design the rollback strategy for the payments migration&quot;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;핵심은 Claude Code의 subagent 시스템과 결합한다는 거예요. Claude가 아키텍처 설계를 하고, 실제 코드 변경은 Codex에 위임하고, 또 다른 Claude가 리뷰하는 pipeline을 구성할 수 있죠.&lt;/p&gt;
-&lt;p&gt;감이 오시나요? 엔진별 강점을 태스크에 맞게 routing하는 거예요. Claude Opus는 설계와 추론에 강하고, Codex는 정밀한 코드 변경에 강하잖아요. agent-mux의 GSD(Get Shit Done) coordinator는 각 태스크에 엔진뿐 아니라 적절한 skill과 MCP 서버까지 자동으로 주입해요.&lt;/p&gt;
+&lt;p&gt;핵심은 Claude Code의 subagent 시스템과 결합할 수 있다는 점입니다. Claude가 아키텍처 설계를 하고, 실제 코드 변경은 Codex에 위임하고, 또 다른 Claude가 리뷰하는 pipeline을 구성할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;결국 &lt;strong&gt;엔진별 강점을 태스크에 맞게 routing하는 구조&lt;/strong&gt;입니다. Claude Opus는 설계와 추론에 강하고 Codex는 정밀한 코드 변경에 강하니, 각자 잘하는 일을 맡기는 것이죠. agent-mux의 GSD(Get Shit Done) coordinator는 각 태스크에 엔진뿐 아니라 적절한 skill과 MCP 서버까지 자동으로 주입합니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# Codex 안에서 Claude를 coordinator로 실행
 agent-mux --engine codex --coordinator get-shit-done-agent \
   --effort xhigh --full \
   &quot;Migrate the auth module to the new API, test everything, audit the result&quot;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;다만 설정 복잡도가 올라가고, agent-mux 자체가 아직 초기 단계라는 점은 감안해야 해요.&lt;/p&gt;
-&lt;h2&gt;어떤 Usecase에 쓸 수 있을까요?&lt;/h2&gt;
-&lt;p&gt;리서치하면서 정리한 실용적인 적용 포인트예요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;세컨드 오피니언&lt;/strong&gt; — Claude가 작성한 코드를 Codex에 리뷰 요청하거나, 그 반대도 가능해요. 두 모델의 관점이 다르니까 놓치는 부분을 잡아낼 수 있죠.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;강점 기반 routing&lt;/strong&gt; — 아키텍처 설계와 문서 작성은 Claude Opus에, 정밀 코드 변경과 디버깅은 Codex에 맡기는 패턴이에요. MCP 서버를 통해 자연스럽게 위임이 이뤄지거든요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;대규모 refactoring&lt;/strong&gt; — Codex의 넓은 컨텍스트 윈도우로 monorepo 전체를 파악한 뒤, Claude로 세부 구현을 진행하는 방식도 가능해요.&lt;/p&gt;
+&lt;p&gt;다만 설정 복잡도가 올라가고, agent-mux 자체가 아직 초기 단계라는 점은 감안해야 합니다.&lt;/p&gt;
+&lt;h2&gt;실용적인 적용 포인트&lt;/h2&gt;
+&lt;p&gt;리서치하면서 정리한 usecase는 크게 세 가지입니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;세컨드 오피니언&lt;/strong&gt; — Claude가 작성한 코드를 Codex에 리뷰 요청하거나, 그 반대도 가능합니다. 두 모델의 관점이 다르기 때문에 한쪽이 놓치는 부분을 잡아낼 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;강점 기반 routing&lt;/strong&gt; — 아키텍처 설계와 문서 작성은 Claude Opus에, 정밀 코드 변경과 디버깅은 Codex에 맡기는 패턴입니다. MCP 서버를 통해 자연스럽게 위임이 이뤄집니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;대규모 refactoring&lt;/strong&gt; — Codex의 넓은 컨텍스트 윈도우로 monorepo 전체를 파악한 뒤, Claude로 세부 구현을 진행하는 방식도 가능합니다.&lt;/p&gt;
 &lt;h2&gt;제약사항과 주의할 점&lt;/h2&gt;
-&lt;p&gt;당연히 제약도 있어요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;비용 이중 발생&lt;/strong&gt; — Claude API와 OpenAI API를 동시에 사용하니까 비용이 두 배 가까이 들 수 있어요. 모든 작업에 양쪽 모델을 쓸 필요는 없고, 가치가 큰 작업에만 선별적으로 사용하는 게 현실적이에요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;인증 분리&lt;/strong&gt; — Codex는 ChatGPT 구독 또는 OpenAI API 키가 별도로 필요해요. &lt;code&gt;codex login&lt;/code&gt;으로 ChatGPT 계정 인증을 해두면 편하죠.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;컨텍스트 단절&lt;/strong&gt; — MCP를 통한 호출이라 Claude의 전체 컨텍스트가 Codex로 전달되지 않아요. 프롬프트로 명시한 내용만 넘어가거든요. 중요한 맥락은 프롬프트에 충분히 담아야 해요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;실험적 상태&lt;/strong&gt; — &lt;code&gt;codex mcp-server&lt;/code&gt;에는 아직 experimental 태그가 붙어 있어요. API 변경 가능성을 염두에 두는 게 좋죠.&lt;/p&gt;
-&lt;h2&gt;지금 바로 시작하려면&lt;/h2&gt;
-&lt;p&gt;Quick Win부터 잡으면 돼요. 딱 두 줄이에요.&lt;/p&gt;
+&lt;p&gt;당연히 제약도 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;비용 이중 발생&lt;/strong&gt; — Claude API와 OpenAI API를 동시에 사용하므로 비용이 두 배 가까이 들 수 있습니다. 모든 작업에 양쪽 모델을 쓸 필요는 없고, 가치가 큰 작업에만 선별적으로 사용하는 것이 현실적입니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;인증 분리&lt;/strong&gt; — Codex는 ChatGPT 구독 또는 OpenAI API 키가 별도로 필요합니다. &lt;code&gt;codex login&lt;/code&gt;으로 ChatGPT 계정 인증을 해두면 편합니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;컨텍스트 단절&lt;/strong&gt; — MCP를 통한 호출이라 Claude의 전체 컨텍스트가 Codex로 전달되지 않습니다. 프롬프트로 명시한 내용만 넘어가거든요. 중요한 맥락은 프롬프트에 충분히 담아야 합니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;실험적 상태&lt;/strong&gt; — &lt;code&gt;codex mcp-server&lt;/code&gt;에는 아직 experimental 태그가 붙어 있습니다. API 변경 가능성은 염두에 두는 것이 좋습니다.&lt;/p&gt;
+&lt;h2&gt;시작은 두 줄이면 됩니다&lt;/h2&gt;
+&lt;p&gt;저는 내장 MCP 서버 방식으로 시작했습니다. 필요한 명령은 딱 두 줄입니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;npm install -g @openai/codex &amp;amp;&amp;amp; codex login
 claude mcp add --transport stdio --scope user codex -- codex mcp-server
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이후 Claude Code에서 &quot;Codex로 이 함수 리뷰해줘&quot; 같은 자연어 요청을 하면, Claude가 자동으로 Codex MCP 도구를 호출해요. 사용 패턴이 잡히면 slash command로 자주 쓰는 워크플로우를 래핑하고, 더 복잡한 오케스트레이션이 필요해지면 agent-mux를 검토하는 순서가 자연스럽겠죠.&lt;/p&gt;
-</content:encoded></item><item><title>Perplexity MCP 대신 쓸 수 있는 웹 검색 MCP 5종 비교</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</guid><description>Perplexity MCP의 비용 부담을 줄이기 위해 Brave Search, Tavily, SearXNG, Exa, ChatGPT MCP 5종을 비교하고 무료 티어 기준 최적 조합을 정리했습니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code에서 웹 검색용으로 Perplexity MCP를 쓰고 있었는데요, 크레딧이 눈에 띄게 줄어들더라고요. 쿼리당 $0.005라 한 번에 큰 돈은 아니지만, 하루에도 수십 번씩 검색하다 보면 월말에 청구서가 꽤 나와요. 무료 API 티어도 없고, Pro 플랜 $20/월에 포함되는 $5 크레딧으로는 1,000번 남짓 검색하면 끝이거든요.&lt;/p&gt;
-&lt;p&gt;그래서 비용 효율적인 대안을 찾아봤어요. Brave Search, Tavily, SearXNG, Exa, 그리고 ChatGPT/OpenAI MCP까지 총 5종을 검토한 결과를 공유해요.&lt;/p&gt;
-&lt;h2&gt;현재 상태: Perplexity MCP는 얼마나 비싼가요?&lt;/h2&gt;
-&lt;p&gt;먼저 기준선을 정리해 볼게요. Perplexity MCP 서버(&lt;code&gt;@perplexity-ai/mcp-server&lt;/code&gt;)는 4개 도구를 제공해요.&lt;/p&gt;
+&lt;p&gt;이후 Claude Code에서 &quot;Codex로 이 함수 리뷰해줘&quot; 같은 자연어 요청을 하면 Claude가 자동으로 Codex MCP 도구를 호출합니다. 사용 패턴이 잡히면 slash command로 자주 쓰는 흐름을 래핑하고, 더 복잡한 오케스트레이션이 필요해지는 시점에 agent-mux를 검토하는 순서가 자연스럽습니다.&lt;/p&gt;
+</content:encoded></item><item><title>Perplexity MCP 대신 쓸 수 있는 웹 검색 MCP 5종 비교</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</guid><description>Perplexity MCP의 비용 부담을 줄이기 위해 Brave Search, Tavily, SearXNG, Exa, ChatGPT MCP 5종을 비교하고 무료 티어 기준 최적 조합을 정리했습니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code에서 웹 검색용으로 Perplexity MCP를 쓰고 있었는데, 크레딧이 눈에 띄게 줄어들더라고요. 쿼리당 $0.005라 한 번에 큰 돈은 아니지만, 하루에도 수십 번씩 검색하다 보면 월말 청구서가 꽤 나옵니다. 무료 API 티어도 없고, Pro 플랜 $20/월에 포함되는 $5 크레딧으로는 1,000번 남짓 검색하면 끝입니다.&lt;/p&gt;
+&lt;p&gt;그래서 비용 효율적인 대안을 찾아봤습니다. Brave Search, Tavily, SearXNG, Exa, 그리고 ChatGPT/OpenAI MCP까지 총 5종을 검토한 결과를 정리합니다.&lt;/p&gt;
+&lt;h2&gt;기준선: Perplexity MCP의 비용 구조&lt;/h2&gt;
+&lt;p&gt;먼저 기준선부터 정리합니다. Perplexity MCP 서버(&lt;code&gt;@perplexity-ai/mcp-server&lt;/code&gt;)는 4개 도구를 제공합니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -687,25 +679,25 @@ claude mcp add --transport stdio --scope user codex -- codex mcp-server
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;저는 tool-filter로 &lt;code&gt;perplexity_ask&lt;/code&gt;, &lt;code&gt;perplexity_research&lt;/code&gt;, &lt;code&gt;perplexity_reason&lt;/code&gt; 3개를 차단하고 가장 저렴한 &lt;code&gt;perplexity_search&lt;/code&gt;만 쓰고 있었어요. 그래도 $5/1K 요청이라 부담이에요.&lt;/p&gt;
-&lt;h2&gt;Brave Search MCP — 무료 티어는 사라졌지만, 월 $5 크레딧이 있어요&lt;/h2&gt;
-&lt;p&gt;Brave Search는 한때 무료 월 2,000회 → 5,000회로 꽤 넉넉한 하드캡 방식의 무료 티어를 제공했어요. 그런데 2026년 2월에 독립 무료 티어가 폐지되고 크레딧 기반 과금 체계로 바뀌었어요.&lt;/p&gt;
-&lt;p&gt;현재는 모든 플랜에 &lt;strong&gt;매달 $5 무료 크레딧이 자동 지급&lt;/strong&gt;돼요. Search 플랜 기준 $5/1,000 requests이니까 월 약 &lt;strong&gt;1,000회까지 무료&lt;/strong&gt;로 검색할 수 있어요. 다만 조건이 있어요.&lt;/p&gt;
+&lt;p&gt;저는 tool-filter로 &lt;code&gt;perplexity_ask&lt;/code&gt;, &lt;code&gt;perplexity_research&lt;/code&gt;, &lt;code&gt;perplexity_reason&lt;/code&gt; 3개를 차단하고 가장 저렴한 &lt;code&gt;perplexity_search&lt;/code&gt;만 쓰고 있었습니다. 그래도 $5/1K 요청이라 부담이 남습니다.&lt;/p&gt;
+&lt;h2&gt;Brave Search MCP — 무료 티어는 사라지고 월 $5 크레딧이 남았습니다&lt;/h2&gt;
+&lt;p&gt;Brave Search는 한때 무료 월 2,000회 → 5,000회로 꽤 넉넉한 하드캡 방식의 무료 티어를 제공했습니다. 그런데 2026년 2월에 독립 무료 티어가 폐지되고 크레딧 기반 과금 체계로 바뀌었습니다.&lt;/p&gt;
+&lt;p&gt;현재는 모든 플랜에 &lt;strong&gt;매달 $5 무료 크레딧이 자동 지급&lt;/strong&gt;됩니다. Search 플랜 기준 $5/1,000 requests이니 월 약 &lt;strong&gt;1,000회까지 무료&lt;/strong&gt;로 검색할 수 있습니다. 다만 조건이 있습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;신용카드 등록 필수&lt;/strong&gt; — 1,000회 초과 시 바로 과금 (하드캡 없음)&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;Attribution 필수&lt;/strong&gt; — 프로젝트 웹사이트/about 페이지에 Brave Search API를 명시해야 크레딧 적용&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;과거 무료 티어(5,000회, 하드캡, attribution 불필요)와 비교하면 조건이 까다로워진 셈이에요.&lt;/p&gt;
+&lt;p&gt;과거 무료 티어(5,000회, 하드캡, attribution 불필요)와 비교하면 조건이 까다로워진 셈입니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;claude mcp add brave-search -- npx -y @brave/brave-search-mcp-server --env BRAVE_API_KEY=YOUR_KEY
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;도구는 6개(웹/로컬/비디오/이미지/뉴스/AI요약)로 Perplexity보다 다양하고, 독립 인덱스 30B+ 페이지를 가진 점은 강점이에요. 무료 크레딧 범위(~1,000회/월) 안에서 쓴다면 비용이 $0이라는 점에서 Perplexity보다 낫지만, Tavily나 Exa처럼 신용카드 없이 무료로 쓸 수 있는 대안과 비교하면 진입 장벽이 있어요.&lt;/p&gt;
+&lt;p&gt;도구는 6개(웹/로컬/비디오/이미지/뉴스/AI요약)로 Perplexity보다 다양하고, 독립 인덱스 30B+ 페이지를 가진 점은 강점입니다. 무료 크레딧 범위(~1,000회/월) 안에서 쓴다면 비용이 $0이라는 점에서 Perplexity보다 낫지만, Tavily나 Exa처럼 신용카드 없이 무료로 쓸 수 있는 대안과 비교하면 진입 장벽이 있습니다.&lt;/p&gt;
 &lt;h2&gt;Tavily MCP — Perplexity의 직접 대체 후보&lt;/h2&gt;
-&lt;p&gt;여기서부터 흥미로워져요. Tavily는 무료 1,000 크레딧/월을 제공하는데, 신용카드도 필요 없어요.&lt;/p&gt;
-&lt;p&gt;설치가 정말 간단하거든요. Remote MCP를 지원해서 한 줄이면 끝이에요.&lt;/p&gt;
+&lt;p&gt;Tavily는 무료 1,000 크레딧/월을 제공하면서 신용카드도 요구하지 않습니다. 이번 비교에서 가장 눈여겨본 후보입니다.&lt;/p&gt;
+&lt;p&gt;설치도 정말 간단하거든요. Remote MCP를 지원해서 한 줄이면 끝입니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;claude mcp add tavily --transport http https://mcp.tavily.com/mcp/
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;API 키 발급도 필요 없고 OAuth 인증으로 브라우저에서 승인만 하면 돼요. 로컬 npm으로 설치하려면 API 키가 필요하지만, Remote MCP 방식이면 그마저도 생략 가능해요.&lt;/p&gt;
-&lt;p&gt;제공하는 도구 4개도 알차요.&lt;/p&gt;
+&lt;p&gt;API 키 발급도 필요 없고 OAuth 인증으로 브라우저에서 승인만 하면 됩니다. 로컬 npm으로 설치하려면 API 키가 필요하지만, Remote MCP 방식이면 그마저도 생략할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;제공하는 도구 4개도 알찬 구성입니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -732,11 +724,11 @@ claude mcp add --transport stdio --scope user codex -- codex mcp-server
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;검색 외에 extract/crawl 기능이 있다는 게 Perplexity와의 차별점이에요. 무료 티어에서 basic search는 1 크레딧, advanced search는 2 크레딧을 소비하니까 월 500~1,000회 검색이 가능해요. 유료로 넘어가면 $0.0075/쿼리로 Perplexity보다 50% 비싸지만, 무료 범위 안에서 쓴다면 $0이에요.&lt;/p&gt;
-&lt;h2&gt;SearXNG MCP — 비용은 0원, 단 Docker가 필요해요&lt;/h2&gt;
-&lt;p&gt;비용만 따지면 SearXNG가 압도적이에요. 완전 무료에 무제한이거든요.&lt;/p&gt;
-&lt;p&gt;SearXNG는 오픈소스 메타서치 엔진이에요. 최대 242개 검색 엔진(Google, Bing, DuckDuckGo, Brave, Wikipedia, GitHub, arXiv 등)에 동시 쿼리해서 결과를 합치고 중복을 제거하죠. 단일 검색 엔진보다 40-60% 더 포괄적인 결과를 돌려줘요.&lt;/p&gt;
-&lt;p&gt;대신 셀프호스팅이 필요해요. Docker로 10-15분이면 설치할 수 있어요.&lt;/p&gt;
+&lt;p&gt;검색 외에 extract/crawl 기능이 있다는 것이 Perplexity와의 차별점입니다. 무료 티어에서 basic search는 1 크레딧, advanced search는 2 크레딧을 소비하므로 월 500~1,000회 검색이 가능합니다. 유료로 넘어가면 $0.0075/쿼리로 Perplexity보다 50% 비싸지만, 무료 범위 안에서 쓴다면 $0입니다.&lt;/p&gt;
+&lt;h2&gt;SearXNG MCP — 비용 0원, 대신 Docker가 필요합니다&lt;/h2&gt;
+&lt;p&gt;비용만 따지면 SearXNG가 압도적입니다. 완전 무료에 무제한이기 때문입니다.&lt;/p&gt;
+&lt;p&gt;SearXNG는 오픈소스 메타서치 엔진입니다. 최대 242개 검색 엔진(Google, Bing, DuckDuckGo, Brave, Wikipedia, GitHub, arXiv 등)에 동시 쿼리해서 결과를 합치고 중복을 제거합니다. 단일 검색 엔진보다 40-60% 더 포괄적인 결과를 돌려주죠.&lt;/p&gt;
+&lt;p&gt;대신 셀프호스팅이 필요합니다. Docker로 10-15분이면 설치할 수 있습니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# SearXNG 설정
 mkdir -p searxng
 cat &amp;gt; searxng/settings.yml &amp;lt;&amp;lt; &apos;EOF&apos;
@@ -762,15 +754,15 @@ docker run -d \
 # MCP 연결
 claude mcp add searxng -e SEARXNG_URL=http://localhost:8080 -- npx -y mcp-searxng
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이 부분이 중요한데요 — &lt;code&gt;settings.yml&lt;/code&gt;에서 JSON 포맷 활성화(&lt;code&gt;formats: - json&lt;/code&gt;)와 limiter 비활성화(&lt;code&gt;server.limiter: false&lt;/code&gt;)를 반드시 설정해야 MCP 서버가 정상 동작해요.&lt;/p&gt;
-&lt;p&gt;도구는 &lt;code&gt;searxng_web_search&lt;/code&gt;와 &lt;code&gt;web_url_read&lt;/code&gt; 2개뿐이지만, 메타서치의 폭넓은 결과가 그 단순함을 보상해요. 다만 업스트림 검색 엔진이 셀프호스팅 인스턴스 IP를 rate limit할 수 있다는 리스크가 있어요. Docker 컨테이너 관리가 익숙하지 않다면 유지 부담도 고려해야 하죠.&lt;/p&gt;
+&lt;p&gt;한 가지 주의할 점이 있습니다. &lt;code&gt;settings.yml&lt;/code&gt;에서 JSON 포맷 활성화(&lt;code&gt;formats: - json&lt;/code&gt;)와 limiter 비활성화(&lt;code&gt;server.limiter: false&lt;/code&gt;)를 반드시 설정해야 MCP 서버가 정상 동작합니다.&lt;/p&gt;
+&lt;p&gt;도구는 &lt;code&gt;searxng_web_search&lt;/code&gt;와 &lt;code&gt;web_url_read&lt;/code&gt; 2개뿐이지만, 메타서치의 폭넓은 결과가 그 단순함을 보상합니다. 다만 업스트림 검색 엔진이 셀프호스팅 인스턴스 IP를 rate limit할 수 있다는 리스크가 있습니다. Docker 컨테이너 관리가 익숙하지 않다면 유지 부담도 고려해야 합니다.&lt;/p&gt;
 &lt;h2&gt;Exa MCP — 개발자에게 가장 매력적인 선택지&lt;/h2&gt;
-&lt;p&gt;Exa는 조금 다른 접근을 해요. 기존 검색 엔진이 키워드 매칭 기반인 반면, Exa는 임베딩 기반 시맨틱/뉴럴 검색을 제공하거든요.&lt;/p&gt;
-&lt;p&gt;&quot;papers about using transformer attention for time series forecasting&quot; 같은 쿼리를 던지면 SEO 최적화된 블로그 대신 실제 관련 연구 논문이 나와요. 개발자 입장에서 꽤 매력적이죠.&lt;/p&gt;
+&lt;p&gt;Exa는 조금 다른 접근을 합니다. 기존 검색 엔진이 키워드 매칭 기반인 반면, Exa는 임베딩 기반 시맨틱/뉴럴 검색을 제공합니다.&lt;/p&gt;
+&lt;p&gt;&quot;papers about using transformer attention for time series forecasting&quot; 같은 쿼리를 던지면 SEO 최적화된 블로그 대신 실제 관련 연구 논문이 나옵니다. 개발자 입장에서 꽤 매력적인 특성입니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;claude mcp add exa --transport http https://mcp.exa.ai/mcp
 &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Tavily처럼 Remote MCP 지원이라 한 줄 설치예요. API 키도 필요 없고 신용카드도 불필요해요. 무료 1,000회/월이고요.&lt;/p&gt;
-&lt;p&gt;기본 활성 도구 3개가 이래요.&lt;/p&gt;
+&lt;p&gt;Tavily처럼 Remote MCP를 지원하므로 한 줄 설치입니다. API 키도 신용카드도 필요 없고, 무료 1,000회/월을 제공합니다.&lt;/p&gt;
+&lt;p&gt;기본 활성 도구는 3개입니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -793,13 +785,13 @@ claude mcp add searxng -e SEARXNG_URL=http://localhost:8080 -- npx -y mcp-searxn
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;여기서 잠깐 — &lt;code&gt;get_code_context_exa&lt;/code&gt;가 특히 눈에 들어와요. 수십억 GitHub repo, docs, StackOverflow에서 토큰 효율적인 코드 컨텍스트를 검색해 주거든요. Claude Code에서 개발 워크플로우를 돌릴 때 정말 유용할 것 같아요.&lt;/p&gt;
-&lt;p&gt;선택적 도구도 5개 더 있어요. URL 파라미터로 활성화할 수 있죠.&lt;/p&gt;
+&lt;p&gt;이 중 &lt;code&gt;get_code_context_exa&lt;/code&gt;가 특히 눈에 들어왔습니다. 수십억 GitHub repo, docs, StackOverflow에서 토큰 효율적인 코드 컨텍스트를 검색해 주거든요. Claude Code에서 개발 workflow를 돌릴 때 유용할 것으로 보입니다.&lt;/p&gt;
+&lt;p&gt;선택적 도구도 5개 더 있고, URL 파라미터로 활성화할 수 있습니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# 특정 도구만 활성화
 claude mcp add exa --transport http &quot;https://mcp.exa.ai/mcp?tools=web_search_exa,get_code_context_exa,people_search_exa&quot;
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h2&gt;그래서 뭐가 가장 나을까요?&lt;/h2&gt;
-&lt;p&gt;종합 비교표를 정리해 봤어요.&lt;/p&gt;
+&lt;h2&gt;종합 비교와 선택 기준&lt;/h2&gt;
+&lt;p&gt;다섯 가지 선택지를 표로 정리하면 다음과 같습니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -870,11 +862,11 @@ claude mcp add exa --transport http &quot;https://mcp.exa.ai/mcp?tools=web_searc
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;결론부터 말하면요 — 상황에 따라 추천이 달라져요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;비용 절감이 최우선이라면 Tavily나 Exa&lt;/strong&gt;가 좋아요. 둘 다 무료 1,000회/월에 신용카드 없이 가입 가능하고, Remote MCP 한 줄 설치라 전환 비용도 거의 없어요. Perplexity &lt;code&gt;search&lt;/code&gt;의 직접 대체로는 Tavily가 가장 유사하고, 코드 검색이 많은 개발 워크플로우에는 Exa가 더 적합해요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;무제한 검색이 필요하면 SearXNG&lt;/strong&gt;가 정답이에요. Docker 관리만 감수한다면 비용이 $0이에요. 242개 엔진을 메타서치하니 결과의 폭도 넓고요.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;Brave Search는 조건부 추천이에요.&lt;/strong&gt; 매달 $5 무료 크레딧(~1,000회)이 자동 지급되지만, 신용카드 등록과 attribution이 필수예요. 이 조건이 괜찮다면 Perplexity보다 나은 선택이지만, 신용카드 없이 쓰고 싶다면 Tavily나 Exa가 더 편해요.&lt;/p&gt;
-&lt;p&gt;Tavily + Exa를 병행하면 월 2,000회까지 무료로 커버할 수 있어요. Brave까지 추가하면 3,000회까지도 가능하고요. Perplexity에 $10 쓰던 걸 $0으로 줄일 수 있는 셈이에요.&lt;/p&gt;
+&lt;p&gt;결론은 상황에 따라 달라집니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;비용 절감이 최우선이라면 Tavily나 Exa&lt;/strong&gt;가 좋습니다. 둘 다 무료 1,000회/월에 신용카드 없이 가입할 수 있고, Remote MCP 한 줄 설치라 전환 비용도 거의 없습니다. Perplexity &lt;code&gt;search&lt;/code&gt;의 직접 대체로는 Tavily가 가장 유사하고, 코드 검색이 많은 개발 workflow에는 Exa가 더 적합합니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;무제한 검색이 필요하면 SearXNG&lt;/strong&gt;가 정답입니다. Docker 관리만 감수한다면 비용이 $0입니다. 242개 엔진을 메타서치하니 결과의 폭도 넓고요.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Brave Search는 조건부 추천입니다.&lt;/strong&gt; 매달 $5 무료 크레딧(~1,000회)이 자동 지급되지만, 신용카드 등록과 attribution이 필수입니다. 이 조건이 괜찮다면 Perplexity보다 나은 선택이지만, 신용카드 없이 쓰고 싶다면 Tavily나 Exa가 더 편합니다.&lt;/p&gt;
+&lt;p&gt;저는 Tavily + Exa 병행 구성으로 정리했습니다. 이 조합이면 월 2,000회까지 무료로 커버할 수 있고, Brave까지 추가하면 3,000회까지도 가능합니다. Perplexity에 $10 쓰던 비용을 $0으로 줄인 셈입니다.&lt;/p&gt;
 </content:encoded></item><item><title>2주 간의 KoELECTRA 개발기 - 2부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part2/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part2/</guid><description>KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.</description><pubDate>Sat, 02 May 2020 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
 &lt;p&gt;이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)&lt;/p&gt;
 &lt;p&gt;2부에는 &lt;strong&gt;Pretraining, Finetuning&lt;/strong&gt; 등을 다룰 예정이다.&lt;/p&gt;
