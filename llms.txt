@@ -10,6 +10,7 @@
 - https://huggingface.co/monologg
 
 ## Articles
+- [기본 제공 커넥터에 없는 MCP 서버를 Claude와 ChatGPT에 붙이기](https://monologg.kr/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/): Claude와 ChatGPT가 기본으로 제공하지 않는 remote MCP 서버를 커스텀 커넥터와 커스텀 플러그인으로 붙이는 절차를, Plane MCP를 예로 정리했습니다.
 - [에이전트를 위한 더 좋은 웹 검색 백엔드 찾기](https://monologg.kr/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/): 홈랩 에이전트에 붙일 웹 검색 API를 고르기 위해 실쿼리 A/B 평가를 두 번 돌렸습니다. 10쿼리 1차 평가의 결론이 50쿼리 블라인드 2차 평가에서 뒤집힌 과정과, 평가 하네스 설계, 검색 결과에서 발견한 실전 prompt injection까지 정리했습니다.
 - [ghcord 개발기: Discord에 없는 GitHub 연동, 직접 만든 이야기](https://monologg.kr/posts/2026/07/17/2026-07-17-ghcord-dev-story/): Slack에서 Discord로 옮기고 나서 아쉬웠던 GitHub 연동을 GitHub App 기반 셀프호스팅 서버로 직접 만들었습니다. 설계 결정과 공개 과정을 정리했습니다.
 - [httpx2, Pydantic이 이어받은 httpx — 바꿔도 될까, 얼마나 빨라졌을까](https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/): Pydantic이 포크한 httpx2의 등장 배경과 httpx 대비 개선점, drop-in 호환성의 함정, aiohttp까지 포함한 async 벤치마크 결과를 실제 마이그레이션 경험과 함께 정리합니다.

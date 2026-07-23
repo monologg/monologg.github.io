@@ -1,4 +1,105 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>에이전트를 위한 더 좋은 웹 검색 백엔드 찾기</title><link>https://monologg.kr/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/</guid><description>홈랩 에이전트에 붙일 웹 검색 API를 고르기 위해 실쿼리 A/B 평가를 두 번 돌렸습니다. 10쿼리 1차 평가의 결론이 50쿼리 블라인드 2차 평가에서 뒤집힌 과정과, 평가 하네스 설계, 검색 결과에서 발견한 실전 prompt injection까지 정리했습니다.</description><pubDate>Wed, 22 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;홈랩에서 상시 구동하는 개인 에이전트를 세팅하면서 웹 검색 백엔드를 골라야 했습니다. 쓰임새는 두 갈래입니다. 하나는 에이전트가 대화 중에 실시간으로 쓰는 검색이고, 다른 하나는 매일 아침 뉴스 브리핑 cron이 미리 긁어오는 검색인데요. 목표는 처음부터 명확했습니다 — 비용 최적화가 아니라, &lt;strong&gt;가장 좋은 결과를 반환하는 검색&lt;/strong&gt;을 찾는 것. 이 글은 그 선정 과정에서 돌린 두 번의 실쿼리 A/B 평가를 정리한 것입니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>기본 제공 커넥터에 없는 MCP 서버를 Claude와 ChatGPT에 붙이기</title><link>https://monologg.kr/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/</guid><description>Claude와 ChatGPT가 기본으로 제공하지 않는 remote MCP 서버를 커스텀 커넥터와 커스텀 플러그인으로 붙이는 절차를, Plane MCP를 예로 정리했습니다.</description><pubDate>Thu, 23 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;기본 제공 커넥터에 없으면 직접 붙여야 합니다&lt;/h2&gt;
+&lt;p&gt;Claude와 ChatGPT 모두 미리 만들어 둔 연동 목록을 갖고 있습니다. Claude는 Connectors, ChatGPT는 플러그인 화면에서 고르면 되고, Gmail이나 Drive, Notion, Slack처럼 이름값 하는 서비스는 클릭 몇 번이면 붙습니다. 인증이며 권한이며 플랫폼이 알아서 처리해 주고요. 문제는 그 목록에 없는 서비스인데, 정작 제가 매일 쓰는 도구가 거기 속합니다.&lt;/p&gt;
+&lt;p&gt;이슈 트래커로 &lt;a href=&quot;https://plane.so&quot;&gt;Plane&lt;/a&gt;을 쓰고 있습니다. 개인 프로젝트 보드를 전부 여기에 넣어두다 보니 AI 에이전트에서도 티켓을 읽고 쓸 일이 많아서, Plane이 제공하는 &lt;a href=&quot;https://developers.plane.so/dev-tools/mcp-server&quot;&gt;MCP server&lt;/a&gt;를 붙여 뒀거든요. 다행히 요즘은 이런 서버가 remote endpoint를 같이 내주는 경우가 많고, 그렇다면 기본 제공 목록에 없어도 커스텀으로 등록할 수 있습니다. 이 글은 그 절차를 Plane을 예로 정리한 것이고, remote MCP 서버라면 URL 자리만 바꿔서 그대로 따라 하면 됩니다.&lt;/p&gt;
+&lt;p&gt;물론 처음부터 그렇게 붙인 건 아닙니다. 저는 Claude Desktop의 &lt;code&gt;claude_desktop_config.json&lt;/code&gt;에 &lt;code&gt;npx mcp-remote&lt;/code&gt;를 로컬 프록시로 세우고, 그 프록시가 API 키 엔드포인트를 호출하게 해 뒀습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;mcpServers&quot;: {
+    &quot;plane&quot;: {
+      &quot;command&quot;: &quot;npx&quot;,
+      &quot;args&quot;: [
+        &quot;-y&quot;, &quot;mcp-remote&quot;,
+        &quot;https://mcp.plane.so/http/api-key/mcp&quot;,
+        &quot;--header&quot;, &quot;Authorization:${PLANE_AUTH_HEADER}&quot;,
+        &quot;--header&quot;, &quot;x-workspace-slug:${PLANE_WORKSPACE}&quot;,
+        &quot;--transport&quot;, &quot;http-only&quot;
+      ],
+      &quot;env&quot;: {
+        &quot;PLANE_AUTH_HEADER&quot;: &quot;Bearer plane_api_xxxxxxxx&quot;,
+        &quot;PLANE_WORKSPACE&quot;: &quot;my-workspace&quot;
+      }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;동작은 했지만 걸리는 게 몇 가지 있었습니다. 설정 파일을 둔 &lt;strong&gt;데스크톱 한 대에서만&lt;/strong&gt; 쓸 수 있고, PAT가 그 파일에 평문으로 남고, Node와 &lt;code&gt;npx&lt;/code&gt;에 의존한다는 점입니다. mcp-remote를 OAuth로 붙였던 시절에는 &lt;code&gt;~/.mcp-auth&lt;/code&gt;의 토큰 캐시가 만료될 때마다 재로그인을 해야 했고요. 결정적인 계기는 &lt;strong&gt;밖에서 폰으로 티켓을 확인하고 싶다&lt;/strong&gt;는 것이었는데, 로컬 프록시로는 애초에 불가능한 일이었습니다.&lt;/p&gt;
+&lt;p&gt;그래서 설정 파일이 아니라 계정에 등록되는 커스텀 커넥터 방식으로 옮겼습니다. Claude와 ChatGPT 양쪽에 붙여 뒀는데, 붙이는 대상은 같은 endpoint인데도 절차가 제법 다르고 막히는 지점도 달라서 정리해 둡니다.&lt;/p&gt;
+&lt;h2&gt;Claude: 커스텀 커넥터로 등록하기&lt;/h2&gt;
+&lt;p&gt;Claude 쪽은 별도의 모드를 켤 필요 없이 설정 화면에서 바로 붙일 수 있습니다. 커스텀 커넥터는 Pro/Max 이상에서 노출되고, 무료 플랜에는 메뉴 자체가 없습니다. 아래에서 URL만 붙일 서버의 것으로 바꾸면 Plane이 아닌 서버도 동일합니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;claude.ai 웹 → 좌하단 프로필 → &lt;strong&gt;Settings&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;왼쪽 사이드바에서 &lt;strong&gt;Customize → Connectors&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;우측 상단 &lt;strong&gt;Add → Add custom connector&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Remote MCP server URL에 &lt;code&gt;https://mcp.plane.so/http/mcp&lt;/code&gt; 입력, 이름은 &lt;code&gt;Plane&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Add&lt;/strong&gt;를 누르면 Plane OAuth 창이 뜹니다. 로그인 후 워크스페이스 접근을 승인&lt;/li&gt;
+&lt;li&gt;목록에 &lt;code&gt;Plane / Type: Web / Custom&lt;/code&gt;으로 뜨고 체크 표시가 붙으면 완료&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;./claude-connector-detail.png&quot; alt=&quot;Claude 커넥터 상세 화면. Plane 엔드포인트와 139개 도구의 Tool permissions 목록&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;연결이 끝나면 커넥터를 클릭해서 &lt;strong&gt;Tool permissions&lt;/strong&gt;를 손봐야 합니다. Plane MCP는 도구를 139개 노출하는데, 여기에는 &lt;code&gt;delete_project&lt;/code&gt;나 &lt;code&gt;delete_work_item&lt;/code&gt; 같은 파괴적인 것도 섞여 있거든요. 기본값이 &lt;code&gt;Always allow&lt;/code&gt;라서 처음 며칠은 상단 드롭다운을 &lt;code&gt;Ask&lt;/code&gt;로 바꿔 두고 실제로 어떤 도구가 호출되는지 지켜보는 편이 안전합니다. 도구별로 개별 지정도 되니, 익숙해진 뒤에 읽기 계열만 자동 허용으로 풀면 됩니다.&lt;/p&gt;
+&lt;p&gt;여기서 한 가지 짚고 넘어갈 부분이 인증 방식입니다. Claude 커넥터 문서에는 고정 API 키 헤더를 넣는 &lt;a href=&quot;https://claude.com/docs/connectors/building/authentication&quot;&gt;static_headers&lt;/a&gt;가 베타로 존재하는데, &lt;strong&gt;개인 Pro/Max 플랜의 Advanced settings에는 헤더 입력란이 보이지 않습니다.&lt;/strong&gt; 저는 무만료 PAT로 붙이고 싶었지만 UI에 자리가 없어서 OAuth로 갔습니다. 다만 claude.ai가 직접 관리하는 커넥터 OAuth는 refresh token으로 조용히 갱신되기 때문에, mcp-remote 시절 겪었던 잦은 재로그인과는 사정이 다릅니다. 실제로 옮긴 뒤로는 재인증을 요구받은 적이 없습니다.&lt;/p&gt;
+&lt;h2&gt;ChatGPT: 개발자 모드를 먼저 켜야 합니다&lt;/h2&gt;
+&lt;p&gt;ChatGPT는 Plus 이상에서 커스텀 플러그인을 붙일 수 있는데, &lt;strong&gt;개발자 모드가 게이트&lt;/strong&gt;입니다. 이걸 켜지 않으면 커스텀 MCP 서버를 추가하는 항목이 아예 안 보이거나, 붙여도 검색/조회 계열 도구만 노출됩니다. Claude에는 없는 단계라 처음에 한참 헤맸습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;설정 → &lt;strong&gt;플러그인&lt;/strong&gt;에서 개발자 모드를 먼저 켭니다&lt;/li&gt;
+&lt;li&gt;플러그인 화면 우측 상단 &lt;strong&gt;+&lt;/strong&gt; → 커스텀 플러그인(MCP 서버) 추가&lt;/li&gt;
+&lt;li&gt;이름 &lt;code&gt;Plane&lt;/code&gt;, MCP 서버 URL &lt;code&gt;https://mcp.plane.so/http/mcp&lt;/code&gt;, 인증은 &lt;strong&gt;OAuth&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;신뢰할 수 없는 서버 경고를 확인하고 &lt;strong&gt;만들기&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;Plane OAuth 창에서 로그인 후 접근 승인&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;개인용 → 내가 만듦&lt;/strong&gt;에 &lt;code&gt;Plane&lt;/code&gt;이 뜨고, 상세에 &quot;Plane에 연결됨&quot;이 보이면 완료&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;./chatgpt-plugin-detail.png&quot; alt=&quot;ChatGPT 플러그인 상세 화면. 권한 정책과 개발자 모드 액션 목록&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;권한 모델은 Claude보다 조금 더 친절한 편입니다. 액션마다 &lt;code&gt;공개적으로 쓰기&lt;/code&gt;, &lt;code&gt;오픈 월드&lt;/code&gt;, &lt;code&gt;파괴적&lt;/code&gt; 같은 태그가 붙고, 기본 정책인 &lt;code&gt;저위험 액션 허용&lt;/code&gt;을 그대로 두면 읽기 계열은 자동으로 통과시키고 쓰기나 삭제는 매번 확인을 받습니다. Claude처럼 도구를 하나씩 훑으며 설정할 필요가 없어서 기본값을 그냥 쓰고 있습니다.&lt;/p&gt;
+&lt;p&gt;붙여 두면 대화에서 따로 지정하지 않아도 알아서 호출됩니다. &quot;AGT 보드의 내용 접근 가능해?&quot; 하고 물었더니 워크스페이스를 조회해서 진행 중인 티켓 목록을 그대로 뽑아 주더라고요. 이 점은 Claude와 차이가 없었습니다. 다만 응답까지 20초 넘게 걸리는 경우가 있어서, 툴 호출이 실제로 일어나고 있는지는 처리 중 표시를 펼쳐 확인하는 편이 마음이 편합니다.&lt;/p&gt;
+&lt;h2&gt;두 플랫폼 정리&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;항목&lt;/th&gt;
+&lt;th&gt;Claude&lt;/th&gt;
+&lt;th&gt;ChatGPT&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;필요 플랜&lt;/td&gt;
+&lt;td&gt;Pro / Max 이상&lt;/td&gt;
+&lt;td&gt;Plus 이상&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;사전 단계&lt;/td&gt;
+&lt;td&gt;없음&lt;/td&gt;
+&lt;td&gt;개발자 모드 활성화&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;메뉴 경로&lt;/td&gt;
+&lt;td&gt;Settings → Customize → Connectors&lt;/td&gt;
+&lt;td&gt;설정 → 플러그인&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;인증&lt;/td&gt;
+&lt;td&gt;OAuth (static_headers는 개인 플랜 UI 미노출)&lt;/td&gt;
+&lt;td&gt;OAuth&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;권한 설정&lt;/td&gt;
+&lt;td&gt;도구 139개 개별 지정&lt;/td&gt;
+&lt;td&gt;위험도 태그 기반 정책&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;h2&gt;붙이면서 막혔던 것들&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;엔드포인트가 두 개입니다.&lt;/strong&gt; OAuth용은 &lt;code&gt;https://mcp.plane.so/http/mcp&lt;/code&gt;, 헤더 인증용은 &lt;code&gt;https://mcp.plane.so/http/api-key/mcp&lt;/code&gt;로 갈립니다. 커넥터에 후자를 넣고 OAuth로 붙이려 하면 당연히 실패하는데, 에러 메시지가 친절하지 않아서 URL 오타를 의심하다 시간을 버렸습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;API 키 방식은 문서와 실제가 다릅니다.&lt;/strong&gt; &lt;a href=&quot;https://developers.plane.so/dev-tools/mcp-server&quot;&gt;공식 문서&lt;/a&gt;는 &lt;code&gt;x-api-key&lt;/code&gt; 헤더를 안내하는데, 제가 붙였던 시점의 실서버(v3.2.0)는 이걸 401로 거부하고 &lt;code&gt;Authorization: Bearer &amp;lt;PAT&amp;gt;&lt;/code&gt;만 받았습니다. 참고로 Plane REST API(&lt;code&gt;api.plane.so&lt;/code&gt;)는 반대로 &lt;code&gt;X-API-Key&lt;/code&gt;를 씁니다. 같은 제품인데 헤더 규칙이 엇갈려서, Claude Code CLI에 헤더 방식으로 붙일 때는 이렇게 등록했습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;claude mcp add --transport http --scope user plane \
+  https://mcp.plane.so/http/api-key/mcp \
+  --header &quot;Authorization: Bearer plane_api_xxxxxxxx&quot; \
+  --header &quot;x-workspace-slug: my-workspace&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;Claude Desktop은 http 타입을 거부합니다.&lt;/strong&gt; &lt;code&gt;claude_desktop_config.json&lt;/code&gt;에 &lt;code&gt;&quot;type&quot;: &quot;http&quot;&lt;/code&gt; 항목을 넣으면 &quot;not valid, skipped&quot;로 무시합니다. stdio만 지원하기 때문에 앞에서 보여드린 &lt;code&gt;mcp-remote&lt;/code&gt; 우회가 필요했던 거고요. 커넥터로 옮기고 나서는 이 블록을 통째로 지웠습니다. 커넥터가 계정 단위로 동기화되니 데스크톱 설정이 아예 필요 없어졌거든요. 남겨 두면 같은 도구가 두 벌로 잡히니 정리하는 편이 좋습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;노출된 PAT는 폐기하세요.&lt;/strong&gt; 저는 설정 과정에서 대화창에 PAT를 그대로 붙여넣은 적이 있어서, 전환을 마친 뒤 Profile Settings → API Tokens에서 해당 토큰을 폐기했습니다.&lt;/p&gt;
+&lt;h2&gt;결국 원했던 건 모바일이었습니다&lt;/h2&gt;
+&lt;p&gt;전환하고 나서 가장 만족스러운 건 등록 위치가 데스크톱 설정 파일이 아니라 &lt;strong&gt;계정&lt;/strong&gt;이라는 점입니다. 웹에서 한 번 붙여두면 데스크톱 앱과 모바일 앱에서도 그대로 따라옵니다. 애초에 밖에서 폰으로 티켓을 보고 싶어서 시작한 작업이었는데, 지금은 이동 중에 &quot;이번 사이클 남은 티켓 뭐 있지&quot; 하고 물어보면 바로 답이 옵니다.&lt;/p&gt;
+&lt;p&gt;정리하면 기본 제공 커넥터에 없는 서버를 붙일 때는, remote endpoint가 있는지부터 확인하고 있으면 커스텀 커넥터나 플러그인으로 계정에 직접 등록하는 편이 가장 낫습니다. 인증은 OAuth를 지원하면 그쪽이 편하고, 아니면 API 키 헤더용 endpoint가 따로 있는지 문서를 뒤져 보게 됩니다. 로컬 stdio만 내주는 서버는 아직 프록시를 세워 CLI나 데스크톱에 묶어 두는 수밖에 없어서, 요즘은 붙일 서버를 고를 때 remote 지원 여부를 먼저 보게 되더라고요.&lt;/p&gt;
+</content:encoded></item><item><title>에이전트를 위한 더 좋은 웹 검색 백엔드 찾기</title><link>https://monologg.kr/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/</guid><description>홈랩 에이전트에 붙일 웹 검색 API를 고르기 위해 실쿼리 A/B 평가를 두 번 돌렸습니다. 10쿼리 1차 평가의 결론이 50쿼리 블라인드 2차 평가에서 뒤집힌 과정과, 평가 하네스 설계, 검색 결과에서 발견한 실전 prompt injection까지 정리했습니다.</description><pubDate>Wed, 22 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;홈랩에서 상시 구동하는 개인 에이전트를 세팅하면서 웹 검색 백엔드를 골라야 했습니다. 쓰임새는 두 갈래입니다. 하나는 에이전트가 대화 중에 실시간으로 쓰는 검색이고, 다른 하나는 매일 아침 뉴스 브리핑 cron이 미리 긁어오는 검색인데요. 목표는 처음부터 명확했습니다 — 비용 최적화가 아니라, &lt;strong&gt;가장 좋은 결과를 반환하는 검색&lt;/strong&gt;을 찾는 것. 이 글은 그 선정 과정에서 돌린 두 번의 실쿼리 A/B 평가를 정리한 것입니다.&lt;/p&gt;
 &lt;h2&gt;1차 실험: 실쿼리 10개로 후보 추리기&lt;/h2&gt;
 &lt;p&gt;후보 조사부터 시작했습니다. 커뮤니티에서 에이전트용 검색 API로 자주 오르내리는 건 Tavily, Exa, Brave, Perplexity, Parallel 정도인데, 공개 벤치마크를 뒤져보니 영어 일반 쿼리 기준으로는 상위권이 통계적 동률이라 변별이 안 됐습니다. 더 큰 문제는 벤치마크의 쿼리 분포가 제 워크로드와 다르다는 점이었습니다. 저는 한국어 쿼리 비중이 높고, 정부 지원 제도류 질의에서 소관 기관의 공식 소스에 도달하는지가 중요하고, 마이너한 셀프호스팅 도구의 문서를 자주 찾거든요. 이 축들은 영어 벤치마크가 아예 재지 않습니다. 그래서 직접 평가하기로 했습니다.&lt;/p&gt;
 &lt;p&gt;1차 평가는 실사용 스타일 쿼리 10개(한국어 기술/생활 5 + 뉴스/금융 5)를 골라 Parallel Search API의 turbo/advanced 두 모드와 Perplexity Search API에 동일 투입하고, 각 top5 결과 — 총 150개를 LLM 한 번에 채점시키는 방식이었습니다. 결과는 이랬습니다.&lt;/p&gt;
