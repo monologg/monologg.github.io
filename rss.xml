@@ -1,4 +1,148 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>기본 제공 커넥터에 없는 MCP 서버를 Claude와 ChatGPT에 붙이기</title><link>https://monologg.kr/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/</guid><description>Claude와 ChatGPT가 기본으로 제공하지 않는 remote MCP 서버를 커스텀 커넥터와 커스텀 플러그인으로 붙이는 절차를, Plane MCP를 예로 정리했습니다.</description><pubDate>Thu, 23 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;기본 제공 커넥터에 없으면 직접 붙여야 합니다&lt;/h2&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/"><channel><title>Monologg Blog</title><description>AI Engineering Blog by Jangwon Park</description><link>https://monologg.kr/</link><language>ko</language><item><title>Claude Code auto memory를 Codex native memory로 옮기고 검증하기</title><link>https://monologg.kr/posts/2026/07/24/2026-07-24-claude-code-auto-memory-to-codex/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/24/2026-07-24-claude-code-auto-memory-to-codex/</guid><description>Claude Code의 프로젝트별 auto memory를 Codex CLI 0.145.0의 실험적 import 기능으로 이전하고, 새 세션의 자동 주입과 실제 회상까지 검증한 과정을 정리합니다.</description><pubDate>Fri, 24 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code에서 Codex로 작업 환경을 옮기면서 가장 신경 쓰인 건 command나 MCP 설정이 아니었습니다. 프로젝트를 오래 쓰면서 쌓인 &lt;strong&gt;auto memory가 다음 세션에서도 자연스럽게 이어지는가&lt;/strong&gt;가 더 중요했습니다. 파일을 어디엔가 복사하는 데서 끝내면 이전은 쉬워 보이지만, 새 Codex 세션이 그 내용을 찾지 못하면 실질적으로는 실패한 셈입니다.&lt;/p&gt;
+&lt;p&gt;처음에는 Codex가 memory를 SQLite 하나로 관리한다는 이야기도 들었습니다. 로컬 상태를 직접 확인해 보니 절반만 맞는 설명이었습니다. 작업 상태와 추출 결과는 SQLite가 맡고 있었지만, 새 세션에서 검색하고 사용하는 consolidated memory는 별도의 Markdown workspace에 있었습니다. 이 구조를 이해한 뒤에야 원본 보존, import, consolidation, 회상 검증을 분리해서 진행할 수 있었습니다.&lt;/p&gt;
+&lt;p&gt;이 글에서 다루는 Codex 내부 파일명과 import 절차는 &lt;strong&gt;Codex CLI 0.145.0에서 확인한 구현&lt;/strong&gt;입니다. Local memory 자체는 stable 기능이지만, Claude Code auto memory importer는 같은 버전에서 &lt;code&gt;under development&lt;/code&gt;이면서 기본적으로 꺼져 있었습니다. 따라서 아래 내용은 현재의 영구적인 public interface를 설명하는 문서가 아니라, 실험 기능을 활성화해 동작을 검증한 기록으로 봐야 합니다.&lt;/p&gt;
+&lt;h2&gt;Claude와 Codex의 memory 구조는 다릅니다&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://docs.anthropic.com/en/docs/claude-code/memory&quot;&gt;Claude Code 공식 문서&lt;/a&gt;에 따르면 프로젝트별 auto memory는 다음 디렉터리에 저장됩니다. 제가 확인한 로컬 환경도 같은 구조였습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;~/.claude/projects/&amp;lt;project-key&amp;gt;/memory/
+├── MEMORY.md
+├── topic-a.md
+├── topic-b.md
+└── ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;MEMORY.md&lt;/code&gt;가 전체 진입점 역할을 하고, 세부 결정이나 작업 맥락은 topic별 Markdown 파일로 나뉘어 있었습니다. 제 로컬 환경의 일부 파일에는 memory 종류와 원본 session을 나타내는 frontmatter도 있었습니다. 이 frontmatter는 공식적으로 보장된 포맷이 아니라 관찰한 구현 세부사항입니다. 따라서 한 파일만 옮기기보다 &lt;strong&gt;디렉터리 전체를 하나의 프로젝트 memory 묶음으로 다루는 편이 안전&lt;/strong&gt;합니다.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://learn.chatgpt.com/docs/customization/memories&quot;&gt;Codex local memory 공식 문서&lt;/a&gt;는 주요 memory 파일이 &lt;code&gt;~/.codex/memories/&lt;/code&gt; 아래에 있으며 background에서 갱신되는 generated state라고 설명합니다. Codex CLI 0.145.0의 실제 파일은 역할이 조금 더 나뉘어 있었습니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;위치&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;~/.codex/memories_1.sqlite&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;추출 결과와 background job 상태&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;~/.codex/memories/memory_summary.md&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;새 세션에 제공되는 compact route&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;~/.codex/memories/MEMORY.md&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;검색 가능한 consolidated registry&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;~/.codex/memories/extensions/external_agent_import/resources/&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;외부 agent에서 가져온 원본 memory&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;즉, 현재 구현에서는 &lt;strong&gt;SQLite가 memory 생성 과정을 관리하고 Markdown workspace는 실제 회상에 쓰이는 결과물을 보관&lt;/strong&gt;합니다. &lt;code&gt;memories_1.sqlite&lt;/code&gt;라는 파일명도 &lt;a href=&quot;https://github.com/openai/codex/blob/94ebae725e5e8f22b5d86773d9223047f57b6118/codex-rs/state/src/sqlite.rs&quot;&gt;Codex 소스&lt;/a&gt;에서 확인할 수 있습니다. 다만 이 이름과 내부 schema는 public API가 아니므로 버전이 바뀌면 달라질 수 있습니다. SQLite 파일만 복사하거나 &lt;code&gt;MEMORY.md&lt;/code&gt;만 임의로 덮어쓰는 방식이 위험한 이유입니다.&lt;/p&gt;
+&lt;h2&gt;복사하기 전에 원본과 기존 상태를 백업합니다&lt;/h2&gt;
+&lt;p&gt;Memory에는 프로젝트 관례뿐 아니라 인증 방식, 내부 서비스명, 개인적인 판단이 섞이기 쉽습니다. 저는 import 전에 원본 파일을 훑고 token 형태의 문자열과 민감한 값을 먼저 확인했습니다. 블로그나 실행 로그를 공유할 때는 사용자명, 절대 경로, 프로젝트명, session ID도 함께 지우는 편이 좋습니다.&lt;/p&gt;
+&lt;p&gt;백업은 Claude 원본과 Codex의 기존 상태를 모두 포함해야 합니다. Codex는 memory를 background에서 갱신하므로 먼저 실행 중인 Codex task와 app-server를 종료한 뒤 복사하는 편이 안전합니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;project_key=&quot;&amp;lt;project-key&amp;gt;&quot;
+backup_dir=&quot;$HOME/.codex/migration-backups/claude-memory-$(date +%Y%m%d-%H%M%S)&quot;
+claude_memory=&quot;$HOME/.claude/projects/$project_key/memory&quot;
+
+mkdir -p &quot;$backup_dir&quot;
+cp -a &quot;$claude_memory&quot; &quot;$backup_dir/claude-memory&quot;
+
+if [ -d &quot;$HOME/.codex/memories&quot; ]; then
+  cp -a &quot;$HOME/.codex/memories&quot; &quot;$backup_dir/codex-memories&quot;
+fi
+
+if [ -f &quot;$HOME/.codex/config.toml&quot; ]; then
+  cp &quot;$HOME/.codex/config.toml&quot; &quot;$backup_dir/config.toml&quot;
+fi
+
+if [ -f &quot;$HOME/.codex/memories_1.sqlite&quot; ]; then
+  sqlite3 &quot;$HOME/.codex/memories_1.sqlite&quot; \
+    &quot;.backup &apos;$backup_dir/memories_1.sqlite&apos;&quot;
+fi
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;SQLite는 실행 중일 수 있으므로 단순 &lt;code&gt;cp&lt;/code&gt;보다 &lt;code&gt;.backup&lt;/code&gt;을 사용하는 편이 낫습니다. 이 단계에서 Claude memory 원본은 수정하지 않습니다. Import가 잘못돼도 source와 기존 Codex 상태를 각각 복원할 수 있어야 하거든요.&lt;/p&gt;
+&lt;h2&gt;실험적인 external-agent import를 사용했습니다&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://learn.chatgpt.com/docs/developer-commands#import-claude-code-configuration-with-import&quot;&gt;Codex의 &lt;code&gt;/import&lt;/code&gt; 문서&lt;/a&gt;는 Claude Code의 설정, 프로젝트 파일, 최근 대화를 가져올 수 있다고 안내합니다. 하지만 &lt;a href=&quot;https://learn.chatgpt.com/docs/import#what-chatgpt-can-import&quot;&gt;공개 import 지원 목록&lt;/a&gt;에는 auto memory가 포함돼 있지 않습니다. 실제로 Codex CLI 0.145.0에서 기능 상태를 확인하면 local memory는 stable이지만 memory importer는 아직 기본 비활성입니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;memories                     stable             true
+external_agent_memory_import under development false
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;따라서 일반 사용자가 TUI의 &lt;code&gt;/import&lt;/code&gt;에서 Claude Code memory를 항상 선택할 수 있다고 보면 안 됩니다. 이번에는 대상 프로젝트를 정확히 제한하고 결과를 자동 검증하기 위해 &lt;code&gt;external_agent_memory_import&lt;/code&gt;를 명시적으로 활성화한 app-server를 사용했습니다. 이 기능의 상태는 &lt;a href=&quot;https://github.com/openai/codex/blob/94ebae725e5e8f22b5d86773d9223047f57b6118/codex-rs/features/src/lib.rs&quot;&gt;Codex feature 정의&lt;/a&gt;에서도 &lt;code&gt;UnderDevelopment&lt;/code&gt;, &lt;code&gt;default_enabled: false&lt;/code&gt;로 확인됩니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;codex app-server --stdio --enable external_agent_memory_import
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 플래그와 app-server protocol은 실험적 interface라서 이후 버전에서 이름이나 동작이 달라질 수 있습니다. 제가 확인한 build에서는 detect와 import 단계가 분리돼 있었습니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;실험 기능을 활성화한 app-server에서 Claude Code의 session과 memory를 detect합니다.&lt;/li&gt;
+&lt;li&gt;여러 프로젝트가 발견돼도 현재 프로젝트의 memory만 선택합니다.&lt;/li&gt;
+&lt;li&gt;Import 완료 notification에서 성공과 실패를 확인합니다.&lt;/li&gt;
+&lt;li&gt;생성된 &lt;code&gt;scope.json&lt;/code&gt;이 올바른 &lt;code&gt;cwd&lt;/code&gt;를 가리키는지 확인합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Import된 결과는 다음처럼 source를 그대로 보존합니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;~/.codex/memories/extensions/external_agent_import/
+├── instructions.md
+└── resources/
+    └── &amp;lt;project-key&amp;gt;/
+        ├── scope.json
+        ├── MEMORY.md
+        ├── topic-a.md
+        └── ...
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;여기서 &lt;code&gt;scope.json&lt;/code&gt;은 가져온 정보가 어느 workspace에 해당하는지를 consolidation agent에게 알려주는 metadata입니다. &lt;a href=&quot;https://github.com/openai/codex/blob/94ebae725e5e8f22b5d86773d9223047f57b6118/codex-rs/external-agent-migration/src/memory_import.rs&quot;&gt;Memory importer의 consolidation 지침&lt;/a&gt;은 프로젝트 전용 결정을 전역 사용자 preference에 넣지 않도록 요구합니다. 다만 &lt;code&gt;scope.json&lt;/code&gt; 자체가 접근 제어나 보안상 격리를 강제하는 것은 아닙니다. &lt;strong&gt;프로젝트 범위를 보존하도록 돕는 기준이지 보안 경계는 아닙니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;원본 보존 여부는 source와 destination을 비교해 확인할 수 있습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;project_key=&quot;&amp;lt;project-key&amp;gt;&quot;
+source_dir=&quot;$HOME/.claude/projects/$project_key/memory&quot;
+target_dir=&quot;$HOME/.codex/memories/extensions/external_agent_import/resources/$project_key&quot;
+
+diff -qr &quot;$source_dir&quot; &quot;$target_dir&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;정상이라면 destination에만 존재하는 &lt;code&gt;scope.json&lt;/code&gt; 외에는 차이가 없어야 합니다. 파일 개수와 전체 line·byte 수도 함께 비교하면 누락된 빈 파일이나 잘린 문서를 찾기 쉽습니다.&lt;/p&gt;
+&lt;h2&gt;Import 성공과 memory 사용 가능은 같은 시점이 아닙니다&lt;/h2&gt;
+&lt;p&gt;외부 memory가 resource 디렉터리에 복사됐다고 새 세션에서 바로 쓸 수 있다는 뜻은 아닙니다. Codex CLI 0.145.0의 background memory 작업은 기존 대화에서 raw memory를 추출하는 단계와, 이를 &lt;code&gt;MEMORY.md&lt;/code&gt;와 &lt;code&gt;memory_summary.md&lt;/code&gt;로 정리하는 consolidation 단계를 거칩니다. 이 2단계 구성 역시 현재 구현 세부사항입니다.&lt;/p&gt;
+&lt;p&gt;Consolidation이 끝나면 &lt;code&gt;memory_summary.md&lt;/code&gt;에는 프로젝트별 compact route가 추가되고, &lt;code&gt;MEMORY.md&lt;/code&gt;에는 import된 세부 파일을 가리키는 &lt;code&gt;extension_resource_files&lt;/code&gt; 항목이 생깁니다. Project-specific 정보는 summary 전체에 복사되지 않고, 관련 질문이 들어왔을 때 상세 파일을 찾을 수 있는 route로만 들어갑니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;rg -n \
+  &apos;external_agent_import|&amp;lt;imported-keyword&amp;gt;&apos; \
+  &quot;$HOME/.codex/memories/memory_summary.md&quot; \
+  &quot;$HOME/.codex/memories/MEMORY.md&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&quot;https://learn.chatgpt.com/docs/customization/memories#how-local-codex-memories-work&quot;&gt;공식 문서&lt;/a&gt;에 설명된 것처럼 background job은 session의 idle 상태와 rate limit에 따라 바로 실행되지 않을 수 있습니다. 현재 구현에는 최근 성공한 consolidation 이후의 cooldown도 있습니다. 그래서 파일 복사 직후 결과만 보고 실패로 단정하거나, 반대로 import notification만 보고 완료라고 선언하면 안 됩니다. 최종 판정은 새 세션에서 해야 합니다.&lt;/p&gt;
+&lt;h2&gt;새 세션에서 auto loading을 검증합니다&lt;/h2&gt;
+&lt;p&gt;검증 질문은 &lt;code&gt;AGENTS.md&lt;/code&gt;나 repository 문서에도 적혀 있는 규칙을 피해야 합니다. 그런 질문은 memory가 없어도 답할 수 있기 때문입니다. Imported memory에만 있는, 오래돼도 잘 바뀌지 않는 결정 하나를 고릅니다. 예를 들어 예전에 선택한 formatter와 되돌린 대안처럼 외부 검색으로 맞히기 어려운 내용이 좋습니다.&lt;/p&gt;
+&lt;p&gt;먼저 memory 경로를 명시한 smoke test를 실행합니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;project_dir=&quot;/absolute/path/to/project&quot;
+
+codex exec \
+  --ephemeral \
+  --sandbox read-only \
+  --enable memories \
+  -c &apos;memories.use_memories=true&apos; \
+  -C &quot;$project_dir&quot; \
+  &apos;Auto memory 검증이다.
+  .claude, 웹, workspace 파일은 읽지 말고
+  Codex memory만 사용해 이전에 확정한 결정을 답해라.&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;--ephemeral&lt;/code&gt;은 session rollout을 보존하지 않습니다. Codex CLI 0.145.0의 &lt;a href=&quot;https://github.com/openai/codex/blob/94ebae725e5e8f22b5d86773d9223047f57b6118/codex-rs/memories/write/src/start.rs&quot;&gt;memory startup 구현&lt;/a&gt;에서는 ephemeral session의 memory 생성 pipeline도 건너뜁니다. &lt;code&gt;--sandbox read-only&lt;/code&gt;는 agent의 파일 변경을 차단합니다. 첫 검증이 통과하면 두 번째 session에서는 memory 경로를 알려주지 않고 자연스럽게 질문합니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;codex exec \
+  --ephemeral \
+  --json \
+  --sandbox read-only \
+  --enable memories \
+  -c &apos;memories.use_memories=true&apos; \
+  -C &quot;$project_dir&quot; \
+  &apos;이 프로젝트에서 예전에 확정한 결정을 기준으로 답해줘.
+  선택한 도구와 되돌린 대안은 무엇이었지?
+  웹, .claude, workspace 파일은 조회하지 마.&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 두 번째 검증에서 Codex가 스스로 &lt;code&gt;~/.codex/memories/MEMORY.md&lt;/code&gt;를 검색하고, 다시 imported resource를 열어 정확한 답을 내면 auto loading이 작동하는 것입니다. App-server의 raw event를 볼 수 있는 환경이라면 응답의 &lt;code&gt;memoryCitation&lt;/code&gt;이 &lt;code&gt;extensions/external_agent_import/resources/...&lt;/code&gt;를 가리키는지도 확인할 수 있습니다. &lt;code&gt;memoryCitation&lt;/code&gt;은 &lt;a href=&quot;https://github.com/openai/codex/blob/94ebae725e5e8f22b5d86773d9223047f57b6118/codex-rs/app-server-protocol/schema/typescript/v2/MemoryCitation.ts&quot;&gt;현재 app-server protocol&lt;/a&gt;에 포함된 필드지만 public interface가 바뀌면 형태도 달라질 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;codex exec --json&lt;/code&gt;의 간략한 event 출력에는 citation metadata가 보이지 않을 수 있습니다. 그 경우에도 command trace가 &lt;code&gt;~/.codex/memories&lt;/code&gt; 아래만 조회했고 답이 정확했다면 실사용 경로는 확인된 셈입니다. 단순히 target 파일이 존재한다는 사실보다 훨씬 강한 검증입니다.&lt;/p&gt;
+&lt;h2&gt;이관하면서 피한 방식들&lt;/h2&gt;
+&lt;p&gt;처음 떠올리기 쉬운 방법은 Claude의 &lt;code&gt;MEMORY.md&lt;/code&gt; 내용을 Codex의 &lt;code&gt;MEMORY.md&lt;/code&gt; 뒤에 붙이는 것입니다. 하지만 이 방식은 generated registry를 직접 편집하고 project scope도 잃습니다. 다음 consolidation에서 내용이 다시 정리되거나 사라질 가능성도 있습니다.&lt;/p&gt;
+&lt;p&gt;Claude memory를 &lt;code&gt;AGENTS.md&lt;/code&gt;로 옮기는 것도 다른 작업입니다. &lt;code&gt;AGENTS.md&lt;/code&gt;는 반드시 지켜야 할 repository 규칙에 적합하고, memory는 과거 결정과 맥락을 필요할 때 회상하는 계층입니다. 모든 과거 기록을 instruction으로 승격하면 prompt가 커지고 오래된 판단도 강제 규칙처럼 작동합니다.&lt;/p&gt;
+&lt;p&gt;마지막으로 실제 memory 내용을 검증 prompt나 공개 로그에 그대로 노출하지 않는 편이 좋습니다. 검증에는 정답을 공개해도 괜찮은 비민감 결정 하나면 충분합니다. 개인 재무, 내부 host, access token, private repository 정보는 정확히 회상되더라도 테스트 소재로 쓰지 않았습니다.&lt;/p&gt;
+&lt;h2&gt;파일 이전이 아니라 다음 세션까지 확인해야 합니다&lt;/h2&gt;
+&lt;p&gt;이번 작업에서 가장 중요했던 기준은 &lt;strong&gt;원본 보존, project scope, consolidation, 새 session 회상&lt;/strong&gt;을 각각 확인하는 것이었습니다. 이 네 단계가 모두 통과해야 auto memory migration이 끝났다고 볼 수 있습니다.&lt;/p&gt;
+&lt;p&gt;Codex memory는 SQLite 하나도, Markdown 한 파일도 아니었습니다. Background job을 관리하는 state와 agent가 읽는 consolidated workspace가 함께 움직이는 구조였습니다. 이 차이를 알고 실험적 importer의 범위와 한계를 확인하면 Claude Code에서 쌓아 온 맥락을 무리하게 global instruction으로 바꾸지 않고도 이어갈 수 있습니다.&lt;/p&gt;
+&lt;p&gt;무엇보다 마지막 검증은 새 session에서 해야 합니다. 기존 대화가 알고 있는 내용을 다시 답하는 것은 memory 검증이 아니거든요. 별도의 ephemeral session이 source를 보지 않고 imported resource를 찾아 정확히 회상했을 때, 비로소 이전이 끝납니다.&lt;/p&gt;
+</content:encoded></item><item><title>기본 제공 커넥터에 없는 MCP 서버를 Claude와 ChatGPT에 붙이기</title><link>https://monologg.kr/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/</guid><description>Claude와 ChatGPT가 기본으로 제공하지 않는 remote MCP 서버를 커스텀 커넥터와 커스텀 플러그인으로 붙이는 절차를, Plane MCP를 예로 정리했습니다.</description><pubDate>Thu, 23 Jul 2026 00:00:00 GMT</pubDate><content:encoded>&lt;h2&gt;기본 제공 커넥터에 없으면 직접 붙여야 합니다&lt;/h2&gt;
 &lt;p&gt;Claude와 ChatGPT 모두 미리 만들어 둔 연동 목록을 갖고 있습니다. Claude는 Connectors, ChatGPT는 플러그인 화면에서 고르면 되고, Gmail이나 Drive, Notion, Slack처럼 이름값 하는 서비스는 클릭 몇 번이면 붙습니다. 인증이며 권한이며 플랫폼이 알아서 처리해 주고요. 문제는 그 목록에 없는 서비스인데, 정작 제가 매일 쓰는 도구가 거기 속합니다.&lt;/p&gt;
 &lt;p&gt;이슈 트래커로 &lt;a href=&quot;https://plane.so&quot;&gt;Plane&lt;/a&gt;을 쓰고 있습니다. 개인 프로젝트 보드를 전부 여기에 넣어두다 보니 AI 에이전트에서도 티켓을 읽고 쓸 일이 많아서, Plane이 제공하는 &lt;a href=&quot;https://developers.plane.so/dev-tools/mcp-server&quot;&gt;MCP server&lt;/a&gt;를 붙여 뒀거든요. 다행히 요즘은 이런 서버가 remote endpoint를 같이 내주는 경우가 많고, 그렇다면 기본 제공 목록에 없어도 커스텀으로 등록할 수 있습니다. 이 글은 그 절차를 Plane을 예로 정리한 것이고, remote MCP 서버라면 URL 자리만 바꿔서 그대로 따라 하면 됩니다.&lt;/p&gt;
 &lt;p&gt;물론 처음부터 그렇게 붙인 건 아닙니다. 저는 Claude Desktop의 &lt;code&gt;claude_desktop_config.json&lt;/code&gt;에 &lt;code&gt;npx mcp-remote&lt;/code&gt;를 로컬 프록시로 세우고, 그 프록시가 API 키 엔드포인트를 호출하게 해 뒀습니다.&lt;/p&gt;
@@ -776,113 +920,6 @@ ENABLE_TOOL_SEARCH=true claude
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;필터링된 MCP 서버를 각 클라이언트에 동일하게 연결하면, 설정 한 번으로 모든 클라이언트에서 같은 도구 세트를 사용할 수 있습니다.&lt;/p&gt;
 &lt;p&gt;MCP 생태계가 커질수록 도구 수 관리는 점점 중요한 문제가 될 것입니다. 지금으로서는 Claude Code의 빌트인 기능과 tool-filter-mcp를 상황에 맞게 조합하는 것이 가장 현실적인 접근입니다.&lt;/p&gt;
-</content:encoded></item><item><title>Claude Code에서 OpenAI Codex를 호출하는 4가지 방법</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</guid><description>Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 활용 방법을 정리합니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code를 쓰다 보면 가끔 다른 모델의 의견이 궁금할 때가 있습니다. 이 구현을 Codex한테 한 번 더 검증받아 보고 싶다는 생각이 드는 순간이 있거든요. 실제로 리서치해 보니 Claude Code 안에서 OpenAI Codex를 호출하는 방법이 여러 가지 있었고, 이 글에서 직접 정리한 4가지 방법을 비교합니다.&lt;/p&gt;
-&lt;h2&gt;방법 한눈에 보기&lt;/h2&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr&gt;
-&lt;th&gt;방법&lt;/th&gt;
-&lt;th&gt;난이도&lt;/th&gt;
-&lt;th&gt;핵심&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;Codex 내장 MCP 서버&lt;/td&gt;
-&lt;td&gt;쉬움&lt;/td&gt;
-&lt;td&gt;&lt;code&gt;codex mcp-server&lt;/code&gt; stdio 연결&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;커뮤니티 MCP 래퍼&lt;/td&gt;
-&lt;td&gt;쉬움&lt;/td&gt;
-&lt;td&gt;npx 원클릭 설치&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;Custom Slash Command&lt;/td&gt;
-&lt;td&gt;쉬움&lt;/td&gt;
-&lt;td&gt;단방향 CLI 호출&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;agent-mux&lt;/td&gt;
-&lt;td&gt;중간&lt;/td&gt;
-&lt;td&gt;멀티엔진 orchestrator&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;이 중 &lt;strong&gt;가장 간단하면서도 강력한 것은 첫 번째, 내장 MCP 서버 방식&lt;/strong&gt;입니다.&lt;/p&gt;
-&lt;h2&gt;Codex 내장 MCP 서버 — 가장 추천하는 방법&lt;/h2&gt;
-&lt;p&gt;Codex CLI에는 &lt;code&gt;codex mcp-server&lt;/code&gt;라는 내장 MCP 서버가 포함되어 있습니다. stdio 방식으로 Claude Code에 직접 연결할 수 있어서 별도 서버를 띄울 필요가 없습니다.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Codex CLI 설치 및 인증
-npm install -g @openai/codex
-codex login
-
-# Claude Code에 MCP 서버 등록
-claude mcp add --transport stdio --scope user codex -- codex mcp-server
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이렇게 하면 Claude Code 안에 두 개의 MCP 도구가 생깁니다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;codex&lt;/code&gt; — 새 Codex 세션을 시작합니다. prompt, approval-policy, sandbox, model 파라미터를 지정할 수 있습니다.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;codex-reply&lt;/code&gt; — &lt;code&gt;threadId&lt;/code&gt;로 기존 세션을 이어갑니다. 대화형 컨텍스트가 유지되므로 후속 질문도 가능합니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;등록이 잘 됐는지는 &lt;code&gt;claude mcp list&lt;/code&gt;로 확인합니다. &lt;code&gt;codex: codex mcp-server - Connected&lt;/code&gt;가 보이면 성공입니다.&lt;/p&gt;
-&lt;p&gt;파라미터 중에서는 approval-policy가 꽤 중요합니다. &lt;code&gt;untrusted&lt;/code&gt;, &lt;code&gt;on-request&lt;/code&gt;, &lt;code&gt;on-failure&lt;/code&gt;, &lt;code&gt;never&lt;/code&gt; 중에서 선택할 수 있는데, 자동화 pipeline에서는 &lt;code&gt;never&lt;/code&gt;로 설정하면 Codex가 별도 승인 없이 작업을 수행합니다.&lt;/p&gt;
-&lt;h2&gt;커뮤니티 MCP 래퍼 — 세션 관리가 필요할 때&lt;/h2&gt;
-&lt;p&gt;공식 내장 서버가 부족하다고 느낀다면 커뮤니티에서 만든 MCP 래퍼도 있습니다.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;claude mcp add codex-cli -- npx -y codex-mcp-server
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이 래퍼는 세션 관리, 모델 선택, resume 기능 같은 추가 기능을 제공하고, npm 패키지라서 설치도 간단합니다. agency-ai-solutions/openai-codex-mcp 같은 프로젝트는 &lt;code&gt;write_code&lt;/code&gt;, &lt;code&gt;explain_code&lt;/code&gt;, &lt;code&gt;review_code&lt;/code&gt; 같은 특화 메서드도 제공하더라고요.&lt;/p&gt;
-&lt;p&gt;다만 서드파티인 만큼 업데이트 주기나 모델 지원 범위는 확인하고 쓰는 것이 좋습니다.&lt;/p&gt;
-&lt;h2&gt;Custom Slash Command — 단순하게 쓰고 싶을 때&lt;/h2&gt;
-&lt;p&gt;MCP 서버까지는 필요 없고 특정 작업만 Codex에 맡기고 싶다면 slash command가 적합합니다.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;!-- ~/.claude/commands/codex-write.md --&amp;gt;
----
-description: &quot;Generate code using OpenAI Codex CLI&quot;
----
-codex write --language $2 --task &quot;$3&quot; --model o4-mini
-&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;&amp;lt;!-- ~/.claude/commands/codex-explain.md --&amp;gt;
----
-description: &quot;Get code explanations from Codex CLI&quot;
----
-codex explain @$1 --focus &quot;$2&quot; --detail comprehensive
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Claude Code에서 &lt;code&gt;/codex-write python &quot;피보나치 수열 생성 함수&quot;&lt;/code&gt; 처럼 호출하면 됩니다.&lt;/p&gt;
-&lt;p&gt;단점도 명확합니다. Claude와의 양방향 상호작용이 안 되거든요. Codex의 출력이 Claude의 컨텍스트로 돌아오긴 하지만, Claude가 Codex 결과를 보고 후속 질문을 던지는 흐름은 만들기 어렵습니다. 단발성 작업에 적합한 방식입니다.&lt;/p&gt;
-&lt;h2&gt;agent-mux — 풀 오케스트레이션이 필요할 때&lt;/h2&gt;
-&lt;p&gt;agent-mux는 Claude, Codex, OpenCode 등 여러 AI 엔진을 하나의 CLI로 통합하는 orchestrator입니다.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Codex로 정밀 코드 변경
-agent-mux --engine codex --reasoning high --effort high \
-  &quot;Refactor auth module in src/auth/&quot;
-
-# Claude로 아키텍처 설계
-agent-mux --engine claude --effort high \
-  &quot;Design the rollback strategy for the payments migration&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;핵심은 Claude Code의 subagent 시스템과 결합할 수 있다는 점입니다. Claude가 아키텍처 설계를 하고, 실제 코드 변경은 Codex에 위임하고, 또 다른 Claude가 리뷰하는 pipeline을 구성할 수 있습니다.&lt;/p&gt;
-&lt;p&gt;결국 &lt;strong&gt;엔진별 강점을 태스크에 맞게 routing하는 구조&lt;/strong&gt;입니다. Claude Opus는 설계와 추론에 강하고 Codex는 정밀한 코드 변경에 강하니, 각자 잘하는 일을 맡기는 것이죠. agent-mux의 GSD(Get Shit Done) coordinator는 각 태스크에 엔진뿐 아니라 적절한 skill과 MCP 서버까지 자동으로 주입합니다.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;# Codex 안에서 Claude를 coordinator로 실행
-agent-mux --engine codex --coordinator get-shit-done-agent \
-  --effort xhigh --full \
-  &quot;Migrate the auth module to the new API, test everything, audit the result&quot;
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;다만 설정 복잡도가 올라가고, agent-mux 자체가 아직 초기 단계라는 점은 감안해야 합니다.&lt;/p&gt;
-&lt;h2&gt;실용적인 적용 포인트&lt;/h2&gt;
-&lt;p&gt;리서치하면서 정리한 usecase는 크게 세 가지입니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;세컨드 오피니언&lt;/strong&gt; — Claude가 작성한 코드를 Codex에 리뷰 요청하거나, 그 반대도 가능합니다. 두 모델의 관점이 다르기 때문에 한쪽이 놓치는 부분을 잡아낼 수 있습니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;강점 기반 routing&lt;/strong&gt; — 아키텍처 설계와 문서 작성은 Claude Opus에, 정밀 코드 변경과 디버깅은 Codex에 맡기는 패턴입니다. MCP 서버를 통해 자연스럽게 위임이 이뤄집니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;대규모 refactoring&lt;/strong&gt; — Codex의 넓은 컨텍스트 윈도우로 monorepo 전체를 파악한 뒤, Claude로 세부 구현을 진행하는 방식도 가능합니다.&lt;/p&gt;
-&lt;h2&gt;제약사항과 주의할 점&lt;/h2&gt;
-&lt;p&gt;당연히 제약도 있습니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;비용 이중 발생&lt;/strong&gt; — Claude API와 OpenAI API를 동시에 사용하므로 비용이 두 배 가까이 들 수 있습니다. 모든 작업에 양쪽 모델을 쓸 필요는 없고, 가치가 큰 작업에만 선별적으로 사용하는 것이 현실적입니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;인증 분리&lt;/strong&gt; — Codex는 ChatGPT 구독 또는 OpenAI API 키가 별도로 필요합니다. &lt;code&gt;codex login&lt;/code&gt;으로 ChatGPT 계정 인증을 해두면 편합니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;컨텍스트 단절&lt;/strong&gt; — MCP를 통한 호출이라 Claude의 전체 컨텍스트가 Codex로 전달되지 않습니다. 프롬프트로 명시한 내용만 넘어가거든요. 중요한 맥락은 프롬프트에 충분히 담아야 합니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;실험적 상태&lt;/strong&gt; — &lt;code&gt;codex mcp-server&lt;/code&gt;에는 아직 experimental 태그가 붙어 있습니다. API 변경 가능성은 염두에 두는 것이 좋습니다.&lt;/p&gt;
-&lt;h2&gt;시작은 두 줄이면 됩니다&lt;/h2&gt;
-&lt;p&gt;저는 내장 MCP 서버 방식으로 시작했습니다. 필요한 명령은 딱 두 줄입니다.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;npm install -g @openai/codex &amp;amp;&amp;amp; codex login
-claude mcp add --transport stdio --scope user codex -- codex mcp-server
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이후 Claude Code에서 &quot;Codex로 이 함수 리뷰해줘&quot; 같은 자연어 요청을 하면 Claude가 자동으로 Codex MCP 도구를 호출합니다. 사용 패턴이 잡히면 slash command로 자주 쓰는 흐름을 래핑하고, 더 복잡한 오케스트레이션이 필요해지는 시점에 agent-mux를 검토하는 순서가 자연스럽습니다.&lt;/p&gt;
 </content:encoded></item><item><title>Perplexity MCP 대신 쓸 수 있는 웹 검색 MCP 5종 비교</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/</guid><description>Perplexity MCP의 비용 부담을 줄이기 위해 Brave Search, Tavily, SearXNG, Exa, ChatGPT MCP 5종을 비교하고 무료 티어 기준 최적 조합을 정리했습니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code에서 웹 검색용으로 Perplexity MCP를 쓰고 있었는데, 크레딧이 눈에 띄게 줄어들더라고요. 쿼리당 $0.005라 한 번에 큰 돈은 아니지만, 하루에도 수십 번씩 검색하다 보면 월말 청구서가 꽤 나옵니다. 무료 API 티어도 없고, Pro 플랜 $20/월에 포함되는 $5 크레딧으로는 1,000번 남짓 검색하면 끝입니다.&lt;/p&gt;
 &lt;p&gt;그래서 비용 효율적인 대안을 찾아봤습니다. Brave Search, Tavily, SearXNG, Exa, 그리고 ChatGPT/OpenAI MCP까지 총 5종을 검토한 결과를 정리합니다.&lt;/p&gt;
 &lt;h2&gt;기준선: Perplexity MCP의 비용 구조&lt;/h2&gt;
@@ -1111,6 +1148,113 @@ claude mcp add exa --transport http &quot;https://mcp.exa.ai/mcp?tools=web_searc
 &lt;p&gt;&lt;strong&gt;무제한 검색이 필요하면 SearXNG&lt;/strong&gt;가 정답입니다. Docker 관리만 감수한다면 비용이 $0입니다. 242개 엔진을 메타서치하니 결과의 폭도 넓고요.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;Brave Search는 조건부 추천입니다.&lt;/strong&gt; 매달 $5 무료 크레딧(~1,000회)이 자동 지급되지만, 신용카드 등록과 attribution이 필수입니다. 이 조건이 괜찮다면 Perplexity보다 나은 선택이지만, 신용카드 없이 쓰고 싶다면 Tavily나 Exa가 더 편합니다.&lt;/p&gt;
 &lt;p&gt;저는 Tavily + Exa 병행 구성으로 정리했습니다. 이 조합이면 월 2,000회까지 무료로 커버할 수 있고, Brave까지 추가하면 3,000회까지도 가능합니다. Perplexity에 $10 쓰던 비용을 $0으로 줄인 셈입니다.&lt;/p&gt;
+</content:encoded></item><item><title>Claude Code에서 OpenAI Codex를 호출하는 4가지 방법</title><link>https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/</guid><description>Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 활용 방법을 정리합니다.</description><pubDate>Sun, 15 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Claude Code를 쓰다 보면 가끔 다른 모델의 의견이 궁금할 때가 있습니다. 이 구현을 Codex한테 한 번 더 검증받아 보고 싶다는 생각이 드는 순간이 있거든요. 실제로 리서치해 보니 Claude Code 안에서 OpenAI Codex를 호출하는 방법이 여러 가지 있었고, 이 글에서 직접 정리한 4가지 방법을 비교합니다.&lt;/p&gt;
+&lt;h2&gt;방법 한눈에 보기&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;방법&lt;/th&gt;
+&lt;th&gt;난이도&lt;/th&gt;
+&lt;th&gt;핵심&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Codex 내장 MCP 서버&lt;/td&gt;
+&lt;td&gt;쉬움&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;codex mcp-server&lt;/code&gt; stdio 연결&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;커뮤니티 MCP 래퍼&lt;/td&gt;
+&lt;td&gt;쉬움&lt;/td&gt;
+&lt;td&gt;npx 원클릭 설치&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Custom Slash Command&lt;/td&gt;
+&lt;td&gt;쉬움&lt;/td&gt;
+&lt;td&gt;단방향 CLI 호출&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;agent-mux&lt;/td&gt;
+&lt;td&gt;중간&lt;/td&gt;
+&lt;td&gt;멀티엔진 orchestrator&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;이 중 &lt;strong&gt;가장 간단하면서도 강력한 것은 첫 번째, 내장 MCP 서버 방식&lt;/strong&gt;입니다.&lt;/p&gt;
+&lt;h2&gt;Codex 내장 MCP 서버 — 가장 추천하는 방법&lt;/h2&gt;
+&lt;p&gt;Codex CLI에는 &lt;code&gt;codex mcp-server&lt;/code&gt;라는 내장 MCP 서버가 포함되어 있습니다. stdio 방식으로 Claude Code에 직접 연결할 수 있어서 별도 서버를 띄울 필요가 없습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# Codex CLI 설치 및 인증
+npm install -g @openai/codex
+codex login
+
+# Claude Code에 MCP 서버 등록
+claude mcp add --transport stdio --scope user codex -- codex mcp-server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이렇게 하면 Claude Code 안에 두 개의 MCP 도구가 생깁니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;codex&lt;/code&gt; — 새 Codex 세션을 시작합니다. prompt, approval-policy, sandbox, model 파라미터를 지정할 수 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;codex-reply&lt;/code&gt; — &lt;code&gt;threadId&lt;/code&gt;로 기존 세션을 이어갑니다. 대화형 컨텍스트가 유지되므로 후속 질문도 가능합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;등록이 잘 됐는지는 &lt;code&gt;claude mcp list&lt;/code&gt;로 확인합니다. &lt;code&gt;codex: codex mcp-server - Connected&lt;/code&gt;가 보이면 성공입니다.&lt;/p&gt;
+&lt;p&gt;파라미터 중에서는 approval-policy가 꽤 중요합니다. &lt;code&gt;untrusted&lt;/code&gt;, &lt;code&gt;on-request&lt;/code&gt;, &lt;code&gt;on-failure&lt;/code&gt;, &lt;code&gt;never&lt;/code&gt; 중에서 선택할 수 있는데, 자동화 pipeline에서는 &lt;code&gt;never&lt;/code&gt;로 설정하면 Codex가 별도 승인 없이 작업을 수행합니다.&lt;/p&gt;
+&lt;h2&gt;커뮤니티 MCP 래퍼 — 세션 관리가 필요할 때&lt;/h2&gt;
+&lt;p&gt;공식 내장 서버가 부족하다고 느낀다면 커뮤니티에서 만든 MCP 래퍼도 있습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;claude mcp add codex-cli -- npx -y codex-mcp-server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 래퍼는 세션 관리, 모델 선택, resume 기능 같은 추가 기능을 제공하고, npm 패키지라서 설치도 간단합니다. agency-ai-solutions/openai-codex-mcp 같은 프로젝트는 &lt;code&gt;write_code&lt;/code&gt;, &lt;code&gt;explain_code&lt;/code&gt;, &lt;code&gt;review_code&lt;/code&gt; 같은 특화 메서드도 제공하더라고요.&lt;/p&gt;
+&lt;p&gt;다만 서드파티인 만큼 업데이트 주기나 모델 지원 범위는 확인하고 쓰는 것이 좋습니다.&lt;/p&gt;
+&lt;h2&gt;Custom Slash Command — 단순하게 쓰고 싶을 때&lt;/h2&gt;
+&lt;p&gt;MCP 서버까지는 필요 없고 특정 작업만 Codex에 맡기고 싶다면 slash command가 적합합니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!-- ~/.claude/commands/codex-write.md --&amp;gt;
+---
+description: &quot;Generate code using OpenAI Codex CLI&quot;
+---
+codex write --language $2 --task &quot;$3&quot; --model o4-mini
+&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;&amp;lt;!-- ~/.claude/commands/codex-explain.md --&amp;gt;
+---
+description: &quot;Get code explanations from Codex CLI&quot;
+---
+codex explain @$1 --focus &quot;$2&quot; --detail comprehensive
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Claude Code에서 &lt;code&gt;/codex-write python &quot;피보나치 수열 생성 함수&quot;&lt;/code&gt; 처럼 호출하면 됩니다.&lt;/p&gt;
+&lt;p&gt;단점도 명확합니다. Claude와의 양방향 상호작용이 안 되거든요. Codex의 출력이 Claude의 컨텍스트로 돌아오긴 하지만, Claude가 Codex 결과를 보고 후속 질문을 던지는 흐름은 만들기 어렵습니다. 단발성 작업에 적합한 방식입니다.&lt;/p&gt;
+&lt;h2&gt;agent-mux — 풀 오케스트레이션이 필요할 때&lt;/h2&gt;
+&lt;p&gt;agent-mux는 Claude, Codex, OpenCode 등 여러 AI 엔진을 하나의 CLI로 통합하는 orchestrator입니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# Codex로 정밀 코드 변경
+agent-mux --engine codex --reasoning high --effort high \
+  &quot;Refactor auth module in src/auth/&quot;
+
+# Claude로 아키텍처 설계
+agent-mux --engine claude --effort high \
+  &quot;Design the rollback strategy for the payments migration&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;핵심은 Claude Code의 subagent 시스템과 결합할 수 있다는 점입니다. Claude가 아키텍처 설계를 하고, 실제 코드 변경은 Codex에 위임하고, 또 다른 Claude가 리뷰하는 pipeline을 구성할 수 있습니다.&lt;/p&gt;
+&lt;p&gt;결국 &lt;strong&gt;엔진별 강점을 태스크에 맞게 routing하는 구조&lt;/strong&gt;입니다. Claude Opus는 설계와 추론에 강하고 Codex는 정밀한 코드 변경에 강하니, 각자 잘하는 일을 맡기는 것이죠. agent-mux의 GSD(Get Shit Done) coordinator는 각 태스크에 엔진뿐 아니라 적절한 skill과 MCP 서버까지 자동으로 주입합니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# Codex 안에서 Claude를 coordinator로 실행
+agent-mux --engine codex --coordinator get-shit-done-agent \
+  --effort xhigh --full \
+  &quot;Migrate the auth module to the new API, test everything, audit the result&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;다만 설정 복잡도가 올라가고, agent-mux 자체가 아직 초기 단계라는 점은 감안해야 합니다.&lt;/p&gt;
+&lt;h2&gt;실용적인 적용 포인트&lt;/h2&gt;
+&lt;p&gt;리서치하면서 정리한 usecase는 크게 세 가지입니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;세컨드 오피니언&lt;/strong&gt; — Claude가 작성한 코드를 Codex에 리뷰 요청하거나, 그 반대도 가능합니다. 두 모델의 관점이 다르기 때문에 한쪽이 놓치는 부분을 잡아낼 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;강점 기반 routing&lt;/strong&gt; — 아키텍처 설계와 문서 작성은 Claude Opus에, 정밀 코드 변경과 디버깅은 Codex에 맡기는 패턴입니다. MCP 서버를 통해 자연스럽게 위임이 이뤄집니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;대규모 refactoring&lt;/strong&gt; — Codex의 넓은 컨텍스트 윈도우로 monorepo 전체를 파악한 뒤, Claude로 세부 구현을 진행하는 방식도 가능합니다.&lt;/p&gt;
+&lt;h2&gt;제약사항과 주의할 점&lt;/h2&gt;
+&lt;p&gt;당연히 제약도 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;비용 이중 발생&lt;/strong&gt; — Claude API와 OpenAI API를 동시에 사용하므로 비용이 두 배 가까이 들 수 있습니다. 모든 작업에 양쪽 모델을 쓸 필요는 없고, 가치가 큰 작업에만 선별적으로 사용하는 것이 현실적입니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;인증 분리&lt;/strong&gt; — Codex는 ChatGPT 구독 또는 OpenAI API 키가 별도로 필요합니다. &lt;code&gt;codex login&lt;/code&gt;으로 ChatGPT 계정 인증을 해두면 편합니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;컨텍스트 단절&lt;/strong&gt; — MCP를 통한 호출이라 Claude의 전체 컨텍스트가 Codex로 전달되지 않습니다. 프롬프트로 명시한 내용만 넘어가거든요. 중요한 맥락은 프롬프트에 충분히 담아야 합니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;실험적 상태&lt;/strong&gt; — &lt;code&gt;codex mcp-server&lt;/code&gt;에는 아직 experimental 태그가 붙어 있습니다. API 변경 가능성은 염두에 두는 것이 좋습니다.&lt;/p&gt;
+&lt;h2&gt;시작은 두 줄이면 됩니다&lt;/h2&gt;
+&lt;p&gt;저는 내장 MCP 서버 방식으로 시작했습니다. 필요한 명령은 딱 두 줄입니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;npm install -g @openai/codex &amp;amp;&amp;amp; codex login
+claude mcp add --transport stdio --scope user codex -- codex mcp-server
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이후 Claude Code에서 &quot;Codex로 이 함수 리뷰해줘&quot; 같은 자연어 요청을 하면 Claude가 자동으로 Codex MCP 도구를 호출합니다. 사용 패턴이 잡히면 slash command로 자주 쓰는 흐름을 래핑하고, 더 복잡한 오케스트레이션이 필요해지는 시점에 agent-mux를 검토하는 순서가 자연스럽습니다.&lt;/p&gt;
 </content:encoded></item><item><title>2주 간의 KoELECTRA 개발기 - 2부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part2/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part2/</guid><description>KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.</description><pubDate>Sat, 02 May 2020 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다.&lt;/p&gt;
 &lt;p&gt;이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)&lt;/p&gt;
 &lt;p&gt;2부에는 &lt;strong&gt;Pretraining, Finetuning&lt;/strong&gt; 등을 다룰 예정이다.&lt;/p&gt;

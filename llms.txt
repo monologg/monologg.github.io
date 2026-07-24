@@ -10,6 +10,7 @@
 - https://huggingface.co/monologg
 
 ## Articles
+- [Claude Code auto memory를 Codex native memory로 옮기고 검증하기](https://monologg.kr/posts/2026/07/24/2026-07-24-claude-code-auto-memory-to-codex/): Claude Code의 프로젝트별 auto memory를 Codex CLI 0.145.0의 실험적 import 기능으로 이전하고, 새 세션의 자동 주입과 실제 회상까지 검증한 과정을 정리합니다.
 - [기본 제공 커넥터에 없는 MCP 서버를 Claude와 ChatGPT에 붙이기](https://monologg.kr/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/): Claude와 ChatGPT가 기본으로 제공하지 않는 remote MCP 서버를 커스텀 커넥터와 커스텀 플러그인으로 붙이는 절차를, Plane MCP를 예로 정리했습니다.
 - [에이전트를 위한 더 좋은 웹 검색 백엔드 찾기](https://monologg.kr/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/): 홈랩 에이전트에 붙일 웹 검색 API를 고르기 위해 실쿼리 A/B 평가를 두 번 돌렸습니다. 10쿼리 1차 평가의 결론이 50쿼리 블라인드 2차 평가에서 뒤집힌 과정과, 평가 하네스 설계, 검색 결과에서 발견한 실전 prompt injection까지 정리했습니다.
 - [ghcord 개발기: Discord에 없는 GitHub 연동, 직접 만든 이야기](https://monologg.kr/posts/2026/07/17/2026-07-17-ghcord-dev-story/): Slack에서 Discord로 옮기고 나서 아쉬웠던 GitHub 연동을 GitHub App 기반 셀프호스팅 서버로 직접 만들었습니다. 설계 결정과 공개 과정을 정리했습니다.
@@ -17,8 +18,8 @@
 - [Claude Code에서 Notion MCP를 read-only로 제한하는 방법](https://monologg.kr/posts/2026/03/20/2026-03-20-notion-mcp-read-only-setup/): Notion MCP가 read+write 권한을 모두 갖고 있어, Notion Integration의 Capabilities를 조정해 read-only로 전환한 과정을 정리합니다.
 - [Antigravity 터미널에서 Claude Code Shift+Enter 개행 설정하기](https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/): Antigravity 내장 터미널에서 Claude Code의 Shift+Enter 개행이 동작하지 않는 문제를 keybindings.json 수동 설정으로 해결하는 과정을 정리했습니다. /terminal-setup이 지원되지 않는 이유와 임시 대안도 함께 다룹니다.
 - [MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교](https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/): Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했습니다.
-- [Claude Code에서 OpenAI Codex를 호출하는 4가지 방법](https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/): Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 활용 방법을 정리합니다.
 - [Perplexity MCP 대신 쓸 수 있는 웹 검색 MCP 5종 비교](https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/): Perplexity MCP의 비용 부담을 줄이기 위해 Brave Search, Tavily, SearXNG, Exa, ChatGPT MCP 5종을 비교하고 무료 티어 기준 최적 조합을 정리했습니다.
+- [Claude Code에서 OpenAI Codex를 호출하는 4가지 방법](https://monologg.kr/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/): Claude Code 안에서 OpenAI Codex를 호출하는 4가지 방법(내장 MCP 서버, 커뮤니티 래퍼, Slash Command, agent-mux)을 비교하고 실용적인 멀티 에이전트 활용 방법을 정리합니다.
 - [2주 간의 KoELECTRA 개발기 - 2부](https://monologg.kr/posts/2020/05/02/koelectra-part2/): KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.
 - [2주 간의 KoELECTRA 개발기 - 1부](https://monologg.kr/posts/2020/05/02/koelectra-part1/): KoELECTRA 개발 과정 1부. 기존 한국어 PLM의 한계점 분석, Wordpiece Tokenizer 제작, 14GB 한국어 데이터 전처리, TPU 세팅 및 Configuration 설정까지의 과정을 기록합니다.
 - [내가 만든 ELECTRA를 Huggingface Transformers로 Porting하기](https://monologg.kr/posts/2020/05/01/transformers-porting/): 직접 Pretrain한 ELECTRA 모델의 Tensorflow ckpt를 Huggingface Transformers의 PyTorch ckpt로 변환하는 방법. config 설정부터 weight 변환까지 단계별로 안내합니다.
