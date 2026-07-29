@@ -146,7 +146,7 @@ queues:
 
 제 경우엔 앞의 넷이 걸렸고 마지막이 아니었습니다. 그래서 Airflow가 아니라 Dagu였습니다.
 
-*커버 이미지는 제 인스턴스가 아니라 Dagu 공식 저장소([dagucloud/dagu](https://github.com/dagucloud/dagu), GPL-3.0)에 실린 Run 상세 화면 스크린샷입니다.*
+*커버 이미지는 제 인스턴스가 아니라 [Dagu 공식 저장소](https://github.com/dagucloud/dagu)에 실린 Run 상세 화면 스크린샷입니다.*
 
 ---
 
