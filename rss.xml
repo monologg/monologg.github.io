@@ -154,6 +154,7 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;&lt;img src=&quot;./dagu-ui.png&quot; alt=&quot;Dagu 웹 UI의 실행 화면. daily-report Job의 상태와 실행 시각, 소요 시간, 단계별 stdout·stderr 로그 링크가 한 화면에 보인다&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;마지막이 생각보다 컸습니다. 스크립트는 한 줄도 안 고쳤고, Job 하나만 먼저 옮겨 며칠 돌려보고 나머지를 옮겼습니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;# 아침 브리핑
 schedule: &quot;1 8 * * *&quot;
