@@ -55,14 +55,6 @@
 &lt;p&gt;설치할 때 알아둘 점이 하나 있습니다. 기가라이트 링크 협상은 느리고 전원 인가 순서를 타는 사례가 있어서, &lt;strong&gt;케이블을 전부 꽂은 상태에서 허브 전원을 넣고 1~3분 기다리는&lt;/strong&gt; 순서를 권합니다. 저는 설치 즉시 공유기 WAN이 1Gbps Full로 협상됐고, speedtest는 450/465Mbps(핑 3ms)가 나왔습니다. 93에서 450으로, &lt;strong&gt;4.8배&lt;/strong&gt;입니다. 총비용은 허브 하나 값이 전부였고 기사 방문도, 통신사 연락도 없었습니다.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;./link-info-wan-1gbps.png&quot; alt=&quot;허브 설치 후 링크 설정 정보. WAN 포트가 자동 모드로 1Gbps Full 협상&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;./speedtest-after-450mbps.png&quot; alt=&quot;허브 설치 후 speedtest. 다운로드 450.67, 업로드 465.36Mbps, 핑 3ms&quot; /&gt;&lt;/p&gt;
-&lt;h2&gt;사기 전에 확인할 것들&lt;/h2&gt;
-&lt;p&gt;같은 증상이라고 해서 전부 기가라이트인 건 아니라서, 구매 전에 확인할 것들을 정리합니다.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;먼저 요금제를 확인합니다.&lt;/strong&gt; 100M 요금제면 100Mbps가 정상입니다. 조사를 한참 하고 나서야 요금제를 확인하는 실수를 저도 했습니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;Realtek 랜카드 PC가 있다면 벽선 직결로 판별할 수 있습니다.&lt;/strong&gt; 어댑터 링크 속도에 500.0Mbps가 뜨면 그 회선은 기가라이트 방식이 맞고, 허브가 통할 확률이 매우 높습니다. 협상이 느리니 한 번에 안 잡히면 재연결하고 몇 분 기다려 보세요.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;반례가 존재합니다.&lt;/strong&gt; 일부 구축 환경은 Realtek 기가라이트가 아닌 다른 증폭 방식을 써서, 기가라이트 허브를 달아도 100Mbps에 머문 사례가 있습니다 (&lt;a href=&quot;https://www.clien.net/service/board/kin/19040196&quot;&gt;클리앙 사례&lt;/a&gt; — H8005G-IGMP를 달았는데도 안 됐다는 보고). 그래서 2번 판별을 먼저 해 보고, 안 되면 반품 가능한 곳에서 사는 게 안전합니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;허브는 단일 장애점이 됩니다.&lt;/strong&gt; 설치 후 인터넷이 통째로 끊기면 공유기보다 허브 전원과 링크부터 확인하세요. 허브를 재부팅하면 기가라이트 재협상에 몇 분 걸릴 수 있습니다.&lt;/li&gt;
-&lt;/ol&gt;
 &lt;p&gt;돌이켜 보면 이 문제의 핵심 교훈은 하나였습니다. &lt;strong&gt;표준에 없는 값이 보이면 그게 최대 단서입니다.&lt;/strong&gt; &quot;500.0 Mbps&quot;라는 표시를 그럴 리 없는 값으로 뭉갰다면 아직도 93Mbps로 살고 있었을 겁니다.&lt;/p&gt;
 </content:encoded></item><item><title>Claude Code Remote Control을 모든 세션에 기본으로 켜두기</title><link>https://monologg.kr/posts/2026/08/17/2026-08-17-claude-code-remote-control-for-all-sessions/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/08/17/2026-08-17-claude-code-remote-control-for-all-sessions/</guid><description>터미널에서 돌아가는 Claude Code 세션을 폰이나 브라우저에서 이어받는 Remote Control을, 매번 명령어를 치지 않고 모든 세션에 자동으로 붙도록 설정하는 방법을 정리합니다.</description><pubDate>Mon, 17 Aug 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;작업의 대부분을 Claude Code 터미널에서 하다 보니, 자리를 뜨는 순간이 늘 애매했습니다. 긴 turn을 걸어두고 나가면 다 끝났는지 알 수가 없고, 중간에 permission prompt 하나가 떠 있으면 그 상태로 몇십 분씩 멈춰 있는 겁니다. 돌아와서 보면 &quot;Bash 명령 승인해줘&quot;에서 대기 중이었던 적이 여러 번 있었습니다.&lt;/p&gt;
 &lt;p&gt;Remote Control 자체는 예전부터 종종 썼습니다. 다만 쓰려면 &lt;code&gt;claude --rc&lt;/code&gt;로 띄우거나 세션 안에서 &lt;code&gt;/remote-control&lt;/code&gt;을 쳐야 하는데, 이 한 단계가 은근히 걸리더라고요. 나가기 전에 미리 켜두면 되는데 매번 챙기기도 번거롭고, 정작 밖에 나와서 &quot;아 그거 켜고 나올걸&quot; 하고 떠오르는 날이 많았습니다. 그때는 이미 늦었습니다. 켜려면 터미널 앞으로 돌아가야 하니까요. 그래서 &lt;strong&gt;모든 interactive 세션이 시작할 때 자동으로 붙도록&lt;/strong&gt; 바꿨습니다.&lt;/p&gt;
