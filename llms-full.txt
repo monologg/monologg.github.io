@@ -502,16 +502,19 @@ Codex memory는 SQLite 하나도, Markdown 한 파일도 아니었습니다. Bac
 
 URL: https://monologg.kr/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/
 Published: 2026-07-23
+Updated: 2026-08-29
 Category: tech
 Tags: mcp, claude, chatgpt, connector, plane
 
 > Claude와 ChatGPT가 기본으로 제공하지 않는 remote MCP 서버를 커스텀 커넥터와 커스텀 플러그인으로 붙이는 절차를, Plane MCP를 예로 정리했습니다.
 
+기본 제공 목록에 없는 서비스도, remote endpoint를 내주는 MCP 서버라면 Claude에는 **커스텀 커넥터**로, ChatGPT에는 **커스텀 플러그인**으로 직접 등록할 수 있습니다. 이 글은 그 절차를 [Plane](https://plane.so) MCP를 예로 정리한 것이고, 다른 remote MCP 서버라면 URL 자리만 바꿔서 그대로 따라 하면 됩니다.
+
 ## 기본 제공 커넥터에 없으면 직접 붙여야 합니다
 
 Claude와 ChatGPT 모두 미리 만들어 둔 연동 목록을 갖고 있습니다. Claude는 Connectors, ChatGPT는 플러그인 화면에서 고르면 되고, Gmail이나 Drive, Notion, Slack처럼 이름값 하는 서비스는 클릭 몇 번이면 붙습니다. 인증이며 권한이며 플랫폼이 알아서 처리해 주고요. 문제는 그 목록에 없는 서비스인데, 정작 제가 매일 쓰는 도구가 거기 속합니다.
 
-이슈 트래커로 [Plane](https://plane.so)을 쓰고 있습니다. 개인 프로젝트 보드를 전부 여기에 넣어두다 보니 AI 에이전트에서도 티켓을 읽고 쓸 일이 많아서, Plane이 제공하는 [MCP server](https://developers.plane.so/dev-tools/mcp-server)를 붙여 뒀거든요. 다행히 요즘은 이런 서버가 remote endpoint를 같이 내주는 경우가 많고, 그렇다면 기본 제공 목록에 없어도 커스텀으로 등록할 수 있습니다. 이 글은 그 절차를 Plane을 예로 정리한 것이고, remote MCP 서버라면 URL 자리만 바꿔서 그대로 따라 하면 됩니다.
+이슈 트래커로 [Plane](https://plane.so)을 쓰고 있습니다. 개인 프로젝트 보드를 전부 여기에 넣어두다 보니 AI 에이전트에서도 티켓을 읽고 쓸 일이 많아서, Plane이 제공하는 [MCP server](https://developers.plane.so/dev-tools/mcp-server)를 붙여 뒀거든요. 다행히 요즘은 이런 서버가 remote endpoint를 같이 내주는 경우가 많아서, 기본 제공 목록에 없어도 커스텀 등록이 가능합니다.
 
 물론 처음부터 그렇게 붙인 건 아닙니다. 저는 Claude Desktop의 `claude_desktop_config.json`에 `npx mcp-remote`를 로컬 프록시로 세우고, 그 프록시가 API 키 엔드포인트를 호출하게 해 뒀습니다.
 
@@ -611,12 +614,13 @@ claude mcp add --transport http --scope user plane \
 
 URL: https://monologg.kr/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/
 Published: 2026-07-22
+Updated: 2026-08-29
 Category: tech
 Tags: search-api, llm-as-judge, perplexity, ab-testing, agent
 
 > 홈랩 에이전트에 붙일 웹 검색 API 세 개를 실사용 쿼리로 직접 비교했습니다. 10쿼리 1차 평가의 결론이 50쿼리 블라인드 2차 평가에서 뒤집혀 Perplexity로 일원화하기까지의 과정과, LLM judge 3명을 쓴 평가 하네스 설계, 검색 결과에 실려 온 실전 prompt injection 사례까지 정리했습니다.
 
-홈랩에서 상시 구동하는 개인 에이전트를 세팅하면서 웹 검색 백엔드를 골라야 했습니다. 쓰임새는 두 갈래입니다. 하나는 에이전트가 대화 중에 실시간으로 쓰는 검색이고, 다른 하나는 매일 아침 뉴스 브리핑 cron이 미리 긁어오는 검색인데요. 목표는 처음부터 명확했습니다 — 비용 최적화가 아니라, **가장 좋은 결과를 반환하는 검색**을 찾는 것. 이 글은 그 선정 과정에서 돌린 두 번의 실쿼리 A/B 평가를 정리한 것입니다.
+홈랩에서 상시 구동하는 개인 에이전트를 세팅하면서 웹 검색 백엔드를 골라야 했습니다. 쓰임새는 두 갈래입니다. 하나는 에이전트가 대화 중에 실시간으로 쓰는 검색이고, 다른 하나는 매일 아침 뉴스 브리핑 cron이 미리 긁어오는 검색인데요. 목표는 처음부터 명확했습니다 — 비용 최적화가 아니라, **가장 좋은 결과를 반환하는 검색**을 찾는 것. 이 글은 그 선정 과정에서 돌린 두 번의 실쿼리 A/B 평가를 정리한 것입니다. 결과를 미리 말하면, 10쿼리 1차 평가에서 나온 "Perplexity와 Parallel의 역할 분담"이라는 결론이 50쿼리 블라인드 2차 평가에서 뒤집혔고, 최종적으로 **Perplexity 일원화**로 끝났습니다.
 
 ## 1차 실험: 실쿼리 10개로 후보 추리기
 
@@ -634,7 +638,7 @@ Tags: search-api, llm-as-judge, perplexity, ab-testing, agent
 
 그래서 1차 결론은 **역할 분담**이었습니다. 대화형·리서치 검색은 Perplexity, 최신성이 중요한 cron 선호출은 Parallel turbo. 각자 이긴 축을 나눠 가지는, 그럴듯해 보이는 결론이었습니다.
 
-## 그 결론에 뚫려 있던 구멍
+## 10쿼리 1차 결론에 뚫려 있던 구멍
 
 하루 뒤에 "cron에는 왜 Perplexity를 안 쓰나"라는 질문을 스스로에게 다시 던져보니 근거가 생각보다 얇았습니다. 따져보니 구멍이 두 개였습니다.
 
@@ -736,10 +740,13 @@ class PerplexityWebSearchProvider(WebSearchProvider):
 
 URL: https://monologg.kr/posts/2026/07/17/2026-07-17-ghcord-dev-story/
 Published: 2026-07-17
+Updated: 2026-08-29
 Category: tech
 Tags: ghcord, discord, github-app, self-hosted, open-source
 
 > Slack에서 Discord로 옮기고 나서 아쉬웠던 GitHub 연동을 GitHub App 기반 셀프호스팅 서버로 직접 만들었습니다. 설계 결정과 공개 과정을 정리했습니다.
+
+Discord에는 Slack의 GitHub 공식 앱 같은 연동이 없습니다. 그 공백을 메우려고 GitHub App 기반 셀프호스팅 서버 [ghcord](https://github.com/monologg/ghcord)를 직접 만들어 공개했고, 이 글은 그 설계 결정과 공개까지의 과정을 정리한 개발기입니다.
 
 ## Slack을 떠나 Discord로 왔더니
 
@@ -784,7 +791,7 @@ GitHub은 안 만들어주고, Discord도 안 만들어줄 이 공백을, 결국
 
 ## 앞선 프로젝트들에게 배운 설계
 
-ghcord의 설계는 앞선 프로젝트들이 겪은 문제를 피하는 방향으로 정해졌습니다.
+ghcord의 설계는 먼저 시도했던 서드파티 봇들이 겪은 문제 — 게이트웨이 의존으로 인한 유지보수 부담과 중앙 호스팅의 운영 리스크 — 를 피하는 방향으로 정해졌습니다.
 
 **첫째, GitHub App 하나로 전체 레포를 커버합니다.** 레포별 webhook 대신 GitHub App을 계정에 한 번 설치하면("All repositories") 지금 있는 레포 전부는 물론, 앞으로 만들 레포까지 자동으로 커버됩니다. 어떤 채널이 어떤 레포를 구독할지는 Discord 쪽에서 슬래시 커맨드로 관리하고요. "레포마다 등록"이라는 내장 webhook의 가장 큰 불편이 여기서 사라집니다.
 
@@ -975,13 +982,13 @@ SDK 저자에게 이상적인 구조라는 점도 큽니다. OpenAI, Anthropic S
 
 URL: https://monologg.kr/posts/2026/03/20/2026-03-20-notion-mcp-read-only-setup/
 Published: 2026-03-20
-Updated: 2026-07-18
+Updated: 2026-08-29
 Category: tech
 Tags: claude-code, notion, mcp, read-only
 
 > Notion MCP가 read+write 권한을 모두 갖고 있어, Notion Integration의 Capabilities를 조정해 read-only로 전환한 과정을 정리합니다.
 
-Claude Code에서 Notion MCP를 연결하면 페이지 읽기뿐 아니라 생성, 수정, 삭제까지 전부 가능합니다. 저는 `/mcp` 커맨드로 Notion을 연결한 뒤 도구 목록을 보고서야 write 권한이 포함되어 있다는 걸 알았습니다. 읽기만 필요했는데 말이죠. 이 글에서는 Notion MCP를 read-only로 제한하기 위해 검토한 선택지들과 최종 설정 과정을 정리합니다.
+Claude Code에서 Notion MCP를 연결하면 페이지 읽기뿐 아니라 생성, 수정, 삭제까지 전부 가능합니다. 저는 `/mcp` 커맨드로 Notion을 연결한 뒤 도구 목록을 보고서야 write 권한이 포함되어 있다는 걸 알았습니다. 읽기만 필요했는데 말이죠. 결론부터 말하면, **Notion Internal Integration을 만들 때 Capabilities에서 Read content만 체크하고, MCP 연결을 그 API token 기반으로 바꾸면** 서버 쪽에서 write가 원천 차단됩니다. 이 글에서는 그 최종 설정과 함께, 검토했다가 접은 다른 선택지들(permissions deny, tool-filter-mcp)도 정리합니다.
 
 ## 문제: Notion MCP는 기본적으로 read+write
 
@@ -1035,7 +1042,7 @@ Notion Integration 자체의 Capabilities를 **Read content만** 허용하고, `
 
 저는 3번을 선택했습니다. 클라이언트 쪽 설정에 의존하는 1번이나 proxy를 겹겹이 쌓는 2번과 달리, 권한 자체를 서버에서 제한하는 방식이라 관리할 것이 없었기 때문입니다.
 
-## 설정 방법
+## Read content만 켠 Internal Integration 설정 방법
 
 ### Notion Internal Integration 생성
 
@@ -1092,7 +1099,7 @@ Notion Integration 자체의 Capabilities를 **Read content만** 허용하고, `
 
 API token 방식은 권한 범위를 좁힐 수 있을 뿐 아니라, 접근할 수 있는 페이지도 명시적으로 제한할 수 있어서 보안 관점에서 더 낫습니다.
 
-## 결과
+## 결과: 서버 레벨에서 write가 막힌 Notion 연결
 
 이제 Claude Code에서 Notion 페이지를 읽을 수는 있지만, 실수로 수정하거나 삭제할 위험은 없습니다. Integration Capabilities에서 Read content만 허용했기 때문에 서버 자체에서 write 요청을 거부하거든요. Claude Code의 permission 설정에 의존하지 않아도 되니 구성도 한결 단순해졌습니다.
 
@@ -1102,13 +1109,13 @@ API token 방식은 권한 범위를 좁힐 수 있을 뿐 아니라, 접근할 
 
 URL: https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/
 Published: 2026-03-17
-Updated: 2026-07-18
+Updated: 2026-08-29
 Category: tech
 Tags: claude-code, antigravity, keybindings, ide
 
 > Antigravity 내장 터미널에서 Claude Code의 Shift+Enter 개행이 동작하지 않는 문제를 keybindings.json 수동 설정으로 해결하는 과정을 정리했습니다. /terminal-setup이 지원되지 않는 이유와 임시 대안도 함께 다룹니다.
 
-Claude Code를 IDE 내장 터미널에서 쓰다 보면 여러 줄 입력이 필요할 때가 많습니다. 그런데 환경에 따라 Shift+Enter를 눌러도 개행이 되지 않고 입력이 그대로 전송되어 버리는 경우가 있습니다. 저도 Antigravity에서 SSH로 우분투 서버에 접속한 뒤 Claude Code를 사용하는데, Shift+Enter가 먹히지 않아서 한참 삽질했습니다. 이 글에서 그 해결 과정을 정리합니다.
+Claude Code를 IDE 내장 터미널에서 쓰다 보면 여러 줄 입력이 필요할 때가 많습니다. 그런데 환경에 따라 Shift+Enter를 눌러도 개행이 되지 않고 입력이 그대로 전송되어 버리는 경우가 있습니다. 저도 Antigravity에서 SSH로 우분투 서버에 접속한 뒤 Claude Code를 사용하는데, Shift+Enter가 먹히지 않아서 한참 삽질했습니다. 답부터 말하면, 로컬 Antigravity의 `keybindings.json`에 `shift+enter` → `workbench.action.terminal.sendSequence` 항목 하나를 추가하면 해결됩니다. 이 글에서 왜 `/terminal-setup`으로는 안 되는지와 함께 그 과정을 정리합니다.
 
 ## `/terminal-setup`이 동작하지 않는 이유
 
@@ -1471,7 +1478,7 @@ claude mcp add --transport stdio --scope user codex -- codex mcp-server
 
 URL: https://monologg.kr/posts/2026/03/15/2026-03-15-web-search-mcp-alternatives-comparison/
 Published: 2026-03-15
-Updated: 2026-07-18
+Updated: 2026-08-29
 Category: tech
 Tags: mcp, claude-code, web-search, tavily, exa
 
@@ -1479,7 +1486,7 @@ Tags: mcp, claude-code, web-search, tavily, exa
 
 Claude Code에서 웹 검색용으로 Perplexity MCP를 쓰고 있었는데, 크레딧이 눈에 띄게 줄어들더라고요. 쿼리당 \$0.005라 한 번에 큰 돈은 아니지만, 하루에도 수십 번씩 검색하다 보면 월말 청구서가 꽤 나옵니다. 무료 API 티어도 없고, Pro 플랜 \$20/월에 포함되는 \$5 크레딧으로는 1,000번 남짓 검색하면 끝입니다.
 
-그래서 비용 효율적인 대안을 찾아봤습니다. Brave Search, Tavily, SearXNG, Exa, 그리고 ChatGPT/OpenAI MCP까지 총 5종을 검토한 결과를 정리합니다.
+그래서 비용 효율적인 대안을 찾아봤습니다. Brave Search, Tavily, SearXNG, Exa, 그리고 ChatGPT/OpenAI MCP까지 총 5종을 검토한 결과를 정리합니다. 결론부터 말하면 **Tavily + Exa 병행 구성으로 월 2,000회까지 무료** — 둘 다 신용카드 없이 가입할 수 있고 Remote MCP 한 줄 설치라, Perplexity에 쓰던 \$10을 \$0으로 줄였습니다. 각 서비스의 조건과 함정은 아래에서 하나씩 봅니다.
 
 ## 기준선: Perplexity MCP의 비용 구조
 
@@ -1632,18 +1639,24 @@ claude mcp add exa --transport http "https://mcp.exa.ai/mcp?tools=web_search_exa
 
 URL: https://monologg.kr/posts/2020/05/02/koelectra-part2/
 Published: 2020-05-02
+Updated: 2026-08-29
 Category: NLP
 Tags: nlp, electra, pretraining, finetuning
 
 > KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.
 
-**2주 간의 KoELECTRA 개발**을 마치고, 그 과정을 글로 남기려고 한다.
+**2주 간의 KoELECTRA 개발**을 마치고, 그 과정을 글로 남기려고 한다. 결론부터 적으면 — **TPU v3-8에서 Base 약 7일, Small 약 3일**을 학습해 7개 한국어 NLP 태스크로 평가했고, **KoBERT보다 전반적으로 좋았으며 HanBERT와 비슷하거나 오히려 더 좋은 케이스도 있었다.** 모델은 `transformers`에서 tokenization 파일 없이 바로 쓸 수 있다.
 
 이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)
 
-2부에는 **Pretraining, Finetuning** 등을 다룰 예정이다.
+2부에는 **Pretraining, Finetuning**과 그 결과를 다룬다.
 
 > **Github Repo:** [https://github.com/monologg/KoELECTRA](https://github.com/monologg/KoELECTRA)
+
+> **2026-08 기준 안내** — 이 글은 2020년 5월에 쓴 기록이라, 본문(벤치마크 수치 포함)은 당시 내용 그대로 두었습니다.
+>
+> - 본문의 비교 대상(XLM-RoBERTa-Base 등)과 벤치마크 수치는 2020년 시점 기준입니다. 이후 KoELECTRA는 v3까지 업데이트되었고, 최신 성능 비교는 [KoELECTRA 레포](https://github.com/monologg/KoELECTRA)에 있습니다.
+> - 사용법 코드의 모델 이름은 여전히 동작하지만, 지금은 v3 (`monologg/koelectra-base-v3-discriminator`) 사용을 권장합니다.
 
 ## Training
 
@@ -1759,18 +1772,26 @@ tokenizer = ElectraTokenizer.from_pretrained("monologg/koelectra-small-discrimin
 
 URL: https://monologg.kr/posts/2020/05/02/koelectra-part1/
 Published: 2020-05-02
+Updated: 2026-08-29
 Category: NLP
 Tags: nlp, electra, preprocess
 
 > KoELECTRA 개발 과정 1부. 기존 한국어 PLM의 한계점 분석, Wordpiece Tokenizer 제작, 14GB 한국어 데이터 전처리, TPU 세팅 및 Configuration 설정까지의 과정을 기록합니다.
 
-**2주 간의 KoELECTRA 개발**을 마치고, 그 과정을 글로 남기려고 한다.
+**2주 간의 KoELECTRA 개발**을 마치고, 그 과정을 글로 남기려고 한다. 목표는 기존 한국어 PLM(KoBERT·HanBERT·KorBERT)의 공통 단점 — `Huggingface Transformers`에서 바로 쓸 수 없는 문제 — 을 해결한 모델이었고, 그 결과물이 tokenization 파일 없이 곧바로 사용 가능한 **KoELECTRA**다.
 
 이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)
 
-1부에는 **실제 학습을 돌리기 전까지의 과정**을 다룰 예정이다.
+1부에는 **실제 학습을 돌리기 전까지의 과정**을 다룬다. 미리 요약하면 tokenizer는 `Wordpiece`를 강제했고, 성능은 corpus 전처리 품질이 좌우했으며, 공식 레포의 `small` 모델이 사실은 `small++`라는 함정이 있었다.
 
 > **Github Repo:** [https://github.com/monologg/KoELECTRA](https://github.com/monologg/KoELECTRA)
+
+> **2026-08 기준 안내** — 이 글은 2020년 5월에 쓴 기록이라, 본문은 당시 내용 그대로 두었습니다. 지금 따라 하신다면 달라진 것들이 있어요.
+>
+> - TFRC는 [TRC(TPU Research Cloud)](https://sites.research.google/trc/about/)로 이름이 바뀌었고, 현재 Cloud TPU 문서는 `ctpu` 대신 [`gcloud compute tpus tpu-vm` 계열(TPU VM 방식)](https://cloud.google.com/sdk/gcloud/reference/compute/tpus/tpu-vm)을 표준으로 안내합니다.
+> - 본문이 쓰는 TF 1.15 기반 [공식 ELECTRA 코드](https://github.com/google-research/electra)는 GitHub에서 아카이브되었습니다.
+> - `tokenizers`의 `tokenizer.save("./", "bert-wordpiece")` 같은 두 인자 시그니처는 이후 버전에서 제거되었습니다 (현재는 `save_model(directory)` 또는 `save(path)`).
+> - KoELECTRA 모델 자체는 여전히 Hugging Face Hub에서 `monologg/koelectra-base-v3-discriminator` 등으로 바로 쓸 수 있습니다.
 
 ## 문제 의식
 
@@ -1884,7 +1905,7 @@ tokenizer.save("./", "bert-wordpiece")
 ### 2. VM Instance는 작은 것(`n1-standard-1`)을 써도 상관 없다
 
 → ELECTRA를 GCP에서 학습하려면 `TPU`, `Bucket`, `VM Instance` 이렇게 3개가 필요하다. 그런데 **저장소는 Bucket이, 연산은 TPU가 처리**하기 때문에 VM Instance는 가벼운 것을 써도 된다.
-→ `n1-standard-1`는 시간당 약 $0.037, `n1-standard-4`는 시간당 약 $0.14이다. (**비용이 무려 2배 차이!!**)
+→ `n1-standard-1`는 시간당 약 \$0.037, `n1-standard-4`는 시간당 약 \$0.14이다. (**비용이 무려 2배 차이!!**)
 
 ### 3. TPU를 쓰는 경우 모든 input file은 Cloud storage bucket을 통해야만 한다
 
@@ -1978,6 +1999,7 @@ $ ctpu up --zone=europe-west4-a --tf-version=1.15 \
 
 URL: https://monologg.kr/posts/2020/05/01/transformers-porting/
 Published: 2020-05-01
+Updated: 2026-08-29
 Category: NLP
 Tags: nlp, electra, transformers, pytorch
 
@@ -1985,7 +2007,9 @@ Tags: nlp, electra, transformers, pytorch
 
 `BERT`, `ALBERT`, `ELECTRA` 등을 직접 Pretrain하게 되면 모델이 Tensorflow의 ckpt 형태로 저장이 된다.
 
-이번 글에서는 `tensorflow ckpt`를 transformers의 `pytorch ckpt`로 변환하는 법을 알아보겠다🤗
+이번 글에서는 `tensorflow ckpt`를 transformers의 `pytorch ckpt`로 변환하는 법을 알아본다. 과정은 세 단계다 — **config.json을 직접 작성하고, transformers가 제공하는 변환 스크립트로 weight를 옮기고, 변환된 모델을 업로드해서 배포**한다. ELECTRA는 `discriminator`와 `generator`를 각각 따로 변환해야 한다는 게 가장 큰 함정이다.
+
+> **2026-08 기준 안내** — 이 글은 2020년 5월, `transformers` v2.8.0 기준으로 쓴 기록이라 본문은 당시 내용 그대로 두었습니다. 본문 말미의 `transformers-cli upload`(s3 업로드)는 transformers v3.5.0에서 Hub가 git 기반으로 바뀌며 사라졌고, 지금은 [Hugging Face Hub](https://huggingface.co/docs/huggingface_hub)의 `hf upload`(구 `huggingface-cli upload`)나 `push_to_hub()`를 씁니다. config 작성 → weight 변환이라는 큰 흐름은 지금도 같습니다.
 
 ## Intro
 
@@ -2166,6 +2190,7 @@ tokenizer = ElectraTokenizer.from_pretrained("monologg/koelectra-small-discrimin
 
 URL: https://monologg.kr/posts/2020/04/27/wordpiece-vocab/
 Published: 2020-04-27
+Updated: 2026-08-29
 Category: NLP
 Tags: nlp, wordpiece, tokenization
 
@@ -2173,7 +2198,9 @@ Tags: nlp, wordpiece, tokenization
 
 개인적으로 Pretrained Language Model 성능에 큰 영향을 주는 것 중 하나로 `Vocab quality`라고 생각한다.
 
-이번 포스트에서는 tokenization의 방법 중 하나인 `Wordpiece`를 이용하여 어떻게 vocab을 만드는지 알아보려 한다:)
+이번 포스트에서는 tokenization의 방법 중 하나인 `Wordpiece`를 이용하여 어떻게 vocab을 만드는지 알아본다. 결론부터 말하면 **Huggingface의 `Tokenizers` 라이브러리(`BertWordPieceTokenizer`)를 쓰는 것이 가장 좋았다** — 공식 BERT의 Wordpiece Builder는 공개되지 않았고, 다른 오픈소스 구현들은 큰 corpus에서 메모리·속도 이슈가 있었기 때문이다.
+
+> **2026-08 기준 안내** — 이 글은 2020년 4월, `tokenizers` v0.7.0 기준으로 쓴 기록이라 본문은 당시 내용 그대로 두었습니다. 이후 버전에서 `tokenizer.save(디렉터리, 이름)` 두 인자 시그니처가 제거되는 등 API가 달라졌습니다 (현재는 `save_model(directory)` 또는 `save(path)`). "Wordpiece vocab은 Tokenizers 라이브러리로 만든다"는 결론 자체는 지금도 유효해요.
 
 ## Introduction
 
@@ -2250,6 +2277,7 @@ tokenizer.save("./", "ch-{}-wpm-{}".format(args.limit_alphabet, args.vocab_size)
 
 URL: https://monologg.kr/posts/2020/04/20/tpu-electra/
 Published: 2020-04-20
+Updated: 2026-08-29
 Category: NLP
 Tags: nlp, tpu, electra
 
@@ -2257,7 +2285,9 @@ Tags: nlp, tpu, electra
 
 최근 [ELECTRA](https://openreview.net/forum?id=r1xMH1BtvB)의 공식 코드가 공개되면서 한국어 Corpus에 직접 Electra를 만들게 되었다.
 
-이번 글에서는 GCP에서 TPU를 어떻게 사용했는지 그 과정을 공유해보려 한다.
+이번 글에서는 GCP에서 TPU를 어떻게 사용했는지 그 과정을 공유한다. 핵심은 네 단계다 — **TFRC 신청으로 TPU를 무료로 받고, 데이터는 반드시 Cloud Storage Bucket에 올리고, `ctpu up`으로 VM과 TPU를 한 번에 만들고, 공식 코드로 Pretraining을 실행**하면 된다.
+
+> **2026-08 기준 안내** — 이 글은 2020년 4월에 쓴 기록이라, 본문은 당시 내용 그대로 두었습니다. TFRC는 [TRC(TPU Research Cloud)](https://sites.research.google/trc/about/)로 이름이 바뀌었고, 현재 Cloud TPU 문서는 `ctpu` 대신 [`gcloud compute tpus tpu-vm` 계열(TPU VM 방식)](https://cloud.google.com/sdk/gcloud/reference/compute/tpus/tpu-vm)을 표준으로 안내하며, 본문의 TF 1.15 기반 [공식 ELECTRA 코드](https://github.com/google-research/electra)는 GitHub에서 아카이브되었습니다. 다만 "TPU 입출력은 Bucket을 통해야 한다"는 제약과 전체 흐름은 지금도 그대로예요.
 
 ## Tensorflow Research Cloud 신청
 
