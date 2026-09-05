@@ -10,7 +10,7 @@
 - https://huggingface.co/monologg
 
 ## Articles
-- [zvec-grep 실측기: 시맨틱 검색은 에이전트의 grep을 이기지 못했다](https://monologg.kr/posts/2026/09/04/2026-09-04-zvec-grep-vs-agent-grep-eval/): Qwen 팀의 로컬 시맨틱 검색 도구 zg(zvec-grep)를 개인 monorepo에 붙일지 반나절 동안 실측했습니다. 임베딩 모델 사다리와 30쿼리 확장 평가를 거쳐 — 에이전트 네이티브 검색 30/30 vs zg 최고 19/30으로 미채택 결론에 도달한 과정과, 그럼에도 zg가 유리한 환경이 어디인지까지 정리했습니다.
+- [zvec-grep 실측기: 시맨틱 검색은 에이전트의 grep을 이기지 못했다](https://monologg.kr/posts/2026/09/04/2026-09-04-zvec-grep-vs-agent-grep-eval/): Qwen 팀의 로컬 시맨틱 검색 도구 zg(zvec-grep)를 개인 monorepo에 붙일지 반나절 동안 실측했습니다. 임베딩 모델 세 단계와 30쿼리 확장 평가를 거쳐 에이전트 네이티브 검색 30/30 vs zg 최고 19/30으로 미채택 결론에 도달한 과정과, 그럼에도 zg가 유리한 환경이 어디인지까지 정리했습니다.
 - [하프기가 인터넷인데 공유기를 물리면 100메가가 되는 이유 — 기가라이트라는 함정](https://monologg.kr/posts/2026/08/21/2026-08-21-giga-lite-100mbps-trap/): SK 하프기가(500M) 회선에 공유기를 연결하면 93Mbps만 나오던 문제를 추적했습니다. 원인은 기가라이트(Giga-Lite)라는 비표준 2페어 통신 방식이었고, 2만원이 안 되는 스위칭 허브로 SK 개입 없이 450Mbps를 복구한 과정을 정리합니다.
 - [Claude Code Remote Control을 모든 세션에 기본으로 켜두기](https://monologg.kr/posts/2026/08/17/2026-08-17-claude-code-remote-control-for-all-sessions/): 터미널에서 돌아가는 Claude Code 세션을 폰이나 브라우저에서 이어받는 Remote Control을, 매번 명령어를 치지 않고 모든 세션에 자동으로 붙도록 설정하는 방법을 정리합니다.
 - [cron을 Dagu로 바꾼 이유: Airflow는 왜 안 됐나](https://monologg.kr/posts/2026/07/29/2026-07-29-cron-to-dagu-claude-p/): 홈랩 Job을 컨테이너 에이전트에서 claude -p로 옮기자 호스트에서만 돌 수 있다는 조건이 생겼고, 결국 cron을 Dagu로 교체했습니다. Airflow를 접은 이유와 Dagu의 장단점을 정리했습니다.
