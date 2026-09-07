@@ -12,92 +12,6 @@ concatenated for easy consumption by LLMs. For the index-only version see /llms.
 
 ---
 
-# 2026년 hwp 오픈소스 지형도, 리더 16종과 편집기 6종을 공공 서식으로 돌려 봤다
-
-URL: https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-open-source-landscape-2026/
-Published: 2026-09-07
-Category: tech
-Tags: hwp, hwpx, rhwp, kordoc, python-hwpx, 문서자동화
-
-> 한컴 없이 hwp를 읽고 쓰는 오픈소스가 2026년 들어 급격히 늘었습니다. 소방서·고용노동부 공공 서식 5개로 리더 16종, hwp 편집기 3종, hwpx 편집기 3종, 변환기 2종을 교차 검사하고, 쓰기·편집 결과는 한컴에서 열어 본 뒤 어떤 조합을 고르면 되는지를 정리합니다.
-
-> 측정은 2026-09-07 기준입니다. `@rhwp/core` 0.8.6, `kordoc` 4.12.3, `python-hwpx` 6.3.0, `hwpforge` 0.16.4, `unhwp` 0.9.1, `hwplib` 1.1.10, `hwpxlib` 1.0.9, `pyhwp` 0.1b15, `hwp.js` 0.0.3, `@hwp.js/parser` 0.0.4-alpha.0, `hwpx-js` 0.1.2를 썼고 그 밖의 Python 리더는 같은 날 uvx로 받은 최신판이며, 한컴 확인은 한컴독스에서 내려받은 한글 for macOS 12.30(구독 없이는 읽기 전용)으로 했습니다. 이 분야는 몇 달 단위로 바뀌어서 버전이 다르면 결과도 다를 수 있습니다.
-
-행정 양식을 프로그램으로 채우는 일을 하면서 hwp를 다루는 오픈소스를 한 바퀴 돌아봤습니다. GitHub에서 이름에 hwp나 hwpx가 들어간 저장소가 4,593개로 검색되는데(2026-09-07, `hwp OR hwpx in:name`), 제가 훑어본 범위에서 올해 나온 앱과 에이전트 도구 대부분은 rhwp, kordoc, python-hwpx 셋 위에 있고, 자체 XML 구현이나 hwpforge를 쓰는 것이 소수, 그리고 Windows의 한컴을 COM으로 부르는 계열이 따로 있습니다.
-
-앞선 글 [한컴 없이 hwp 표 칸에 사진 넣기](https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-table-cell-picture-without-hancom/)가 사진 하나를 넣는 삽질기였다면, 이 글은 그 과정에서 걸러 본 도구 전체의 지형도입니다.
-
-결론을 먼저 적으면 이렇습니다. **hwp를 읽어 표까지 살리는 도구는 16종 중 넷뿐입니다.** 반대로 hwp에 글을 써 넣는 일은 세 도구가 다 됐는데, 도구가 잘해서가 아니라 한컴이 열 때 줄배치를 다시 계산해 주기 때문이었습니다. hwpx로 바꾸면 시험한 편집기 셋 모두 깨지지 않았고, 단순한 양식이라면 변환기 둘이 만든 hwpx 열 개를 리더 여섯이 모두 열었습니다. 다만 도구마다 다른 도구가 만든 파일을 거부하는 지점이 있어서, 변환기와 편집기는 같은 계열로 맞추는 것이 안전합니다.
-
-## 2026년에 무엇이 나왔나
-
-hwp는 1989년 한글 1.0부터 쓰인 한컴의 바이너리 형식입니다. 지금 쓰는 hwp 5.0 형식은 한글 2002부터 썼고, 한컴은 [2010년 6월에 그 규격을 공개했습니다](https://www.yna.co.kr/view/AKR20100630055200017). hwpx는 [2011년 12월 국가 표준 KS X 6101이 된](https://tech.hancom.com/hwpxformat/) OWPML을 zip으로 묶은 XML입니다.
-
-오픈소스 쪽은 오래 [pyhwp](https://github.com/mete0r/pyhwp)(2010년 시작, GitHub 스타 301개)와 [hwp.js](https://github.com/hahnlee/hwp.js)(2020년, 스타 1,305개) 정도가 전부였습니다. 그런데 2026년 3월에 Rust로 만든 [rhwp](https://github.com/edwardkim/rhwp)(스타 3,790개)와 TypeScript로 만든 [kordoc](https://github.com/chrisryugj/kordoc)(스타 1,795개)이 하루 차이로 나왔고(GitHub 저장소 생성일 3월 27일과 28일), 반년 만에 MCP 서버·스킬·앱이 제가 훑어본 범위에서 60개 남짓 생겼습니다. 그 대부분이 이 둘과 python-hwpx 위에 있습니다.
-
-제가 세어 본 범위에서 그 앱과 도구들이 기대는 엔진은 rhwp, kordoc, 그리고 hwpx 전용인 [python-hwpx](https://github.com/airmang/python-hwpx)(스타 108개) 셋입니다. hwplib 같은 Java 라이브러리도 있지만 그 위에 얹힌 에이전트 도구는 보지 못했습니다.
-
-python-hwpx가 108개인데 rhwp 위에 얹힌 데스크톱 뷰어 [HOP](https://github.com/golbin/HOP)는 1,788개입니다. 스타는 라이브러리보다 눈에 보이는 앱에 붙습니다. 그리고 README 기준으로 에이전트 도구 대부분은 hwpx로만 씁니다.
-
-## hwp를 읽어서 표까지 살리는 도구는 넷입니다
-
-리더 16종에 공공 서식 5개를 넣었습니다. 강원 소방서 셋(횡성·인제·양양)이 각자 민원서식 게시판에 올린 자체점검 이행 증빙자료 제출 서식 3종([링크는 횡성](https://fire.gwd.go.kr/hs119/service/service_guide/service_guide_form?articleSeq=11101717)), 소방시설법 시행규칙 별지 제11호서식(횡성소방서가 올린 사본), 고용노동부 경기지청의 안전보건관리자 주간 업무 계획 및 실적 서식입니다. 다섯 중 넷은 표만으로 된 문서이고 고용노동부 서식만 표 밖에 작성 요령 몇 줄이 있는, 14\~53KB짜리 파일입니다.
-
-| 도구 | 표 유지 | 별지 11호 추출 글자 수 | 비고 |
-|---|---|---|---|
-| kordoc | ✔ HTML 표(병합 셀까지) | 1,821 | |
-| unhwp | ✔ markdown 표 | 1,423 | Rust |
-| hwp-hwpx-parser | ✔ markdown 표 | 1,186 | 순수 Python |
-| dochan | ✔ markdown 표 | 1,802 | 같은 문장을 반복 출력해 글자 수가 부풀림 |
-| pyhwp2md | 표 마크업은 내지만 셀 하나가 표의 한 행으로 풀려 원래 행·열 구조가 안 남음 | 1,419 | 다른 서식은 14\~428자 |
-| hwplib (Java) | ✘ 텍스트만 | 1,161 | |
-| hwpkit, master-of-hwp, hwp2md | ✘ 텍스트만 | 1,186\~1,618 | |
-| pyhwp `hwp5txt` | ✘ 표 전체를 버림 | 3 | 다른 서식도 9\~374자 |
-| rhwp-python `extract_text` | ✘ 표 밖 텍스트만 | 빈 출력 | 5개 중 4개가 빈 출력 |
-| rhwp (Node) | 파싱·렌더만 | 1쪽 렌더 | 텍스트 추출은 시험하지 않음 |
-| hwpx-js | hwp를 받지 않음 | 실패 | `Invalid OLE magic` |
-| @hwp.js/parser | 파싱만 | 실패 | 5개 중 1개 `Unknown StyleKind` |
-| hwp.js 0.0.3 | 파싱만 | ✔ | 텍스트 추출은 시험하지 않음 |
-| LibreOffice + H2Orestart | PDF 경유 | 1,999 | fontconfig 경로를 안 주면 PDF에서 한글이 통째로 빠짐 |
-
-글자 수는 절대치가 아니라 표를 얼마나 살렸는지 가늠하는 값으로 보면 됩니다. 표 마크업이 붙으면 늘고 표를 버리면 확 줍니다. 표 마크업을 내는 도구는 다섯인데 pyhwp2md는 셀 하나를 표의 한 행으로 풀어 놓아 원래 구조가 남지 않으므로, 표를 제대로 살리는 것은 넷입니다. 2010년부터 있던 pyhwp가 별지 11호에서 3자를 내는 것이 이 표의 요점입니다. 속도는 LibreOffice(2.4\~2.6초)와 kordoc(0.5\~0.7초, npx 기동 포함)을 빼면 0.4초 안이라 이 크기에서는 의미가 없습니다.
-
-## hwp에 글을 써 넣기 어려운 이유, 그리고 한컴은 줄을 다시 잰다
-
-hwp 5.0 파일은 문단마다 줄배치 정보를 저장합니다. 각 줄이 몇 번째 글자에서 시작하고 세로로 어디에 놓이는지가 [한컴 규격서](https://cdn.hancom.com/link/docs/%ED%95%9C%EA%B8%80%EB%AC%B8%EC%84%9C%ED%8C%8C%EC%9D%BC%ED%98%95%EC%8B%9D_5.0_revision1.2.pdf)의 '문단의 레이아웃'(HWPTAG_PARA_LINE_SEG) 레코드로 파일에 적혀 있습니다. 글자를 바꾸면 이 정보도 달라져야 하는데, 세 도구 중 이것을 다시 계산하는 것은 rhwp뿐입니다.
-
-별지 11호의 "이행조치 내용" 셀에 108자짜리 문장을 넣어 봤습니다. 줄배치를 다시 계산하는 rhwp, 글자만 바꾸는 [hwpkit](https://github.com/psychofict/hwpkit), markdown을 고쳐 원본에 되돌려 넣는 kordoc patch 셋입니다. rhwp로 렌더하면 rhwp 산출물만 네 줄로 정상이고, hwpkit은 글자 크기가 섞여 다음 행과 겹치고, kordoc patch는 둘째 줄부터 겹칩니다.
-
-![rhwp가 렌더한 hwpkit 산출물. 바꾼 문장이 다음 행에 겹쳐 그려진다](./rhwp-render-hwpkit.png)
-
-그런데 같은 파일을 한글 for macOS로 열면 셋 다 정상입니다. 적어도 이 파일들에서는 한컴이 파일 안의 줄배치 정보를 그대로 쓰지 않고 다시 계산했습니다.
-
-![한글 for macOS로 연 hwpkit 산출물. 같은 문장이 세 줄로 정상 배치된다](./hancom-hwpkit.png)
-
-그러니까 텍스트 편집에서는 **렌더러가 한컴보다 엄격했습니다.** 앞선 글의 사진은 반대였습니다. 표 칸에 넣은 그림이 렌더러에서는 칸 안이었는데 한컴은 파일에 적힌 개체의 소속(표 바깥 문단)을 그대로 믿고 표 밖에 그렸습니다. 두 결과를 합치면, 한컴은 줄은 다시 재지만 개체 위치는 적힌 대로 믿습니다.
-
-hwpkit 산출물에는 함정이 하나 더 있습니다. 한컴은 열지만 kordoc은 본문을 통째로 빈 문서로 읽고, unhwp는 새 문장을 읽되 강조 마크업이 글자 사이에 조각나 끼어듭니다. kordoc으로 다시 읽어 검증하는 파이프라인에는 못 씁니다.
-
-## hwpx로 바꾸면 어느 편집기로 고쳐도 깨지지 않았습니다
-
-hwpx에는 줄배치 정보가 없어서 편집이 쉽습니다. rhwp로 변환한 hwpx를 kordoc patch와 python-hwpx로, [hwpforge](https://github.com/ai-screams/HwpForge)로 변환한 hwpx를 hwpforge set-cell로 같은 셀을 고쳤더니 셋 다 렌더러와 한컴 양쪽에서 정상이었습니다. 변환도 마찬가지로, rhwp와 hwpforge가 만든 hwpx 열 개를 rhwp, python-hwpx 스키마 검증, hwpxlib(Java), kordoc, unhwp, hwpforge inspect 리더 여섯 종에 넣어 전부 통과했습니다.
-
-다만 도구끼리 경계는 있습니다. hwpforge는 rhwp가 만든 hwpx를 편집하지 않았습니다. 무손실 재저장이 증명되지 않은 입력은 아예 편집하지 않는(fail-closed) 설계라 `INPUT_NOT_ROUNDTRIP_SAFE`를 내고, 자기가 변환한 hwpx는 받았습니다. 그리고 그 hwpforge 변환본은 같은 편집을 해도 렌더러와 한컴 모두에서 두 쪽으로 늘어났습니다. 문단 간격이나 줄 높이를 다르게 계산하는 것으로 보이는데, 변환기와 편집기를 같은 계열로 맞춰야 하는 이유가 여기 있습니다.
-
-python-hwpx로 XML을 직접 만질 때는 구조를 알아야 합니다. hwpx에서 표는 문단 안에 들어 있고 셀 문단은 그 안에 다시 중첩됩니다. 셀 문단을 `iter()`로 찾으면 표를 담은 바깥 문단이 먼저 걸리고, 거기서 텍스트를 바꾸면 문서 전체가 지워집니다. 표를 담은 바깥 문단이 아니라 셀 문단 바로 아래의 run만 골라 바꿔야 합니다.
-
-## 무엇을 고를 것인가
-
-읽기는 kordoc이나 unhwp면 됩니다. kordoc은 병합 셀을 HTML 표로 살리고 hwp·hwpx·docx를 한 도구로 다 읽고, unhwp는 Rust 바이너리라 빠릅니다.
-
-hwp 5.0 파일을 고쳐 저장해야 하면 rhwp입니다. 산출물을 kordoc·unhwp·hwp-hwpx-parser가 모두 그대로 읽는 것은 rhwp와 kordoc patch 둘인데, 그중 hwp와 hwpx 양방향 변환과 SVG·PNG 렌더까지 한 엔진에 있는 것은 rhwp뿐입니다. 새로 만들거나 hwpx만 다루면 python-hwpx가 스키마 검증까지 갖춰 편합니다.
-
-라이선스는 rhwp·kordoc·unhwp가 MIT, python-hwpx·hwplib이 Apache-2.0, hwpforge는 Apache-2.0과 MIT 이중입니다. pyhwp는 AGPL-3.0이고 LibreOffice의 hwp 필터인 H2Orestart는 GPL-3.0이라 제품에 함께 배포하려면 라이선스 조건을 따로 확인해야 합니다. 한컴 COM 자동화 계열은 Windows에 한컴이 깔려 있어야 해서 서버에서 돌릴 용도로는 처음부터 후보가 아닙니다.
-
-이 글의 쓰기·편집 결과는 전부 한컴독스에서 내려받은 읽기 전용 한글 for macOS로 확인했고, 변환 열 건은 리더 교차 검사만 했습니다. 한컴독스 웹에 올려도 같은 확인을 할 수 있습니다. 쓴 서식은 강원 소방서 셋의 민원서식 게시판과 고용노동부 경기지청 자료실에서 받을 수 있고, 별지 제11호서식은 국가법령정보센터에도 있습니다.
-
----
-
 # 한컴 없이 hwp 표 칸에 사진 넣기, 파서와 렌더러를 통과해도 한컴에서는 달랐다
 
 URL: https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-table-cell-picture-without-hancom/
@@ -195,6 +109,92 @@ rhwp로 두 파일의 그림 속성을 읽으면 값이 완전히 같아서 라�
 맥이라면 한컴독스에서 내려받는 한글 for macOS도 있습니다. 구독 없이는 읽기 전용이라 편집은 안 되지만, hwp와 hwpx를 여는 데는 충분해서 파일을 만들 때마다 브라우저에 올리지 않아도 됩니다.
 
 재현은 위 소방서 서식과 아무 JPEG 두 장이면 됩니다. 다음에는 같은 방식으로 표 칸의 긴 문장 줄바꿈이 한컴에서 어떻게 다시 계산되는지를 정리해 볼 생각입니다.
+
+---
+
+# 2026년 hwp 오픈소스 지형도, 리더 16종과 편집기 6종을 공공 서식으로 돌려 봤다
+
+URL: https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-open-source-landscape-2026/
+Published: 2026-09-07
+Category: tech
+Tags: hwp, hwpx, rhwp, kordoc, python-hwpx, 문서자동화
+
+> 한컴 없이 hwp를 읽고 쓰는 오픈소스가 2026년 들어 급격히 늘었습니다. 소방서·고용노동부 공공 서식 5개로 리더 16종, hwp 편집기 3종, hwpx 편집기 3종, 변환기 2종을 교차 검사하고, 쓰기·편집 결과는 한컴에서 열어 본 뒤 어떤 조합을 고르면 되는지를 정리합니다.
+
+> 측정은 2026-09-07 기준입니다. `@rhwp/core` 0.8.6, `kordoc` 4.12.3, `python-hwpx` 6.3.0, `hwpforge` 0.16.4, `unhwp` 0.9.1, `hwplib` 1.1.10, `hwpxlib` 1.0.9, `pyhwp` 0.1b15, `hwp.js` 0.0.3, `@hwp.js/parser` 0.0.4-alpha.0, `hwpx-js` 0.1.2를 썼고 그 밖의 Python 리더는 같은 날 uvx로 받은 최신판이며, 한컴 확인은 한컴독스에서 내려받은 한글 for macOS 12.30(구독 없이는 읽기 전용)으로 했습니다. 이 분야는 몇 달 단위로 바뀌어서 버전이 다르면 결과도 다를 수 있습니다.
+
+행정 양식을 프로그램으로 채우는 일을 하면서 hwp를 다루는 오픈소스를 한 바퀴 돌아봤습니다. GitHub에서 이름에 hwp나 hwpx가 들어간 저장소가 4,593개로 검색되는데(2026-09-07, `hwp OR hwpx in:name`), 제가 훑어본 범위에서 올해 나온 앱과 에이전트 도구 대부분은 rhwp, kordoc, python-hwpx 셋 위에 있고, 자체 XML 구현이나 hwpforge를 쓰는 것이 소수, 그리고 Windows의 한컴을 COM으로 부르는 계열이 따로 있습니다.
+
+앞선 글 [한컴 없이 hwp 표 칸에 사진 넣기](https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-table-cell-picture-without-hancom/)가 사진 하나를 넣는 삽질기였다면, 이 글은 그 과정에서 걸러 본 도구 전체의 지형도입니다.
+
+결론을 먼저 적으면 이렇습니다. **hwp를 읽어 표까지 살리는 도구는 16종 중 넷뿐입니다.** 반대로 hwp에 글을 써 넣는 일은 세 도구가 다 됐는데, 도구가 잘해서가 아니라 한컴이 열 때 줄배치를 다시 계산해 주기 때문이었습니다. hwpx로 바꾸면 시험한 편집기 셋 모두 깨지지 않았고, 단순한 양식이라면 변환기 둘이 만든 hwpx 열 개를 리더 여섯이 모두 열었습니다. 다만 도구마다 다른 도구가 만든 파일을 거부하는 지점이 있어서, 변환기와 편집기는 같은 계열로 맞추는 것이 안전합니다.
+
+## 2026년에 무엇이 나왔나
+
+hwp는 1989년 한글 1.0부터 쓰인 한컴의 바이너리 형식입니다. 지금 쓰는 hwp 5.0 형식은 한글 2002부터 썼고, 한컴은 [2010년 6월에 그 규격을 공개했습니다](https://www.yna.co.kr/view/AKR20100630055200017). hwpx는 [2011년 12월 국가 표준 KS X 6101이 된](https://tech.hancom.com/hwpxformat/) OWPML을 zip으로 묶은 XML입니다.
+
+오픈소스 쪽은 오래 [pyhwp](https://github.com/mete0r/pyhwp)(2010년 시작, GitHub 스타 301개)와 [hwp.js](https://github.com/hahnlee/hwp.js)(2020년, 스타 1,305개) 정도가 전부였습니다. 그런데 2026년 3월에 Rust로 만든 [rhwp](https://github.com/edwardkim/rhwp)(스타 3,790개)와 TypeScript로 만든 [kordoc](https://github.com/chrisryugj/kordoc)(스타 1,795개)이 하루 차이로 나왔고(GitHub 저장소 생성일 3월 27일과 28일), 반년 만에 MCP 서버·스킬·앱이 제가 훑어본 범위에서 60개 남짓 생겼습니다. 그 대부분이 이 둘과 python-hwpx 위에 있습니다.
+
+제가 세어 본 범위에서 그 앱과 도구들이 기대는 엔진은 rhwp, kordoc, 그리고 hwpx 전용인 [python-hwpx](https://github.com/airmang/python-hwpx)(스타 108개) 셋입니다. hwplib 같은 Java 라이브러리도 있지만 그 위에 얹힌 에이전트 도구는 보지 못했습니다.
+
+python-hwpx가 108개인데 rhwp 위에 얹힌 데스크톱 뷰어 [HOP](https://github.com/golbin/HOP)는 1,788개입니다. 스타는 라이브러리보다 눈에 보이는 앱에 붙습니다. 그리고 README 기준으로 에이전트 도구 대부분은 hwpx로만 씁니다.
+
+## hwp를 읽어서 표까지 살리는 도구는 넷입니다
+
+리더 16종에 공공 서식 5개를 넣었습니다. 강원 소방서 셋(횡성·인제·양양)이 각자 민원서식 게시판에 올린 자체점검 이행 증빙자료 제출 서식 3종([링크는 횡성](https://fire.gwd.go.kr/hs119/service/service_guide/service_guide_form?articleSeq=11101717)), 소방시설법 시행규칙 별지 제11호서식(횡성소방서가 올린 사본), 고용노동부 경기지청의 안전보건관리자 주간 업무 계획 및 실적 서식입니다. 다섯 중 넷은 표만으로 된 문서이고 고용노동부 서식만 표 밖에 작성 요령 몇 줄이 있는, 14\~53KB짜리 파일입니다.
+
+| 도구 | 표 유지 | 별지 11호 추출 글자 수 | 비고 |
+|---|---|---|---|
+| kordoc | ✔ HTML 표(병합 셀까지) | 1,821 | |
+| unhwp | ✔ markdown 표 | 1,423 | Rust |
+| hwp-hwpx-parser | ✔ markdown 표 | 1,186 | 순수 Python |
+| dochan | ✔ markdown 표 | 1,802 | 같은 문장을 반복 출력해 글자 수가 부풀림 |
+| pyhwp2md | 표 마크업은 내지만 셀 하나가 표의 한 행으로 풀려 원래 행·열 구조가 안 남음 | 1,419 | 다른 서식은 14\~428자 |
+| hwplib (Java) | ✘ 텍스트만 | 1,161 | |
+| hwpkit, master-of-hwp, hwp2md | ✘ 텍스트만 | 1,186\~1,618 | |
+| pyhwp `hwp5txt` | ✘ 표 전체를 버림 | 3 | 다른 서식도 9\~374자 |
+| rhwp-python `extract_text` | ✘ 표 밖 텍스트만 | 빈 출력 | 5개 중 4개가 빈 출력 |
+| rhwp (Node) | 파싱·렌더만 | 1쪽 렌더 | 텍스트 추출은 시험하지 않음 |
+| hwpx-js | hwp를 받지 않음 | 실패 | `Invalid OLE magic` |
+| @hwp.js/parser | 파싱만 | 실패 | 5개 중 1개 `Unknown StyleKind` |
+| hwp.js 0.0.3 | 파싱만 | ✔ | 텍스트 추출은 시험하지 않음 |
+| LibreOffice + H2Orestart | PDF 경유 | 1,999 | fontconfig 경로를 안 주면 PDF에서 한글이 통째로 빠짐 |
+
+글자 수는 절대치가 아니라 표를 얼마나 살렸는지 가늠하는 값으로 보면 됩니다. 표 마크업이 붙으면 늘고 표를 버리면 확 줍니다. 표 마크업을 내는 도구는 다섯인데 pyhwp2md는 셀 하나를 표의 한 행으로 풀어 놓아 원래 구조가 남지 않으므로, 표를 제대로 살리는 것은 넷입니다. 2010년부터 있던 pyhwp가 별지 11호에서 3자를 내는 것이 이 표의 요점입니다. 속도는 LibreOffice(2.4\~2.6초)와 kordoc(0.5\~0.7초, npx 기동 포함)을 빼면 0.4초 안이라 이 크기에서는 의미가 없습니다.
+
+## hwp에 글을 써 넣기 어려운 이유, 그리고 한컴은 줄을 다시 잰다
+
+hwp 5.0 파일은 문단마다 줄배치 정보를 저장합니다. 각 줄이 몇 번째 글자에서 시작하고 세로로 어디에 놓이는지가 [한컴 규격서](https://cdn.hancom.com/link/docs/%ED%95%9C%EA%B8%80%EB%AC%B8%EC%84%9C%ED%8C%8C%EC%9D%BC%ED%98%95%EC%8B%9D_5.0_revision1.2.pdf)의 '문단의 레이아웃'(HWPTAG_PARA_LINE_SEG) 레코드로 파일에 적혀 있습니다. 글자를 바꾸면 이 정보도 달라져야 하는데, 세 도구 중 이것을 다시 계산하는 것은 rhwp뿐입니다.
+
+별지 11호의 "이행조치 내용" 셀에 108자짜리 문장을 넣어 봤습니다. 줄배치를 다시 계산하는 rhwp, 글자만 바꾸는 [hwpkit](https://github.com/psychofict/hwpkit), markdown을 고쳐 원본에 되돌려 넣는 kordoc patch 셋입니다. rhwp로 렌더하면 rhwp 산출물만 네 줄로 정상이고, hwpkit은 글자 크기가 섞여 다음 행과 겹치고, kordoc patch는 둘째 줄부터 겹칩니다.
+
+![rhwp가 렌더한 hwpkit 산출물. 바꾼 문장이 다음 행에 겹쳐 그려진다](./rhwp-render-hwpkit.png)
+
+그런데 같은 파일을 한글 for macOS로 열면 셋 다 정상입니다. 적어도 이 파일들에서는 한컴이 파일 안의 줄배치 정보를 그대로 쓰지 않고 다시 계산했습니다.
+
+![한글 for macOS로 연 hwpkit 산출물. 같은 문장이 세 줄로 정상 배치된다](./hancom-hwpkit.png)
+
+그러니까 텍스트 편집에서는 **렌더러가 한컴보다 엄격했습니다.** 앞선 글의 사진은 반대였습니다. 표 칸에 넣은 그림이 렌더러에서는 칸 안이었는데 한컴은 파일에 적힌 개체의 소속(표 바깥 문단)을 그대로 믿고 표 밖에 그렸습니다. 두 결과를 합치면, 한컴은 줄은 다시 재지만 개체 위치는 적힌 대로 믿습니다.
+
+hwpkit 산출물에는 함정이 하나 더 있습니다. 한컴은 열지만 kordoc은 본문을 통째로 빈 문서로 읽고, unhwp는 새 문장을 읽되 강조 마크업이 글자 사이에 조각나 끼어듭니다. kordoc으로 다시 읽어 검증하는 파이프라인에는 못 씁니다.
+
+## hwpx로 바꾸면 어느 편집기로 고쳐도 깨지지 않았습니다
+
+hwpx에는 줄배치 정보가 없어서 편집이 쉽습니다. rhwp로 변환한 hwpx를 kordoc patch와 python-hwpx로, [hwpforge](https://github.com/ai-screams/HwpForge)로 변환한 hwpx를 hwpforge set-cell로 같은 셀을 고쳤더니 셋 다 렌더러와 한컴 양쪽에서 정상이었습니다. 변환도 마찬가지로, rhwp와 hwpforge가 만든 hwpx 열 개를 rhwp, python-hwpx 스키마 검증, hwpxlib(Java), kordoc, unhwp, hwpforge inspect 리더 여섯 종에 넣어 전부 통과했습니다.
+
+다만 도구끼리 경계는 있습니다. hwpforge는 rhwp가 만든 hwpx를 편집하지 않았습니다. 무손실 재저장이 증명되지 않은 입력은 아예 편집하지 않는(fail-closed) 설계라 `INPUT_NOT_ROUNDTRIP_SAFE`를 내고, 자기가 변환한 hwpx는 받았습니다. 그리고 그 hwpforge 변환본은 같은 편집을 해도 렌더러와 한컴 모두에서 두 쪽으로 늘어났습니다. 문단 간격이나 줄 높이를 다르게 계산하는 것으로 보이는데, 변환기와 편집기를 같은 계열로 맞춰야 하는 이유가 여기 있습니다.
+
+python-hwpx로 XML을 직접 만질 때는 구조를 알아야 합니다. hwpx에서 표는 문단 안에 들어 있고 셀 문단은 그 안에 다시 중첩됩니다. 셀 문단을 `iter()`로 찾으면 표를 담은 바깥 문단이 먼저 걸리고, 거기서 텍스트를 바꾸면 문서 전체가 지워집니다. 표를 담은 바깥 문단이 아니라 셀 문단 바로 아래의 run만 골라 바꿔야 합니다.
+
+## 무엇을 고를 것인가
+
+읽기는 kordoc이나 unhwp면 됩니다. kordoc은 병합 셀을 HTML 표로 살리고 hwp·hwpx·docx를 한 도구로 다 읽고, unhwp는 Rust 바이너리라 빠릅니다.
+
+hwp 5.0 파일을 고쳐 저장해야 하면 rhwp입니다. 산출물을 kordoc·unhwp·hwp-hwpx-parser가 모두 그대로 읽는 것은 rhwp와 kordoc patch 둘인데, 그중 hwp와 hwpx 양방향 변환과 SVG·PNG 렌더까지 한 엔진에 있는 것은 rhwp뿐입니다. 새로 만들거나 hwpx만 다루면 python-hwpx가 스키마 검증까지 갖춰 편합니다.
+
+라이선스는 rhwp·kordoc·unhwp가 MIT, python-hwpx·hwplib이 Apache-2.0, hwpforge는 Apache-2.0과 MIT 이중입니다. pyhwp는 AGPL-3.0이고 LibreOffice의 hwp 필터인 H2Orestart는 GPL-3.0이라 제품에 함께 배포하려면 라이선스 조건을 따로 확인해야 합니다. 한컴 COM 자동화 계열은 Windows에 한컴이 깔려 있어야 해서 서버에서 돌릴 용도로는 처음부터 후보가 아닙니다.
+
+이 글의 쓰기·편집 결과는 전부 한컴독스에서 내려받은 읽기 전용 한글 for macOS로 확인했고, 변환 열 건은 리더 교차 검사만 했습니다. 한컴독스 웹에 올려도 같은 확인을 할 수 있습니다. 쓴 서식은 강원 소방서 셋의 민원서식 게시판과 고용노동부 경기지청 자료실에서 받을 수 있고, 별지 제11호서식은 국가법령정보센터에도 있습니다.
 
 ---
 

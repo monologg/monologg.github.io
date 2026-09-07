@@ -10,8 +10,8 @@
 - https://huggingface.co/monologg
 
 ## Articles
-- [2026년 hwp 오픈소스 지형도, 리더 16종과 편집기 6종을 공공 서식으로 돌려 봤다](https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-open-source-landscape-2026/): 한컴 없이 hwp를 읽고 쓰는 오픈소스가 2026년 들어 급격히 늘었습니다. 소방서·고용노동부 공공 서식 5개로 리더 16종, hwp 편집기 3종, hwpx 편집기 3종, 변환기 2종을 교차 검사하고, 쓰기·편집 결과는 한컴에서 열어 본 뒤 어떤 조합을 고르면 되는지를 정리합니다.
 - [한컴 없이 hwp 표 칸에 사진 넣기, 파서와 렌더러를 통과해도 한컴에서는 달랐다](https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-table-cell-picture-without-hancom/): 맥에서 오픈소스만으로 hwp 양식의 사진 칸에 이미지를 넣었습니다. 파서와 렌더러는 칸 안이라고 했지만 한컴은 표 밖으로 띄웠고, hwpx로 바꿔 XML을 직접 고친 뒤에야 hwp와 hwpx 모두 한컴에서 열렸습니다. 원인과 우회 경로, 한컴이 그림 크기를 적는 규칙을 정리합니다.
+- [2026년 hwp 오픈소스 지형도, 리더 16종과 편집기 6종을 공공 서식으로 돌려 봤다](https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-open-source-landscape-2026/): 한컴 없이 hwp를 읽고 쓰는 오픈소스가 2026년 들어 급격히 늘었습니다. 소방서·고용노동부 공공 서식 5개로 리더 16종, hwp 편집기 3종, hwpx 편집기 3종, 변환기 2종을 교차 검사하고, 쓰기·편집 결과는 한컴에서 열어 본 뒤 어떤 조합을 고르면 되는지를 정리합니다.
 - [zvec-grep 실측기: 시맨틱 검색은 에이전트의 grep을 이기지 못했다](https://monologg.kr/posts/2026/09/04/2026-09-04-zvec-grep-vs-agent-grep-eval/): Qwen 팀의 로컬 시맨틱 검색 도구 zg(zvec-grep)를 개인 monorepo에 붙일지 반나절 동안 실측했습니다. 임베딩 모델 세 단계와 30쿼리 확장 평가를 거쳐 에이전트 네이티브 검색 30/30 vs zg 최고 19/30으로 미채택 결론에 도달한 과정과, 그럼에도 zg가 유리한 환경이 어디인지까지 정리했습니다.
 - [하프기가 인터넷인데 공유기를 물리면 100메가가 되는 이유 — 기가라이트라는 함정](https://monologg.kr/posts/2026/08/21/2026-08-21-giga-lite-100mbps-trap/): SK 하프기가(500M) 회선에 공유기를 연결하면 93Mbps만 나오던 문제를 추적했습니다. 원인은 기가라이트(Giga-Lite)라는 비표준 2페어 통신 방식이었고, 2만원이 안 되는 스위칭 허브로 SK 개입 없이 450Mbps를 복구한 과정을 정리합니다.
 - [Claude Code Remote Control을 모든 세션에 기본으로 켜두기](https://monologg.kr/posts/2026/08/17/2026-08-17-claude-code-remote-control-for-all-sessions/): 터미널에서 돌아가는 Claude Code 세션을 폰이나 브라우저에서 이어받는 Remote Control을, 매번 명령어를 치지 않고 모든 세션에 자동으로 붙도록 설정하는 방법을 정리합니다.
