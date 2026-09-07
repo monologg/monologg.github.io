@@ -182,7 +182,10 @@ Powered by
 function backToTop() {
     window.scroll({ top: 0, behavior: 'smooth' });
 }
-</script> </div> </div>  <div class="absolute w-full z-0 hidden 2xl:block"> <div class="relative max-w-[var(--page-width)] mx-auto"> <!-- TOC component --> <div id="toc-wrapper" class="hidden lg:block transition absolute top-0 -right-[var(--toc-width)] w-[var(--toc-width)] items-center"> <div id="toc-inner-wrapper" class="fixed top-14 w-[var(--toc-width)] h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar"> <div id="toc" class="w-full h-full"> <div class="h-8 w-full"></div> <table-of-contents class="group"><a href="#terminal-setup이-동작하지-않는-이유" class="px-2 flex gap-2 relative transition w-full min-h-9 rounded-xl
+</script> </div> </div>  <div class="absolute w-full z-0 hidden 2xl:block"> <div class="relative max-w-[var(--page-width)] mx-auto"> <!-- TOC component --> <!-- google-side-rail-overlap: same opt-out as the main container (MBL-34).
+             The TOC hangs outside that container (-right-[var(--toc-width)]), so the
+             right side rail treated its spot as free space and parked on top of it
+             (MBL-38). Marked on both the wrapper and the fixed inner element. --> <div id="toc-wrapper" class="hidden lg:block transition absolute top-0 -right-[var(--toc-width)] w-[var(--toc-width)] items-center" google-side-rail-overlap="false"> <div id="toc-inner-wrapper" class="fixed top-14 w-[var(--toc-width)] h-[calc(100vh_-_20rem)] overflow-y-scroll overflow-x-hidden hide-scrollbar" google-side-rail-overlap="false"> <div id="toc" class="w-full h-full"> <div class="h-8 w-full"></div> <table-of-contents class="group"><a href="#terminal-setup이-동작하지-않는-이유" class="px-2 flex gap-2 relative transition w-full min-h-9 rounded-xl
         hover:bg-[var(--toc-btn-hover)] active:bg-[var(--toc-btn-active)] py-2
     "><div class="transition w-5 h-5 shrink-0 rounded-lg text-xs flex items-center justify-center font-bold bg-[var(--toc-badge-bg)] text-[var(--btn-content)]">1</div><div class="transition text-sm text-50">/terminal-setup이 동작하지 않는 이유</div></a><a href="#핵심은-로컬-ide-키바인딩" class="px-2 flex gap-2 relative transition w-full min-h-9 rounded-xl
         hover:bg-[var(--toc-btn-hover)] active:bg-[var(--toc-btn-active)] py-2
