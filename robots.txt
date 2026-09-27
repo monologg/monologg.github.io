@@ -32,3 +32,6 @@ Disallow: /
 
 Sitemap: https://monologg.kr/sitemap-index.xml
 Sitemap: https://monologg.kr/nlp-arxiv-daily/sitemap-index.xml
+
+# Daum webmaster tool ownership check (MBL-60). Removing this line drops the verification.
+#DaumWebMasterTool:4170370c1b8e1b4fc5dc62a2f4a24faae4ee5b33b886bca71e4c64daa56b9ff6:ia4x0bw2ZVxaPUxp2Momww==
