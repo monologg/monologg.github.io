@@ -6,7 +6,7 @@
 - Role: AI Engineer
 - https://github.com/monologg
 - https://www.linkedin.com/in/jang-won-park/
-- https://scholar.google.co.kr/citations?user=82GO93wAAAAJ/
+- https://scholar.google.co.kr/citations?user=82GO93wAAAAJ
 - https://huggingface.co/monologg
 
 ## Articles
