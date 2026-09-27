@@ -10,6 +10,7 @@
 - https://huggingface.co/monologg
 
 ## Articles
+- [리눅스 서버는 Tailscale 주소에만 포트를 열어도 같은 LAN에서 닿습니다](https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/): 인증 없는 홈랩 서비스를 Tailscale 주소에만 바인딩했는데도, 리눅스의 weak host model 때문에 같은 LAN 기기에서 닿는 상태였습니다. nftables 규칙으로 막고 매시간 노출을 검사하는 방법을 정리했습니다.
 - [Perplexity vs Claude 내장 검색 vs Codex 내장 검색: Codex 검색의 순위는 judge가 어느 회사 모델이냐에 따라 뒤집혔습니다](https://monologg.kr/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/): 웹 검색 3종을 실사용 쿼리 58개로 블라인드 평가했습니다. Claude judge와 GPT judge 모두 Perplexity가 Claude 내장 검색보다 낫다고 봤지만, Codex 검색의 순위는 judge에 따라 뒤집혔습니다.
 - [폰에서 Claude Code 세션 띄우기, 원격 제어 서버 모드로 내 서버에](https://monologg.kr/posts/2026/09/19/2026-09-19-claude-code-remote-control-server-mode/): 홈서버에 claude remote-control 서버 모드를 띄워 두고 폰에서 새 Claude Code 세션을 시작하게 만들었습니다. /rc와의 차이, same-dir과 worktree 선택 기준, 그리고 아직 불안정한 재시작에서 겪은 문제와 해결 순서를 정리합니다.
 - [2026년 hwp 오픈소스 지형도, 리더 16종과 편집기 6종을 공공 서식으로 돌려 봤다](https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-open-source-landscape-2026/): 한컴 없이 hwp를 읽고 쓰는 오픈소스가 2026년 들어 급격히 늘었습니다. 소방서·고용노동부 공공 서식 5개로 리더 16종, hwp 편집기 3종, hwpx 편집기 3종, 변환기 2종을 교차 검사하고, 쓰기·편집 결과는 한컴에서 열어 본 뒤 어떤 조합을 고르면 되는지를 정리합니다.

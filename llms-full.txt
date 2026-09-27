@@ -12,6 +12,143 @@ concatenated for easy consumption by LLMs. For the index-only version see /llms.
 
 ---
 
+# 리눅스 서버는 Tailscale 주소에만 포트를 열어도 같은 LAN에서 닿습니다
+
+URL: https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/
+Published: 2026-09-27
+Category: tech
+Tags: tailscale, nftables, docker, homelab, security
+
+> 인증 없는 홈랩 서비스를 Tailscale 주소에만 바인딩했는데도, 리눅스의 weak host model 때문에 같은 LAN 기기에서 닿는 상태였습니다. nftables 규칙으로 막고 매시간 노출을 검사하는 방법을 정리했습니다.
+
+집 서버에는 로그인 화면이 없는 서비스가 여럿 있습니다. 관리용 웹 UI나 대시보드 같은 것들이죠. [Tailscale](https://tailscale.com/) 네트워크(tailnet) 안에서만 쓴다는 전제로 인증을 따로 두지 않았습니다.
+
+그래서 포트를 전부 서버의 Tailscale 주소(100.x)에만 열도록 고쳤고, LAN 주소로 TCP 전 포트를 스캔해도 일부러 열어 둔 포트 한두 개만 보였습니다. 그런데 **LAN에서 목적지를 Tailscale 주소로 적은 패킷을 서버로 보내자 포트 9개가 그대로 응답했습니다.** 리눅스는 어느 랜카드로 들어온 패킷이든 목적지가 자기 주소면 받기 때문입니다. LAN 랜카드로 들어온 패킷 중 목적지가 Tailscale 대역인 것을 버리는 nftables 규칙을 걸고 나서야 막혔습니다.
+
+## 0.0.0.0에 연 포트는 LAN 전체에 열린 포트입니다
+
+처음에는 서비스들이 docker compose의 `"8080:8080"`처럼 호스트 주소를 생략한 문법으로 열려 있었습니다. 호스트 주소를 적지 않으면 Docker는 `0.0.0.0`, 즉 모든 인터페이스에 포트를 엽니다. Tailscale로만 쓴다고 생각했지만 실제로는 같은 공유기에 붙은 기기라면 인증 없이 들어올 수 있는 상태였습니다.
+
+reverse proxy도 마찬가지였습니다. 프록시가 443을 `0.0.0.0`에 열고 있어서, LAN에서 프록시의 LAN IP로 요청하면서 `Host` 헤더만 바꾸면 그 뒤에 물린 서비스에 닿았습니다. 이 프록시는 자체 Tailscale 사이드카로 tailnet에 붙어 있어서 호스트 포트 publish를 아예 걷어 냈습니다.
+
+나머지는 포트 앞에 서버의 Tailscale 주소(`tailscale ip -4`로 확인)를 적어서 고쳤습니다. 호스트에서 직접 도는 프로세스도 listen 주소를 같은 주소로 바꿨습니다.
+
+```yaml
+services:
+  api:
+    ports:
+      - "100.90.1.10:8080:8080" # 이 서버의 Tailscale 주소에만 연다
+```
+
+바인딩을 바꾸면 부팅 순서 문제가 따라옵니다. dockerd가 tailscaled보다 먼저 뜨면 아직 없는 주소에 바인딩하려다 `cannot assign requested address`로 컨테이너 시작이 실패합니다. restart 정책을 걸어 둬도 다시 시도하지 않아서, 예전에 컨테이너 하나가 이 경합으로 19시간 동안 내려가 있었던 적이 있습니다. 그래서 docker.service에 drop-in을 붙여 Tailscale 주소가 생길 때까지 기다리게 했습니다.
+
+```ini
+# /etc/systemd/system/docker.service.d/wait-tailscale.conf
+# 적용: sudo systemctl daemon-reload
+[Unit]
+After=tailscaled.service
+
+[Service]
+ExecStartPre=-/usr/bin/tailscale wait --timeout=60s
+```
+
+`tailscale wait`는 Tailscale 인터페이스와 주소가 준비될 때까지 기다리는 명령입니다. 앞의 `-`와 `--timeout` 덕분에 Tailscale이 끝내 안 올라와도 60초 뒤에는 Docker가 뜹니다. 대신 이 명령이 없는 옛 버전에서도 조용히 넘어가니, 먼저 `tailscale wait --help`가 되는지 확인합니다.
+
+같은 서버 안에서 `localhost`로 부르던 곳도 끊깁니다. 우분투는 `/etc/hosts`에서 자기 호스트 이름을 `127.0.1.1`로 풀기 때문에 짧은 호스트 이름도 마찬가지입니다. 서버 안의 호출도 MagicDNS의 전체 이름이나 도메인으로 바꿨습니다.
+
+## Tailscale 주소에 묶어도 LAN 기기가 닿는 이유
+
+서비스 포트를 Tailscale 주소로 옮긴 뒤 LAN 주소로 돌리는 포트 스캔은 서버의 LAN 주소로 가는 패킷만 시험합니다. 목적지를 Tailscale 주소로 적은 패킷을 서버의 LAN 랜카드로 보내 보니 결과가 달랐습니다. 서버 세 대에서 9개 포트가 SYN-ACK로 응답했고, Docker 포트도 섞여 있었습니다.
+
+원인은 리눅스가 [weak host model](https://datatracker.ietf.org/doc/html/rfc1122#page-61)을 따른다는 데 있습니다. 패킷이 어느 인터페이스로 들어왔든 목적지가 이 호스트의 주소이기만 하면 받아들입니다. Tailscale 주소는 `tailscale0`에 붙어 있지만, LAN 랜카드로 들어온 패킷도 목적지가 그 주소면 똑같이 처리됩니다.
+
+LAN 기기 쪽에서는 라우팅 한 줄이면 됩니다. Tailscale이 없는 리눅스 기기라면 이렇게 재현됩니다.
+
+```bash
+# 같은 LAN의 리눅스 기기(Tailscale 없음)에서
+sudo ip route add 100.90.1.10/32 via 192.168.1.10 # 서버의 Tailscale 주소 → 서버의 LAN IP
+curl -m 3 http://100.90.1.10:8080/                # HTTP가 아니면 nc -vz 100.90.1.10 <포트>
+sudo ip route del 100.90.1.10/32                  # 시험 뒤 정리
+```
+
+서버와 같은 tailnet에 있는 리눅스 기기에서는 Tailscale이 쓰는 별도 라우팅 테이블(52번)이 먼저 적용돼 이 경로를 타지 않습니다.
+
+기본 설정 어디에도 LAN 랜카드로 들어온 Tailscale 주소행 패킷을 막는 규칙은 없었습니다.
+
+- Tailscale이 넣는 iptables 규칙은 출발지가 100.64.0.0/10인데 `tailscale0`이 아닌 곳으로 들어온 패킷, 즉 주소를 위조한 패킷을 버릴 뿐입니다([`util/linuxfw`](https://github.com/tailscale/tailscale/blob/main/util/linuxfw/iptables_runner.go)).
+- Docker의 포트 publish는 목적지 주소와 포트로 DNAT할 뿐, 패킷이 들어온 랜카드는 따지지 않습니다. [Docker 문서](https://docs.docker.com/engine/network/port-publishing/)도 특정 호스트 주소에 publish한 포트는 다른 인터페이스를 거친 direct routing으로 닿을 수 있다고 적고 있습니다.
+- 서버는 Tailscale 주소를 묻는 LAN의 ARP 질의에도 답합니다. 리눅스 기본값 [`arp_ignore=0`](https://docs.kernel.org/networking/ip-sysctl.html)은 어느 인터페이스에 붙은 주소든 응답하게 해서, LAN에서 서버의 Tailscale 주소를 알아내기도 어렵지 않습니다.
+
+## 목적지가 Tailscale 주소인 LAN 패킷을 nftables로 버리기
+
+LAN 랜카드로 들어왔는데 목적지가 Tailscale 대역인 패킷은, 서브넷 라우터를 SNAT 없이 쓰는 경우가 아니라면 정상적으로 생길 일이 없으니 버리면 됩니다. Tailscale을 거친 트래픽은 `tailscale0`으로, 컨테이너가 호스트를 부르는 트래픽은 Docker 브리지로, 서버가 자기 자신을 부르는 트래픽은 `lo`로 들어오기 때문에 영향을 받지 않습니다.
+
+```
+# /etc/tailnet-guard/tailnet-guard.nft
+table inet tailnet_guard
+delete table inet tailnet_guard
+
+table inet tailnet_guard {
+	chain prerouting {
+		type filter hook prerouting priority raw; policy accept;
+
+		iifname { "eno1" } ip daddr 100.64.0.0/10 limit rate 6/minute log prefix "tailnet-guard drop: " level info
+		iifname { "eno1" } ip6 daddr fd7a:115c:a1e0::/48 limit rate 6/minute log prefix "tailnet-guard drop: " level info
+		iifname { "eno1" } ip daddr 100.64.0.0/10 counter drop
+		iifname { "eno1" } ip6 daddr fd7a:115c:a1e0::/48 counter drop
+	}
+}
+```
+
+`eno1` 자리에는 `ip -4 route show default`의 `dev` 뒤에 나오는 랜카드 이름을 넣습니다. 유선과 Wi-Fi처럼 LAN 랜카드가 여럿이면 `{ "eno1", "wlan0" }`처럼 나열합니다. `fd7a:115c:a1e0::/48`은 Tailscale이 [IPv6 주소에 쓰는 대역](https://tailscale.com/docs/concepts/ip-and-dns-addresses)입니다. 맨 위의 두 줄은 테이블이 없으면 만들고 지운 뒤 새로 만들어서, 파일을 여러 번 올려도 규칙이 겹치지 않게 해 줍니다.
+
+`priority raw`(-300)를 고른 것은 Docker의 포트 DNAT(`dstnat`, -100)보다 [먼저 처리되게](https://wiki.nftables.org/wiki-nftables/index.php/Netfilter_hooks) 하려는 것입니다. DNAT 뒤에는 목적지가 컨테이너 주소로 바뀌어 있습니다. raw 단계에서 막으면 호스트 프로세스로 가는 패킷과 Docker 포트로 가는 패킷을 한 규칙으로 처리할 수 있습니다. ufw는 Docker 포트가 ufw가 보는 INPUT 체인을 지나지 않아서([Docker 문서](https://docs.docker.com/engine/network/packet-filtering-firewalls/)) 쓰지 않았습니다.
+
+규칙은 부팅 때 네트워크가 올라오기 전에 `nft -f`로 올리는 systemd 서비스로 적용했습니다.
+
+```ini
+# /etc/systemd/system/tailnet-guard.service
+# 적용: sudo systemctl daemon-reload && sudo systemctl enable --now tailnet-guard
+[Unit]
+DefaultDependencies=no
+Wants=network-pre.target
+Before=network-pre.target shutdown.target
+Conflicts=shutdown.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/sbin/nft -f /etc/tailnet-guard/tailnet-guard.nft
+ExecStop=-/usr/sbin/nft delete table inet tailnet_guard
+
+[Install]
+WantedBy=sysinit.target
+```
+
+우분투에 기본으로 들어 있는 `nftables.service`는 쓰지 않았습니다. 설정 파일 `/etc/nftables.conf`가 `flush ruleset`으로 시작하고 서비스를 멈출 때도 `nft flush ruleset`을 실행해서, 재시작하거나 멈추는 순간 Docker와 Tailscale의 규칙까지 지워지기 때문입니다.
+
+규칙을 적용한 뒤 같은 시험을 다시 돌리자 9개 포트가 모두 응답 없음으로 바뀌었습니다. Tailscale을 거친 접속, 컨테이너에서 호스트로 가는 호출, LAN IP로 들어오는 접속은 그대로 됐습니다.
+
+## 다시 열리지 않게 매시간 검사합니다
+
+새 서비스를 올리면서 compose에 `"8080:80"` 한 줄만 써도 포트는 다시 LAN에 열립니다. 그래서 매시간 도는 검사 스크립트가 `ss`로 본 TCP·UDP 리스너와 `docker ps`의 publish 포트 중 `0.0.0.0`, `[::]`, LAN 주소, IPv6 링크로컬에 열린 것을 모으고, 허용 목록 밖이면 모니터링에 DOWN을 띄웁니다. 설정 파일이 아니라 실제 리스너를 보니 저장소 밖에서 손으로 설치한 서비스도 잡힙니다.
+
+다만 이 검사는 바인딩 주소만 보기 때문에 Tailscale 주소로 들어오는 우회는 원리상 잡지 못합니다. 그래서 nftables 규칙이 커널에 있는지, 지금 쓰는 LAN 랜카드를 덮고 있는지도 같이 봅니다. 랜카드를 바꾸거나 브리지로 묶으면 규칙이 새 랜카드를 덮지 못해 우회가 조용히 다시 열리기 때문입니다.
+
+UDP까지 보게 된 건 avahi-daemon 때문입니다. 우분투 데스크톱 설치에 딸려 오는 mDNS 응답기인데, 5353과 임의 포트 몇 개를 LAN에 열고 있었고 일부 서버는 LAN에서 온 질의에 호스트 이름과 LAN 주소를 답했습니다. 쓰는 곳이 없어서 `systemctl disable --now`로 끄고 `mask`로 막았습니다.
+
+## 조용히 버리는 규칙에는 원인을 찾을 흔적을 남깁니다
+
+패킷을 조용히 버리는 규칙은 나중에 무언가 안 될 때 원인으로 떠올리기 어렵습니다. 연결 거부가 아니라 타임아웃으로만 보이니까요. 그래서 나중에 이 규칙까지 거슬러 올라올 수 있는 단서를 같이 남겼습니다.
+
+- 버린 패킷은 `tailnet-guard drop:` 접두사를 달아 커널 로그에 분당 6줄까지 남깁니다. `journalctl -k -g 'tailnet-guard drop'`으로 언제 어디서 어느 포트로 가던 패킷인지 보입니다.
+- 누적 차단 수는 `counter`로 셉니다. 조회에 root가 필요해 `nft list table inet tailnet_guard` 한 명령만 sudoers에 비밀번호 없이 열었고, 매시간 검사가 그 수를 모니터링 메시지에 붙입니다.
+- 규칙 파일 옆 README 맨 앞에는 이 규칙이 원인인지 확인하는 순서를 적었습니다. 증상, 이 규칙과 무관한 경로, 잠시 빼고 시험하는 명령입니다.
+
+새 서버를 붙일 때도 바인딩, nftables 규칙, 매시간 검사를 한 묶음으로 설치합니다.
+
+---
+
 # Perplexity vs Claude 내장 검색 vs Codex 내장 검색: Codex 검색의 순위는 judge가 어느 회사 모델이냐에 따라 뒤집혔습니다
 
 URL: https://monologg.kr/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/
