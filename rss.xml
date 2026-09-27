@@ -812,6 +812,15 @@ steps:
 &lt;/ul&gt;
 &lt;p&gt;이 글은 위 버전에서 직접 확인한 동작을 기준으로 합니다. 이후 버전에서는 memory 저장 구조, feature flag, import 절차와 app-server protocol이 달라질 수 있습니다.&lt;/p&gt;
 &lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;2026-09 기준 안내&lt;/strong&gt; — 본문은 7월 당시 내용 그대로 두었습니다. 9월 22일에 Codex CLI 0.155.1로 같은 절차를 다시 해 보니 달라진 점이 있었어요.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://learn.chatgpt.com/docs/import#what-chatgpt-can-import&quot;&gt;공개 import 지원 목록&lt;/a&gt;에 이제 Claude Code의 프로젝트 memory가 올라 있습니다. 다만 9월 말 최신판(0.157.1)에서도 &lt;code&gt;external_agent_memory_import&lt;/code&gt;는 &lt;code&gt;under development&lt;/code&gt; 단계이고 기본값이 꺼져 있어서, 이 플래그를 켜야 import 대상에 memory가 나타납니다.&lt;/li&gt;
+&lt;li&gt;memory가 프로젝트별이 아니라 &lt;code&gt;~/.claude/projects&lt;/code&gt; 전체를 묶은 항목 하나로 나옵니다. 그래서 본문의 &quot;현재 프로젝트의 memory만 선택&quot;은 할 수 없었고, import 뒤 consolidation을 시작하기 전에 &lt;code&gt;resources/&lt;/code&gt;에서 다른 프로젝트의 사본을 지워 범위를 좁혔습니다. 이 컴퓨터에 그 프로젝트의 세션 기록이 없거나 기록에 남은 폴더가 없으면, 그 프로젝트의 memory는 경고 없이 빠집니다.&lt;/li&gt;
+&lt;li&gt;consolidation은 import가 끝난 뒤 같은 app-server에서 새 대화(thread)를 시작하자 돌기 시작했고, 끝날 때까지 그 프로세스를 살려 둬야 했습니다. 파일 89개에 13분쯤 걸렸고, 끝나기 전에 프로세스를 껐을 때는 실패하거나 일부(89개 중 54개)만 반영됐습니다. 본문의 검증 명령처럼 &lt;code&gt;--ephemeral&lt;/code&gt;로 연 세션은 consolidation을 시작하지 않습니다.&lt;/li&gt;
+&lt;li&gt;끝났는지는 &lt;code&gt;rg&lt;/code&gt; 결과보다 &lt;code&gt;memories_1.sqlite&lt;/code&gt;의 &lt;code&gt;jobs&lt;/code&gt; 표에서 &lt;code&gt;memory_consolidate_global&lt;/code&gt;의 &lt;code&gt;status&lt;/code&gt;가 &lt;code&gt;done&lt;/code&gt;인지로 확인하는 편이 정확합니다. 중간에 끊겼다면 그 job 행과 &lt;code&gt;resources/&lt;/code&gt;를 지우고 import부터 다시 해야 했습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/blockquote&gt;
 &lt;h2&gt;Claude와 Codex의 memory 구조는 다릅니다&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://docs.anthropic.com/en/docs/claude-code/memory&quot;&gt;Claude Code 공식 문서&lt;/a&gt;에 따르면 프로젝트별 auto memory는 다음 디렉터리에 저장됩니다. 제 로컬 환경도 같은 구조였습니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;~/.claude/projects/&amp;lt;project-key&amp;gt;/memory/
