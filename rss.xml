@@ -1536,8 +1536,8 @@ ENABLE_TOOL_SEARCH=true claude
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;다만 이 표에는 전제가 하나 붙습니다. 앞의 두 방법이 Claude Code에서만 동작한다는 점입니다.&lt;/p&gt;
-&lt;h2&gt;다른 MCP 클라이언트라면 선택지가 하나뿐입니다&lt;/h2&gt;
-&lt;p&gt;&lt;code&gt;settings.json&lt;/code&gt; deny와 MCP Tool Search는 &lt;strong&gt;Claude Code 전용&lt;/strong&gt; 기능입니다. OpenAI Codex, Cursor, Windsurf, Claude Desktop 같은 다른 MCP 클라이언트에는 이런 빌트인 필터링이 없습니다.&lt;/p&gt;
+&lt;h2&gt;다른 클라이언트에서는 Codex 설정이나 proxy를 씁니다&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;settings.json&lt;/code&gt; deny와 MCP Tool Search는 &lt;strong&gt;Claude Code 전용&lt;/strong&gt; 기능입니다. 다른 클라이언트 중 OpenAI Codex는 &lt;code&gt;~/.codex/config.toml&lt;/code&gt;의 MCP 서버 설정에 &lt;code&gt;enabled_tools&lt;/code&gt;(허용 목록)와 &lt;code&gt;disabled_tools&lt;/code&gt;(차단 목록)를 둘 수 있어서 자체적으로 도구를 걸러낼 수 있습니다(&lt;a href=&quot;https://developers.openai.com/codex/mcp&quot;&gt;Codex MCP 문서&lt;/a&gt;). Cursor, Windsurf, Claude Desktop 같은 다른 MCP 클라이언트에는 이런 빌트인 필터링이 없습니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -1554,8 +1554,8 @@ ENABLE_TOOL_SEARCH=true claude
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;OpenAI Codex&lt;/td&gt;
-&lt;td&gt;없음&lt;/td&gt;
-&lt;td&gt;필요&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;enabled_tools&lt;/code&gt;, &lt;code&gt;disabled_tools&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;불필요&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;Cursor&lt;/td&gt;
