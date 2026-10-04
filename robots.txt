@@ -4,6 +4,7 @@
 User-agent: *
 Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
+Disallow: /archive/?
 
 # Search indexes and user-requested fetches: allowed.
 User-agent: Googlebot
@@ -17,6 +18,7 @@ User-agent: Perplexity-User
 User-agent: cohere-ai
 Content-Signal: search=yes, ai-input=yes, ai-train=no
 Allow: /
+Disallow: /archive/?
 
 # AI training crawlers, plus the Google-Extended / Applebot-Extended product tokens: blocked.
 User-agent: GPTBot
