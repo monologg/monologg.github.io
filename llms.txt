@@ -10,7 +10,7 @@
 - https://huggingface.co/monologg
 
 ## Articles
-- [AI 팀이 아닌 개발자 공고도 LLM 개발 경험을 묻기 시작했습니다](https://monologg.kr/posts/2026/10/12/2026-10-12-ai-asks-in-dev-job-postings/): 2024년부터 2026년까지 해외(미국 중심) 개발자 채용 공고 1만 8천 건을 읽혀 봤습니다. LLM으로 무언가 만들어 본 경험을 묻는 공고는 AI 제품을 만드는 팀에서는 더 늘지 않았고, 그렇지 않은 팀에서 백엔드와 프론트엔드까지 조금씩 늘고 있습니다. AI 전문 기업은 연구자보다 제품 엔지니어를 더 뽑게 됐고, 코드 테스트 요구와 주니어 비중은 3년 전과 같았습니다.
+- [AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다](https://monologg.kr/posts/2026/10/13/2026-10-13-ai-asks-in-dev-job-postings/): 2024년부터 2026년까지의 해외 개발자 채용 공고 1만 8천 건과 2026년 10월의 국내 원티드 공고 2,738건을 같은 문항으로 읽혀 봤습니다. 해외에서는 LLM으로 무언가 만들어 본 경험을 묻는 공고가 AI 제품을 만드는 팀 밖에서도 늘고 있고, AI 코딩 도구 경험은 필수 요건으로 적히기 시작했습니다. 국내는 그 비율과 순서가 해외와 같았고, 다른 것은 AI 코딩 도구를 화면 만드는 역할에 몰아서 묻는다는 점과 개발 역할에 LLM 개발 경험을 조금 더 묻는다는 점이었습니다.
 - [서명 키가 만료돼도 apt update는 정상 종료됩니다](https://monologg.kr/posts/2026/10/12/2026-10-12-apt-update-stale-index-check/): GitHub CLI의 APT 저장소 서명 키가 만료되자 apt update는 경고만 남기고 종료 코드 0으로 끝났고, 서버의 gh 저장소는 23일 동안 멈춰 있었습니다. 컨테이너로 재현한 과정과, 일반 계정으로 서명 키 만료·검증 실패·뒤처진 인덱스를 찾는 점검 스크립트를 정리합니다.
 - [리눅스 서버는 Tailscale 주소에만 포트를 열어도 같은 LAN에서 닿습니다](https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/): 인증 없는 홈랩 서비스를 Tailscale 주소에만 바인딩했는데도, 리눅스의 weak host model 때문에 같은 LAN 기기에서 닿는 상태였습니다. nftables 규칙으로 막고 매시간 노출을 검사하는 방법을 정리했습니다.
 - [Perplexity vs Claude 내장 검색 vs Codex 내장 검색: Codex 검색의 순위는 judge가 어느 회사 모델이냐에 따라 뒤집혔습니다](https://monologg.kr/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/): 웹 검색 3종을 실사용 쿼리 58개로 블라인드 평가했습니다. Claude judge와 GPT judge 모두 Perplexity가 Claude 내장 검색보다 낫다고 봤지만, Codex 검색의 순위는 judge에 따라 뒤집혔습니다.
