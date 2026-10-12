@@ -1,4 +1,132 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>리눅스 서버는 Tailscale 주소에만 포트를 열어도 같은 LAN에서 닿습니다</title><link>https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/</guid><description>인증 없는 홈랩 서비스를 Tailscale 주소에만 바인딩했는데도, 리눅스의 weak host model 때문에 같은 LAN 기기에서 닿는 상태였습니다. nftables 규칙으로 막고 매시간 노출을 검사하는 방법을 정리했습니다.</description><pubDate>Sun, 27 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;집 서버에는 로그인 화면이 없는 서비스가 여럿 있습니다. 관리용 웹 UI나 대시보드 같은 것들이죠. &lt;a href=&quot;https://tailscale.com/&quot;&gt;Tailscale&lt;/a&gt; 네트워크(tailnet) 안에서만 쓴다는 전제로 인증을 따로 두지 않았습니다.&lt;/p&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>서명 키가 만료돼도 apt update는 종료 코드 0을 냅니다</title><link>https://monologg.kr/posts/2026/10/12/2026-10-12-apt-update-stale-index-check/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/12/2026-10-12-apt-update-stale-index-check/</guid><description>GitHub CLI의 APT 저장소 서명 키가 만료되자 apt update는 경고만 남기고 종료 코드 0으로 끝났고, 서버의 gh 저장소는 23일 동안 멈춰 있었습니다. 컨테이너로 재현한 과정과, 일반 계정으로 서명 키 만료·검증 실패·뒤처진 인덱스를 찾는 점검 스크립트를 정리합니다.</description><pubDate>Mon, 12 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;Ubuntu 24.04(apt 2.8.3)에서 2026-10-12에 확인했습니다. 재현과 스크립트는 Ubuntu 22.04(apt 2.4.14), Debian 12(apt 2.6.1) 컨테이너에서도 같은 결과였습니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;9월 18일에 서버에서 &lt;code&gt;apt-get upgrade&lt;/code&gt;를 돌렸더니 GitHub CLI(&lt;code&gt;gh&lt;/code&gt;)가 2.97.0에서 2.100.0으로 올라갔습니다. 업데이트가 잘 들어오는 것처럼 보였지만, 그때는 이미 사흘 전에 &lt;a href=&quot;https://github.com/cli/cli/releases/tag/v2.101.0&quot;&gt;2.101.0&lt;/a&gt;이 나와 있었습니다. gh의 APT 저장소 서명 키가 9월 5일에 만료됐는데 서버 키링에는 옛 키만 있어서, &lt;code&gt;apt update&lt;/code&gt;가 새 인덱스를 받지 못하고 만료 전에 받아 둔 인덱스를 계속 쓰고 있었던 겁니다. gh를 쓰는 서버 두 대에서 이 저장소가 23일 동안 멈춰 있었고, 2.101.0은 나온 지 13일 뒤에야 받았습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;code&gt;apt update&lt;/code&gt;는 서명 검증에 실패해도, 받아 둔 인덱스가 있으면 경고만 남기고 종료 코드 0으로 끝납니다.&lt;/strong&gt; &lt;code&gt;apt-get update -eany&lt;/code&gt;로 돌리면 이 경우를 실패로 끝낼 수 있고, 서명 키 만료는 만료되기 전에 미리 따로 보는 것이 좋습니다. 둘을 함께 보는 점검 스크립트를 아래에 붙였습니다. 일반 계정으로 돌아갑니다.&lt;/p&gt;
+&lt;h2&gt;옛 키링으로 재현한 apt update 출력&lt;/h2&gt;
+&lt;p&gt;gh 서명 키가 만료된 서버와 같은 상황을 Ubuntu 24.04 컨테이너에서 만들어 봤습니다. gh 저장소의 인덱스를 새 키가 든 키링으로 한 번 받아 둔 뒤, 키링을 옛 키만 든 것으로 바꾸고 다시 &lt;code&gt;apt-get update&lt;/code&gt;를 돌렸습니다. 옛 키만 든 키링은 지금 GitHub이 배포하는 키링에서 옛 키(&lt;code&gt;23F3D4EA75716059&lt;/code&gt;)만 꺼내 만들었습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ apt-get update; echo &quot;exit=$?&quot;
+(Hit 줄 생략)
+Err:1 https://cli.github.com/packages stable InRelease
+  The following signatures couldn&apos;t be verified because the public key is not available: NO_PUBKEY 5612B36462313325
+Reading package lists...
+W: An error occurred during the signature verification. The repository is not updated and the previous index files will be used. GPG error: https://cli.github.com/packages stable InRelease: The following signatures couldn&apos;t be verified because the public key is not available: NO_PUBKEY 5612B36462313325
+W: Failed to fetch https://cli.github.com/packages/dists/stable/InRelease  The following signatures couldn&apos;t be verified because the public key is not available: NO_PUBKEY 5612B36462313325
+W: Some index files failed to download. They have been ignored, or old ones used instead.
+exit=0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;경고 첫 줄에 적힌 대로 apt는 저장소를 갱신하지 않고 이전 인덱스를 그대로 씁니다. 그런데 종료 코드는 0이라, 자동 업데이트나 cron처럼 종료 코드만 보는 곳에서는 성공과 구별되지 않습니다. 저장소를 처음 붙일 때는 받아 둔 인덱스가 없어서 &lt;code&gt;E: ... is not signed.&lt;/code&gt;와 함께 종료 코드 100으로 끝나는데, 이미 돌고 있는 서버에는 받아 둔 인덱스가 있으니 조용히 넘어가는 거죠.&lt;/p&gt;
+&lt;p&gt;제 서버에서도 9월 6일부터 28일까지 인덱스를 받는 &lt;code&gt;apt-daily.service&lt;/code&gt;가 매일 돌았지만, 저널에는 &lt;code&gt;Deactivated successfully&lt;/code&gt;만 남았습니다. 경고는 &lt;code&gt;apt update&lt;/code&gt;를 손으로 돌려야 보였습니다.&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;apt-get update -eany&lt;/code&gt;(&lt;code&gt;--error-on=any&lt;/code&gt;)로 돌리면 이 경우도 종료 코드 100으로 끝납니다. &lt;a href=&quot;https://manpages.ubuntu.com/manpages/noble/man8/apt-get.8.html&quot;&gt;apt-get 매뉴얼&lt;/a&gt;의 설명은 &quot;Fail the update command if any error occured, even a transient one.&quot;입니다. 아래 스크립트도 이 옵션을 써서 apt의 종료 코드를 그대로 씁니다.&lt;/p&gt;
+&lt;h2&gt;gh 서명 키가 만료됐을 때 고치는 방법&lt;/h2&gt;
+&lt;p&gt;GitHub은 4월 8일에 gh 레포에 고정한 &lt;a href=&quot;https://github.com/cli/cli/issues/13118&quot;&gt;키 교체 공지 이슈&lt;/a&gt;로 &quot;지금 키가 9월 5일 토요일에 만료된다&quot;고 알렸고, 옛 키와 새 키가 함께 든 키링 파일도 그날 배포했습니다. 고치는 방법은 공지에 적힌 대로 키링 파일을 새로 받아 덮는 것입니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;sudo mkdir -p -m 755 /etc/apt/keyrings
+sudo curl -fsSL -o /etc/apt/keyrings/githubcli-archive-keyring.gpg https://cli.github.com/packages/githubcli-archive-keyring.gpg \
+    &amp;amp;&amp;amp; sudo chmod go+r /etc/apt/keyrings/githubcli-archive-keyring.gpg
+sudo apt update &amp;amp;&amp;amp; sudo apt install gh
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;9월 28일에 두 서버 모두 이렇게 하자 바로 2.101.0으로 올라갔습니다. 키링을 다른 경로에 두었다면 &lt;code&gt;/etc/apt/sources.list.d/github-cli.list&lt;/code&gt;의 &lt;code&gt;signed-by&lt;/code&gt;가 가리키는 파일을 덮어야 합니다. gh는 2024년 9월에도 키가 만료돼 설치와 업데이트가 깨진 적이 있고(&lt;a href=&quot;https://github.com/cli/cli/issues/9569&quot;&gt;#9569&lt;/a&gt;), 그때는 GitHub이 만료일을 급히 연장했습니다.&lt;/p&gt;
+&lt;h2&gt;업스트림 인덱스를 새로 받아 보는 점검 스크립트&lt;/h2&gt;
+&lt;p&gt;이 스크립트는 서버가 받아 둔 인덱스를 그대로 믿지 않고, 업스트림 &lt;code&gt;InRelease&lt;/code&gt;를 임시 폴더에 새로 받아 서버의 인덱스와 비교합니다. apt 설정은 그대로 쓰고 내려받는 위치만 바꾸므로 일반 계정으로 돌릴 수 있습니다. root로 돌리면 apt.conf.d에 걸린 update 후 hook(&lt;code&gt;update-success-stamp&lt;/code&gt;를 찍는 것 등)까지 실행되기 때문에 스크립트가 거부합니다. 서명 검증도 apt가 직접 하니 &lt;code&gt;gpgv&lt;/code&gt;로 서명을 검증하는 코드를 따로 짤 필요가 없습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;#!/usr/bin/env bash
+# apt-path-check.sh: APT 저장소에서 새 버전이 실제로 들어오고 있는지 본다.
+# 일반 계정으로 돌리고, 서버가 받아 둔 인덱스는 건드리지 않는다. 문제가 있으면 종료 코드 1.
+set -u
+WARN_DAYS=${WARN_DAYS:-90}     # 서명 키 만료를 이만큼 앞서 알린다
+BEHIND_DAYS=${BEHIND_DAYS:-3}  # 서버 인덱스가 업스트림보다 오래된 상태가 이만큼 이어지면 알린다
+STATE=${XDG_STATE_HOME:-$HOME/.local/state}/apt-path-check  # 그 상태를 처음 본 시각을 남기는 곳
+
+# root로 돌리면 apt.conf.d의 update 후 hook(update-success-stamp 등)까지 실행된다
+[ &quot;$(id -u)&quot; -ne 0 ] || { echo &quot;일반 계정으로 돌리세요&quot;; exit 2; }
+command -v gpg &amp;gt;/dev/null || { echo &quot;gpg가 필요합니다 (sudo apt install gpg)&quot;; exit 2; }
+tmp=$(mktemp -d)
+trap &apos;rm -rf &quot;$tmp&quot;&apos; EXIT
+mkdir -p &quot;$tmp/lists/partial&quot; &quot;$tmp/cache&quot; &quot;$STATE&quot;
+mkdir -m 700 &quot;$tmp/gnupg&quot;
+now=$(date +%s)
+problems=0
+report() { echo &quot;$1&quot;; problems=$((problems + 1)); }
+
+# 1. sources의 signed-by 키링마다 서명 키 만료일. signed-by가 없는 저장소는 보지 않는다
+keyrings=$( { grep -hE &apos;^[[:space:]]*deb&apos; /etc/apt/sources.list /etc/apt/sources.list.d/*.list 2&amp;gt;/dev/null |
+                grep -oE &apos;signed-by=[^] ]+&apos; | cut -d= -f2 | tr &apos;,&apos; &apos;\n&apos;
+              awk &apos;BEGIN { RS = &quot;&quot; } $0 !~ /(^|\n)[Ee]nabled:[ \t]*[Nn][Oo]/ {
+                     n = split($0, line, &quot;\n&quot;)
+                     for (i = 1; i &amp;lt;= n; i++) if (line[i] ~ /^[Ss]igned-[Bb]y:/) {
+                       v = line[i]; sub(/^[^:]*:[ \t]*/, &quot;&quot;, v); gsub(/[ \t,]+/, &quot;\n&quot;, v); print v } }&apos; \
+                  /etc/apt/sources.list.d/*.sources 2&amp;gt;/dev/null; } | grep &apos;^/&apos; | sort -u)
+for ring in $keyrings; do
+  if [ ! -r &quot;$ring&quot; ]; then report &quot;KEY    $ring: 키링 파일이 없습니다&quot;; continue; fi
+  # 키마다 서명용 부분키가 있으면 그것을, 없으면 주 키를 본다. 키링 안에서 가장 늦은 만료일을 쓴다
+  last=$(GNUPGHOME=&quot;$tmp/gnupg&quot; gpg --show-keys --with-colons &quot;$ring&quot; 2&amp;gt;/dev/null | awk -F: &apos;
+           function flush() { if (subs != &quot;&quot;) printf &quot;%s&quot;, subs; else if (pubv != &quot;&quot;) print pubv; subs = &quot;&quot;; pubv = &quot;&quot; }
+           $1 == &quot;pub&quot; { flush(); if ($2 != &quot;r&quot; &amp;amp;&amp;amp; $12 ~ /s/) pubv = ($7 == &quot;&quot; ? &quot;never&quot; : $7) }
+           $1 == &quot;sub&quot; &amp;amp;&amp;amp; $2 != &quot;r&quot; &amp;amp;&amp;amp; $12 ~ /s/ { subs = subs ($7 == &quot;&quot; ? &quot;never&quot; : $7) &quot;\n&quot; }
+           END { flush() }&apos; | sort | tail -n 1)
+  case $last in
+    never) continue ;;
+    &quot;&quot;) report &quot;KEY    $ring: 서명 키를 읽지 못했습니다&quot;; continue ;;
+  esac
+  if [ &quot;$last&quot; -lt &quot;$now&quot; ]; then
+    report &quot;KEY    $ring: 서명 키가 $(date -d &quot;@$last&quot; +%F)에 만료됐습니다&quot;
+  elif [ $(( (last - now) / 86400 )) -lt &quot;$WARN_DAYS&quot; ]; then
+    report &quot;KEY    $ring: 서명 키가 $(date -d &quot;@$last&quot; +%F)에 만료됩니다&quot;
+  fi
+done
+
+# 2. 업스트림 InRelease만 임시 폴더에 새로 받는다. 패키지 목록 같은 나머지 인덱스는 끈다
+opts=()
+for t in $(apt-config dump | sed -n &apos;s/^Acquire::IndexTargets::\(deb[^:]*::[^:]*\) &quot;&quot;;$/\1/p&apos;); do
+  opts+=(-o &quot;Acquire::IndexTargets::$t::DefaultEnabled=false&quot;)
+done
+out=$(apt-get update -eany -qq -o Dir::State::Lists=&quot;$tmp/lists&quot; -o Dir::Cache=&quot;$tmp/cache&quot; &quot;${opts[@]}&quot; 2&amp;gt;&amp;amp;1)
+rc=$?
+if [ &quot;$rc&quot; -ne 0 ]; then
+  report &quot;APT    업스트림 인덱스를 받거나 검증하지 못했습니다 (apt-get 종료 코드 $rc)&quot;
+  printf &apos;%s\n&apos; &quot;$out&quot; | grep -E &apos;^(W|E):&apos; | sed &apos;s/^/       /&apos;
+fi
+
+# 3. 서버 인덱스가 업스트림보다 오래된 상태가 BEHIND_DAYS일 넘게 이어지는지
+for new in &quot;$tmp&quot;/lists/*_InRelease; do
+  [ -e &quot;$new&quot; ] || continue
+  name=${new##*/}
+  old=/var/lib/apt/lists/$name
+  mark=$STATE/$name
+  if [ ! -e &quot;$old&quot; ]; then report &quot;STALE  ${name%_InRelease}: 받아 둔 인덱스가 없습니다&quot;; continue; fi
+  up=$(date -d &quot;$(sed -n &apos;s/^Date: //p&apos; &quot;$new&quot; | head -n 1)&quot; +%s)
+  ours=$(date -d &quot;$(sed -n &apos;s/^Date: //p&apos; &quot;$old&quot; | head -n 1)&quot; +%s)
+  if [ &quot;$ours&quot; -ge &quot;$up&quot; ]; then rm -f &quot;$mark&quot;; continue; fi
+  # 서버가 그사이 인덱스를 새로 받았으면 처음부터 다시 센다
+  if [ ! -s &quot;$mark&quot; ] || [ &quot;$(cut -d&apos; &apos; -f1 &quot;$mark&quot;)&quot; != &quot;$ours&quot; ]; then echo &quot;$ours $now&quot; &amp;gt; &quot;$mark&quot;; fi
+  days=$(( (now - $(cut -d&apos; &apos; -f2 &quot;$mark&quot;)) / 86400 ))
+  if [ &quot;$days&quot; -ge &quot;$BEHIND_DAYS&quot; ]; then
+    report &quot;STALE  ${name%_InRelease}: ${days}일째 업스트림보다 오래된 인덱스입니다 (서버 $(date -d &quot;@$ours&quot; +%F), 업스트림 $(date -d &quot;@$up&quot; +%F))&quot;
+  fi
+done
+
+if [ &quot;$problems&quot; -eq 0 ]; then echo &quot;OK     문제 없음&quot;; exit 0; fi
+exit 1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;스크립트가 보는 것은 세 가지입니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;서명 키 만료&lt;/strong&gt;: sources의 &lt;code&gt;signed-by&lt;/code&gt;가 가리키는 키링마다 서명 키의 만료일을 봅니다. 옛 키와 새 키가 함께 든 키링은 늦게 만료되는 새 키 기준이라 경고가 나지 않습니다. 키링 교체는 서버마다 손으로 해야 하는 일이라 90일 전부터 알립니다. &lt;code&gt;signed-by&lt;/code&gt; 없이 &lt;code&gt;trusted.gpg.d&lt;/code&gt;의 키를 쓰는 저장소는 이 검사에서 빠집니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;검증 실패&lt;/strong&gt;: &lt;code&gt;apt-get update -eany&lt;/code&gt;를 임시 폴더로 돌립니다. 패키지 목록 같은 나머지 인덱스는 &lt;code&gt;Acquire::IndexTargets&lt;/code&gt; 설정으로 꺼서 &lt;code&gt;InRelease&lt;/code&gt;만 받습니다. 저장소가 열 개인 제 서버에서는 1MB가 안 되는 양이었고 2초 안팎이 걸렸습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;뒤처진 인덱스&lt;/strong&gt;: 서버가 받아 둔 &lt;code&gt;InRelease&lt;/code&gt;의 &lt;code&gt;Date:&lt;/code&gt;가 업스트림보다 오래된 상태가 3일 넘게 이어지면 알립니다. 인덱스를 하루에도 여러 번 내는 Ubuntu 본 저장소와 몇 주에 한 번 내는 저장소를 한 번의 비교로는 구별할 수 없어서, 그 상태를 처음 본 시각을 &lt;code&gt;~/.local/state/apt-path-check&lt;/code&gt;에 남겨 둡니다. 그래서 이 경고는 처음 돌린 날로부터 사흘이 지나야 나옵니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;옛 키링으로 돌려 본 결과&lt;/h2&gt;
+&lt;p&gt;gh 저장소에 옛 키만 든 키링을 붙인 컨테이너에서 점검 스크립트를 돌리면 만료된 키와 검증 실패가 둘 다 잡히고 종료 코드는 1입니다. 키 만료일이 9월 5일이니, 이 스크립트를 매일 돌렸다면 90일 전인 6월 초부터 &lt;code&gt;KEY&lt;/code&gt; 경고가 나왔을 것입니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$ ./apt-path-check.sh; echo &quot;exit=$?&quot;
+KEY    /etc/apt/keyrings/githubcli-archive-keyring.gpg: 서명 키가 2026-09-05에 만료됐습니다
+APT    업스트림 인덱스를 받거나 검증하지 못했습니다 (apt-get 종료 코드 100)
+       W: GPG error: https://cli.github.com/packages stable InRelease: The following signatures couldn&apos;t be verified because the public key is not available: NO_PUBKEY 5612B36462313325
+       E: The repository &apos;https://cli.github.com/packages stable InRelease&apos; is not signed.
+exit=1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;키링을 새것으로 되돌리면 &lt;code&gt;OK     문제 없음&lt;/code&gt;이 나옵니다. 제 서버 세 대에서도 지금은 이 결과입니다.&lt;/p&gt;
+&lt;h2&gt;매일 돌릴 때 정해 둔 것&lt;/h2&gt;
+&lt;p&gt;systemd timer나 cron으로 매일 돌리고, 종료 코드가 0이 아닐 때 쓰고 있는 알림 수단으로 보내면 됩니다. systemd 서비스로 돌린다면 &lt;code&gt;User=&lt;/code&gt;로 일반 계정을 지정합니다. 제 서버에서는 이 세 가지를 보는 점검이 매일 돌고 있고, 위 스크립트는 그 점검을 따로 떼어 다시 쓴 것입니다.&lt;/p&gt;
+&lt;p&gt;이 스크립트는 업스트림에 닿지 못한 것도 문제로 셉니다. 점검까지 조용히 실패하면 업데이트가 멈춘 것을 또 모르고 지나가기 때문입니다. 대신 업스트림이 잠깐 내려가는 경우가 있어서, 저는 검증 실패는 이틀 연속일 때만 알림을 보냅니다.&lt;/p&gt;
+</content:encoded></item><item><title>리눅스 서버는 Tailscale 주소에만 포트를 열어도 같은 LAN에서 닿습니다</title><link>https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/</guid><description>인증 없는 홈랩 서비스를 Tailscale 주소에만 바인딩했는데도, 리눅스의 weak host model 때문에 같은 LAN 기기에서 닿는 상태였습니다. nftables 규칙으로 막고 매시간 노출을 검사하는 방법을 정리했습니다.</description><pubDate>Sun, 27 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;집 서버에는 로그인 화면이 없는 서비스가 여럿 있습니다. 관리용 웹 UI나 대시보드 같은 것들이죠. &lt;a href=&quot;https://tailscale.com/&quot;&gt;Tailscale&lt;/a&gt; 네트워크(tailnet) 안에서만 쓴다는 전제로 인증을 따로 두지 않았습니다.&lt;/p&gt;
 &lt;p&gt;그래서 포트를 전부 서버의 Tailscale 주소(100.x)에만 열도록 고쳤고, LAN 주소로 TCP 전 포트를 스캔해도 일부러 열어 둔 포트 한두 개만 보였습니다. 그런데 &lt;strong&gt;LAN에서 목적지를 Tailscale 주소로 적은 패킷을 서버로 보내자 포트 9개가 그대로 응답했습니다.&lt;/strong&gt; 리눅스는 어느 랜카드로 들어온 패킷이든 목적지가 자기 주소면 받기 때문입니다. LAN 랜카드로 들어온 패킷 중 목적지가 Tailscale 대역인 것을 버리는 nftables 규칙을 걸고 나서야 막혔습니다.&lt;/p&gt;
 &lt;h2&gt;0.0.0.0에 연 포트는 LAN 전체에 열린 포트입니다&lt;/h2&gt;
 &lt;p&gt;처음에는 서비스들이 docker compose의 &lt;code&gt;&quot;8080:8080&quot;&lt;/code&gt;처럼 호스트 주소를 생략한 문법으로 열려 있었습니다. 호스트 주소를 적지 않으면 Docker는 &lt;code&gt;0.0.0.0&lt;/code&gt;, 즉 모든 인터페이스에 포트를 엽니다. Tailscale로만 쓴다고 생각했지만 실제로는 같은 공유기에 붙은 기기라면 인증 없이 들어올 수 있는 상태였습니다.&lt;/p&gt;

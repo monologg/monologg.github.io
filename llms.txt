@@ -10,6 +10,7 @@
 - https://huggingface.co/monologg
 
 ## Articles
+- [서명 키가 만료돼도 apt update는 종료 코드 0을 냅니다](https://monologg.kr/posts/2026/10/12/2026-10-12-apt-update-stale-index-check/): GitHub CLI의 APT 저장소 서명 키가 만료되자 apt update는 경고만 남기고 종료 코드 0으로 끝났고, 서버의 gh 저장소는 23일 동안 멈춰 있었습니다. 컨테이너로 재현한 과정과, 일반 계정으로 서명 키 만료·검증 실패·뒤처진 인덱스를 찾는 점검 스크립트를 정리합니다.
 - [리눅스 서버는 Tailscale 주소에만 포트를 열어도 같은 LAN에서 닿습니다](https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/): 인증 없는 홈랩 서비스를 Tailscale 주소에만 바인딩했는데도, 리눅스의 weak host model 때문에 같은 LAN 기기에서 닿는 상태였습니다. nftables 규칙으로 막고 매시간 노출을 검사하는 방법을 정리했습니다.
 - [Perplexity vs Claude 내장 검색 vs Codex 내장 검색: Codex 검색의 순위는 judge가 어느 회사 모델이냐에 따라 뒤집혔습니다](https://monologg.kr/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/): 웹 검색 3종을 실사용 쿼리 58개로 블라인드 평가했습니다. Claude judge와 GPT judge 모두 Perplexity가 Claude 내장 검색보다 낫다고 봤지만, Codex 검색의 순위는 judge에 따라 뒤집혔습니다.
 - [폰에서 Claude Code 세션 띄우기, 원격 제어 서버 모드로 내 서버에](https://monologg.kr/posts/2026/09/19/2026-09-19-claude-code-remote-control-server-mode/): 홈서버에 claude remote-control 서버 모드를 띄워 두고 폰에서 새 Claude Code 세션을 시작하게 만들었습니다. /rc와의 차이, same-dir과 worktree 선택 기준, 그리고 아직 불안정한 재시작에서 겪은 문제와 해결 순서를 정리합니다.
