@@ -10,9 +10,6 @@
 - https://huggingface.co/monologg
 
 ## Articles
-- [이모지를 빼도 AI가 만든 화면 같았던 이유](https://monologg.kr/posts/2026/10/11/2026-10-11-dashboard-ai-tells/): 흔한 AI 화면 금지 목록을 다 지킨 관리 화면이 여전히 AI가 만든 것처럼 보였습니다. 원인은 더한 장식이 아니라 빠진 아이콘과 로고, 본문 크기의 글자였고, 이를 디자인 토큰, 여섯 폭 스크린숏과 넘침 검사, 조어 금지 같은 규칙으로 바꾼 과정을 정리합니다.
-- [홈서버 업그레이드, 에이전트가 읽고 막게 했더니](https://monologg.kr/posts/2026/10/11/2026-10-11-homelab-upgrade-agent-review/): 집 서버의 서비스와 도구를 새 버전이 나오자마자 올리지 않고, 등급별로 며칠 묵힌 뒤 에이전트가 릴리스 노트와 이슈를 읽어 막을지 답하게 했습니다. 판정은 스크립트가 내리고 인용은 코드가 원문과 대조합니다. 그래도 에이전트는 이미 쓰던 버전에도 있던 버그를 이유로 업그레이드를 막았고, 질문을 바꿔 고친 과정과 일주일 뒤 다시 센 결과까지 정리합니다.
-- [apt update는 통과했는데 23일째 같은 버전](https://monologg.kr/posts/2026/10/11/2026-10-11-update-paths-stop-silently/): 서명 키 만료, 멈춘 배포 채널, 갱신이 끝난 이미지 주소. 업데이트가 오는 길이 끊기면 오류 대신 아무 일도 일어나지 않습니다. 실제 사례 넷과, 버전과 별개로 그 길이 살아 있는지 매일 점검하는 항목을 정리했습니다.
 - [리눅스 서버는 Tailscale 주소에만 포트를 열어도 같은 LAN에서 닿습니다](https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/): 인증 없는 홈랩 서비스를 Tailscale 주소에만 바인딩했는데도, 리눅스의 weak host model 때문에 같은 LAN 기기에서 닿는 상태였습니다. nftables 규칙으로 막고 매시간 노출을 검사하는 방법을 정리했습니다.
 - [Perplexity vs Claude 내장 검색 vs Codex 내장 검색: Codex 검색의 순위는 judge가 어느 회사 모델이냐에 따라 뒤집혔습니다](https://monologg.kr/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/): 웹 검색 3종을 실사용 쿼리 58개로 블라인드 평가했습니다. Claude judge와 GPT judge 모두 Perplexity가 Claude 내장 검색보다 낫다고 봤지만, Codex 검색의 순위는 judge에 따라 뒤집혔습니다.
 - [폰에서 Claude Code 세션 띄우기, 원격 제어 서버 모드로 내 서버에](https://monologg.kr/posts/2026/09/19/2026-09-19-claude-code-remote-control-server-mode/): 홈서버에 claude remote-control 서버 모드를 띄워 두고 폰에서 새 Claude Code 세션을 시작하게 만들었습니다. /rc와의 차이, same-dir과 worktree 선택 기준, 그리고 아직 불안정한 재시작에서 겪은 문제와 해결 순서를 정리합니다.
