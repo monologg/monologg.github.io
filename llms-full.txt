@@ -12,7 +12,7 @@ concatenated for easy consumption by LLMs. For the index-only version see /llms.
 
 ---
 
-# 서명 키가 만료돼도 apt update는 종료 코드 0을 냅니다
+# 서명 키가 만료돼도 apt update는 정상 종료됩니다
 
 URL: https://monologg.kr/posts/2026/10/12/2026-10-12-apt-update-stale-index-check/
 Published: 2026-10-12
