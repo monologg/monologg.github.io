@@ -9,7 +9,7 @@
 &lt;li&gt;&lt;strong&gt;AI 코딩 도구 경험&lt;/strong&gt;: Copilot이나 Claude Code 같은 도구로 코드를 짜 본 경험&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;AI 제품을 만드는 팀&lt;/strong&gt;: 공고를 낸 회사나 팀의 제품이 AI인 경우. 공고마다 따로 판단한 것이라, 회사를 묶어 부르는 「AI 전문 기업 13곳」과는 다릅니다. 나머지는 「그 밖의 팀」이라고 부릅니다.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;먼저 결론입니다.&lt;/p&gt;
+&lt;p&gt;세어 보니 이렇습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;해외에서 LLM 개발 경험을 묻는 공고는 AI 제품을 만드는 팀 밖에서도 늘고 있습니다.&lt;/strong&gt; 백엔드와 프론트엔드도 예외가 아니지만, 아직 열에 하나 수준입니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;AI 전문 기업은 모델 연구 공고가 줄고&lt;/strong&gt; 제품·백엔드·인프라 공고가 늘었습니다.&lt;/li&gt;
@@ -578,7 +578,6 @@
 &lt;li&gt;다른 LLM으로 해외 100건과 국내 50건을 다시 읽혀 보니 요구 여부가 84~100% 일치했습니다. 테스트 요구는 한국어 공고에서 일치율이 낮아 국내 비교에는 쓰지 않았습니다.&lt;/li&gt;
 &lt;li&gt;Hacker News 글은 짧고 채용 페이지 공고는 길어서, 해외 절에서는 두 출처를 서로 비교하지 않고 각 출처 안의 변화만 봤습니다.&lt;/li&gt;
 &lt;li&gt;연차는 공고 문구로 판단한 것(주니어·미드·시니어)이고, 원티드의 요구 연차 표만 공고에 적힌 숫자를 썼습니다.&lt;/li&gt;
-&lt;li&gt;물은 문항과 집계 코드는 요청하시면 보내 드립니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;&amp;lt;script src=&quot;https://cdn.jsdelivr.net/npm/echarts@6.0.0/dist/echarts.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
 &amp;lt;script src=&quot;/js/job-postings-2024-2026.js&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/p&gt;
