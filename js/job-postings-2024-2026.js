@@ -15,9 +15,9 @@
     xAxis: {type: "value", min: 0, max: max, axisLabel: {formatter: "{value}%", color: t.fg2}, splitLine: {lineStyle: {color: t.grid}}},
     yAxis: {type: "category", data: cats, inverse: true, axisLine: {show: false}, axisTick: {show: false}, axisLabel: {color: t.fg2}},
     series: series.map(function (s, i) { return {name: s.name, type: "bar", data: s.data, barWidth: 12, itemStyle: {color: s.color || t.s[i], borderRadius: [0, 3, 3, 0]}, label: {show: true, position: "right", formatter: function (p) { return Math.round(p.value) + "%"; }, color: t.fg, fontSize: 11}}; })}); }
-  function axH(t) { return {type: "category", data: X.skills.halves, boundaryGap: false, axisLine: {lineStyle: {color: t.grid}}, axisTick: {show: false}, axisLabel: {color: t.fg2, interval: 0}}; }
-  function linesH(t, series, max, right) { return Object.assign(base(t), {grid: {left: 40, right: right || 150, top: 14, bottom: 30}, xAxis: axH(t), yAxis: axY(t, max), series: series}); }
-  function stackH(t, series) { var narrow = W <= 700; return Object.assign(base(t), {legend: {bottom: 0, left: "center", width: W - 24, itemGap: 14, textStyle: {color: t.fg2}}, grid: {left: 40, right: 16, top: 20, bottom: narrow ? 80 : 52},
+  function axH(t) { return {type: "category", data: X.skills.halves, boundaryGap: false, axisLine: {lineStyle: {color: t.grid}}, axisTick: {show: false}, axisLabel: {color: t.fg2, interval: 0, formatter: function (v) { return W <= 700 ? v.replace(" ", "\n") : v; }}}; }
+  function linesH(t, series, max, right) { return Object.assign(base(t), {grid: {left: 40, right: right || 150, top: 14, bottom: W <= 700 ? 44 : 30}, xAxis: axH(t), yAxis: axY(t, max), series: series}); }
+  function stackH(t, series) { var narrow = W <= 700; return Object.assign(base(t), {legend: {bottom: 0, left: "center", width: W - 24, itemGap: 14, textStyle: {color: t.fg2}}, grid: {left: 40, right: 16, top: 20, bottom: narrow ? 100 : 52},
     xAxis: Object.assign(axH(t), {boundaryGap: true}), yAxis: axY(t, 100),
     series: series.map(function (s) { return {name: s.name, type: "bar", stack: "d", data: s.data, barWidth: "55%", itemStyle: {color: s.color}, label: {show: true, formatter: function (p) { return p.value >= 8 ? Math.round(p.value) + "%" : ""; }, color: s.color === t.dim ? t.fg : "#fff", fontSize: 11}}; })}); }
   function sk(t, group, keys, colors, max, right) { var S = X.skills; return linesH(t, keys.map(function (k, i) { return line(t, S.labels[k], S[group][k], colors[i]); }), max, right); }
@@ -26,7 +26,7 @@
     sk_down: function (t) { return sk(t, "down", ["fine_tuning", "llm_fundamentals", "model_research", "pretraining_training_infra"], [t.s[1], t.s[0], t.s[2], t.dim], 25, 170); },
     sk_new: function (t) { return sk(t, "new", ["mcp_agent_protocols", "tool_calling", "context_memory", "inference_optimization"], [t.s[1], t.s[0], t.s[2], t.dim], 15, 150); },
     sk_flat: function (t) { return sk(t, "flat", ["llm_app_integration", "rag_retrieval", "prompt_engineering"], [t.s[0], t.s[1], t.s[2]], 50, 130); },
-    sk_depth: function (t) { var D = X.skills.depth; return stackH(t, [{name: "모델을 학습시키는 일", data: D.train_model, color: t.s[1]}, {name: "LLM 시스템을 짓는 일", data: D.build_system, color: t.s[0]}, {name: "LLM API를 쓰는 일", data: D.use_api, color: t.s[2]}, {name: "요구 없음", data: D.none, color: t.dim}]); },
+    sk_depth: function (t) { var D = X.skills.depth; return stackH(t, [{name: "모델을 학습시키는 일", data: D.train_model, color: t.s[1]}, {name: "LLM 시스템을 만드는 일", data: D.build_system, color: t.s[0]}, {name: "LLM API를 쓰는 일", data: D.use_api, color: t.s[2]}, {name: "요구 없음", data: D.none, color: t.dim}]); },
     sk_kr: function (t) { var K = X.skills.kr_nonai; return hbar(t, K.labels, [{name: "원티드", data: K.wanted, color: t.s[0]}, {name: "해외 채용 페이지 2026", data: K.overseas_2026, color: t.s[1]}], 60, 110); },
     sk_kr_ai: function (t) { var K = X.skills.kr_ai; return hbar(t, K.labels, [{name: "원티드", data: K.wanted, color: t.s[0]}, {name: "해외 채용 페이지 2026", data: K.overseas_2026, color: t.s[1]}], 60, 110); },
     spread: function (t) { return lines(t, [line(t, "AI 제품을 만드는 팀", X.spread.hn_ai, t.s[1]), line(t, "그 밖의 팀", X.spread.hn_non, t.s[0])], 60, 170); },
