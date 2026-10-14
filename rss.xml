@@ -33,10 +33,12 @@
 &lt;h2&gt;해외 30곳&lt;/h2&gt;
 &lt;h3&gt;지원자의 AI 사용 규칙을 공개한 회사가 늘었습니다&lt;/h3&gt;
 &lt;p&gt;2024년 공식 안내에 지원자의 AI 사용 규칙을 적은 곳은 Anthropic 하나였습니다. 2024년 5월 공고에 이미 「지원 과정에서는 AI 도우미를 쓰지 말라」고 적혀 있었습니다. &lt;strong&gt;최근(2025년 7월 이후)에는 30곳 가운데 13곳이 규칙을 적었습니다.&lt;/strong&gt; 다만 30곳 가운데 9곳은 지금도 채용 절차를 공개하지 않고, 2025~2026년에 절차 페이지를 처음 만든 회사도 많습니다. 이 숫자에는 실제로 바뀐 것과 새로 공개한 것이 함께 들어 있습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+해외 30곳 가운데 공식 안내에 적은 곳&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;해외 30곳, 공식 안내에 적은 곳&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;2024&lt;/th&gt;
 &lt;th&gt;최근&lt;/th&gt;
 &lt;/tr&gt;
@@ -59,13 +61,16 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;면접 준비에 AI를 써도 된다고만 적은 곳 1곳은 AI를 쓰는 라운드에 넣지 않았습니다.&lt;/p&gt;
+&lt;p&gt;주: 최근은 2025년 7월 이후의 안내입니다. 면접 준비에 AI를 써도 된다고만 적은 곳 1곳은 AI를 쓰는 라운드에 넣지 않았습니다.
+:::&lt;/p&gt;
 &lt;h3&gt;규칙을 공개한 회사 대부분은 AI를 쓰는 라운드와 막는 라운드를 함께 둡니다&lt;/h3&gt;
 &lt;p&gt;규칙을 적은 13곳은 셋으로 나뉩니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+지원자의 AI 사용 규칙을 적은 해외 13곳의 방식&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;규칙을 적은 13곳의 방식&lt;/th&gt;
+&lt;th&gt;방식&lt;/th&gt;
 &lt;th&gt;회사 수&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
@@ -81,6 +86,10 @@
 &lt;tr&gt;
 &lt;td&gt;허용만 적음&lt;/td&gt;
 &lt;td&gt;2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;:::&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
@@ -102,17 +111,19 @@
 &lt;p&gt;&lt;a href=&quot;/posts/2026/10/13/2026-10-13-ai-asks-in-dev-job-postings/&quot;&gt;이전 글&lt;/a&gt;에서 「AI 결과물 검토」를 묻는 공고가 2024~2025년에는 거의 없다가 2026년에 나타나기 시작했다고 썼습니다. &lt;strong&gt;공고에 나타난 AI 결과물 검토를, 면접은 평가 항목으로 적기 시작했습니다.&lt;/strong&gt;&lt;/p&gt;
 &lt;h2&gt;국내 20곳&lt;/h2&gt;
 &lt;h3&gt;국내 20곳 가운데 11곳이 지금도 코딩 테스트를 봅니다&lt;/h3&gt;
+&lt;p&gt;:::table-figure
+국내 20곳 가운데 공식 안내에 적은 곳&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;국내 20곳, 공식 안내에 적은 곳&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;2024&lt;/th&gt;
 &lt;th&gt;최근&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
-&lt;td&gt;알고리즘 코딩 테스트(최근은 채용마다 가장 늦은 안내)&lt;/td&gt;
+&lt;td&gt;알고리즘 코딩 테스트&lt;/td&gt;
 &lt;td&gt;10&lt;/td&gt;
 &lt;td&gt;11&lt;/td&gt;
 &lt;/tr&gt;
@@ -128,6 +139,8 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 최근은 2025년 7월 이후의 안내입니다. 코딩 테스트는 그 사이에 바꾼 회사가 있어 신입·경력·인턴 채용마다 가장 늦은 안내로 셌습니다.
+:::&lt;/p&gt;
 &lt;p&gt;최근 11곳 가운데 4곳(우아한형제들과 개발 공고가 많은 회사 3곳)은 2024년 안내가 남아 있지 않아, 10곳과 11곳을 바로 비교할 수는 없습니다. 같은 회사끼리 보면, &lt;strong&gt;2024년에 코딩 테스트를 적은 10곳 가운데 6곳(네이버·카카오·쿠팡·토스·엔씨소프트·삼성전자)은 지금도 그대로입니다.&lt;/strong&gt; 2곳(넥슨·LG CNS)은 AI 활용 평가로 바꿨고, 라인과 CJ올리브영은 최근 안내에서 코딩 테스트가 보이지 않습니다. 대형 IT 기업 7곳 가운데 AI 활용 평가를 둔 곳은 없고, 카카오는 2025년 9월 그룹 신입 공채에서 코딩 테스트를 1차·2차 두 번 봤습니다.&lt;/p&gt;
 &lt;h3&gt;코딩 테스트를 바꾼 곳은 신입 공채와 인턴, 경력 특별 채용입니다&lt;/h3&gt;
 &lt;p&gt;AI 활용 평가를 둔 6곳 가운데 4곳은 코딩 테스트를, CJ올리브영은 라이브 코딩을 AI 활용 평가로 바꿨습니다.&lt;/p&gt;
@@ -144,10 +157,12 @@
 &lt;h2&gt;국내 공고의 전형 칸에서는 코딩 테스트가 줄어드는 쪽입니다&lt;/h2&gt;
 &lt;p&gt;한 국내 채용 플랫폼은 공고 본문과 따로 「채용 전형」 칸을 두고, 개발 공고의 70~90%가 이 칸을 채웁니다. 이 칸을 채운 개발 공고 906건(2025년 82건, 2026년 824건)의 전형을 LLM에게 분류하게 했습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;코딩 테스트를 적은 공고는 2025년 24%에서 2026년 14%가 됐습니다.&lt;/strong&gt; 다만 2025년은 82건뿐이라 ±13%p쯤 흔들릴 수 있어서 방향만 봅니다. 프론트엔드 공고는 코딩 테스트를 덜 적는데 해마다 비중이 달라 역할을 나눠서도 봤고, 두 쪽 모두 줄었습니다(아래 표 마지막 두 줄).&lt;/p&gt;
+&lt;p&gt;:::table-figure
+전형 칸을 채운 국내 개발 공고에서 각 전형을 적은 비율&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;전형 칸을 채운 국내 개발 공고&lt;/th&gt;
+&lt;th&gt;전형&lt;/th&gt;
 &lt;th&gt;2025&lt;/th&gt;
 &lt;th&gt;2026&lt;/th&gt;
 &lt;/tr&gt;
@@ -195,6 +210,8 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 2025년 82건, 2026년 824건. 마지막 두 줄은 프론트엔드가 들어간 공고와 없는 공고로 나눈 것입니다.
+:::&lt;/p&gt;
 &lt;p&gt;회사 20곳에서도 일부가 코딩 테스트를 AI 활용 평가로 바꿨고, 공고의 전형 칸에서도 코딩 테스트를 적는 비율이 줄어드는 쪽입니다. 둘 다 코딩 테스트가 남아 있지만 조금씩 줄어드는 방향을 가리킵니다.&lt;/p&gt;
 &lt;h2&gt;끝으로&lt;/h2&gt;
 &lt;p&gt;코딩 테스트는 아직 채용 절차에 남아 있고, 그 옆에 AI를 쓰는 평가가 생기기 시작했습니다. &lt;strong&gt;해외에서 규칙을 공개한 회사들은 대부분 AI를 막는 라운드와 쓰는 라운드를 함께 두고, 쓰는 라운드에서는 AI가 낸 결과를 검증하는지를 봅니다.&lt;/strong&gt; 국내는 신입 공채와 인턴에서 먼저 바뀌었고, 대형 IT 기업과 경력 채용은 아직 대부분 기존 코딩 테스트입니다. 지원자가 AI를 써도 되는지를 공식 안내에 적는 회사는 국내에서 아직 드뭅니다. 변화 대부분이 2025년 하반기 이후에 일어나서, 지금은 방향을 확인한 정도입니다.&lt;/p&gt;
@@ -230,11 +247,13 @@
 &lt;h3&gt;에이전트가 가장 많이 묻는 항목이 됐습니다&lt;/h3&gt;
 &lt;p&gt;2024년 상반기에는 LLM API로 기능을 만들어 본 경험을 가장 많이 물었고, 에이전트는 10%였습니다. 에이전트는 2025년 하반기에 40%가 됐고 &lt;strong&gt;2026년 하반기에는 절반을 넘었습니다.&lt;/strong&gt; 공고에서는 「AI 에이전트와 자동화된 이슈 발견을 연동해 대응 역량을 바꾼다」(Robinhood)처럼 업무 설명에 들어가기도 하고, 「AI 에이전트에 대한 지식」(Ramp)처럼 요건 한 줄로 들어가기도 합니다.&lt;/p&gt;
 &lt;p&gt;LLM이 낸 결과를 평가하는 일은 늦게 늘었습니다. &lt;strong&gt;2025년까지 2년 동안 20% 안팎에서 그대로였다가, 2026년 들어 늘기 시작해 하반기에 37%가 됐습니다.&lt;/strong&gt; 「에이전트 시스템의 평가와 벤치마킹 경험」(Mistral), 「모델이 모델을 채점하는 시스템을 개발한다」(Reddit) 같은 문장입니다. 가드레일과 안전, 운영 중인 LLM 시스템의 모니터링도 같은 시기에 늘었습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+LLM 개발 경험을 언급한 해외 공고 가운데 늘어난 항목을 묻는 비율&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;sk_up&quot; style=&quot;width:100%;height:340px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;LLM 개발 경험을 언급한 해외 공고 중&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;2024 상&lt;/th&gt;
 &lt;th&gt;2024 하&lt;/th&gt;
 &lt;th&gt;2025 상&lt;/th&gt;
@@ -291,11 +310,15 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: Hacker News와 채용 페이지 공고를 합쳐 반기별로 묶었습니다. 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;그 밖의 팀 공고만 따로 봐도 에이전트는 2026년 하반기에 56%로 전체(57%)와 거의 같습니다.&lt;/strong&gt; 2024년에는 그 밖의 팀 공고 가운데 에이전트를 묻는 것이 거의 없었습니다. 평가는 팀에 따라 다릅니다. AI 제품을 만드는 팀의 공고에서는 절반 가까이까지 늘었습니다. 그 밖의 팀도 2025년 하반기부터 늘고 있지만 18%로, AI 제품을 만드는 팀(47%)보다 한참 낮습니다. 이전 글의 5%는 모든 공고를 분모로 계산한 값이라 여기와 다릅니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+2026년 하반기 해외 공고에서 각 항목을 묻는 비율, 팀 종류별&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;2026년 하반기, 묻는 비율&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;AI 제품을 만드는 팀&lt;/th&gt;
 &lt;th&gt;그 밖의 팀&lt;/th&gt;
 &lt;/tr&gt;
@@ -328,13 +351,17 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;h3&gt;모델을 학습시키는 지식은 덜 묻습니다&lt;/h3&gt;
 &lt;p&gt;2024년 상반기에 파인튜닝은 에이전트보다 많이 묻는 항목이었습니다. 「LLM과 도메인 특화 임베딩 모델을 파인튜닝한다」(Harvey) 같은 문장이 공고의 22%에 있었습니다. &lt;strong&gt;2026년 하반기에는 6%입니다.&lt;/strong&gt; 트랜스포머 내부 구조나 정렬 연구 같은 모델 내부 지식, 사전학습과 학습 인프라도 같이 줄었습니다. 「생성형 AI에 익숙하면 좋다」 같은 막연한 요구도 17%에서 4%로 줄었습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+LLM 개발 경험을 언급한 해외 공고 가운데 줄어든 항목을 묻는 비율&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;sk_down&quot; style=&quot;width:100%;height:320px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;LLM 개발 경험을 언급한 해외 공고 중&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;2024 상&lt;/th&gt;
 &lt;th&gt;2024 하&lt;/th&gt;
 &lt;th&gt;2025 상&lt;/th&gt;
@@ -382,6 +409,8 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: Hacker News와 채용 페이지 공고를 합쳐 반기별로 묶었습니다. 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;p&gt;공고가 요구하는 일의 깊이로 나눠 보면 이 변화가 더 분명합니다. LLM으로 하는 일을 세 단계로 나누고, 공고마다 요구하는 가장 깊은 단계를 골랐습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;호스팅된 API를 불러 기능을 만드는 일&lt;/li&gt;
@@ -389,11 +418,13 @@
 &lt;li&gt;모델을 파인튜닝하거나 학습시키는 일&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;2024년 상반기에는 셋이 비슷했습니다. &lt;strong&gt;2026년 하반기에는 시스템을 만드는 일이 61%이고, 모델을 학습시키는 일은 10%입니다.&lt;/strong&gt; API를 쓰는 일은 2025년 하반기에 22%로 줄어든 뒤 그대로입니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+해외 공고가 요구하는 가장 깊은 일&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;sk_depth&quot; style=&quot;width:100%;height:320px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;공고가 요구하는 가장 깊은 일&lt;/th&gt;
+&lt;th&gt;단계&lt;/th&gt;
 &lt;th&gt;2024 상&lt;/th&gt;
 &lt;th&gt;2024 하&lt;/th&gt;
 &lt;th&gt;2025 상&lt;/th&gt;
@@ -441,14 +472,18 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: Hacker News와 채용 페이지 공고를 합쳐 반기별로 묶었습니다. 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;p&gt;이전 글에서는 AI 전문 기업이 모델 연구자보다 제품 엔지니어를 더 뽑게 됐다고 썼습니다. 묻는 내용도 같은 방향으로 바뀌었습니다. &lt;strong&gt;AI 제품을 만드는 팀만 봐도 파인튜닝은 23%에서 9%로 줄었습니다.&lt;/strong&gt;&lt;/p&gt;
 &lt;h3&gt;2025년 하반기부터 새 항목이 늘었습니다&lt;/h3&gt;
 &lt;p&gt;2024년 공고에 거의 없던 말이 2025년 하반기부터 늘었습니다. &lt;strong&gt;MCP는 2025년 상반기까지 1%였다가 2026년 하반기에 13%가 됐습니다.&lt;/strong&gt; 「MCP 서버를 작성하고 배포한다」(Replit), 「AI 에이전트, MCP 도구, CLI, 사내 애플리케이션」(Grafana Labs)처럼 적힙니다. 모델에 무엇을 넣고 무엇을 기억하게 할지 정하는 컨텍스트·메모리 관리도 같은 시기에 늘었습니다. 툴 호출(모델이 외부 도구를 부르게 하는 일)과 비용·지연 최적화는 2024년에도 조금씩 있었지만 2026년에 크게 늘었습니다. 2026년 하반기에는 MCP, 컨텍스트·메모리 관리, 툴 호출, 비용·지연 최적화가 모두 9~13%입니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+LLM 개발 경험을 언급한 해외 공고 가운데 2025년 하반기부터 늘어난 항목을 묻는 비율&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;sk_new&quot; style=&quot;width:100%;height:320px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;LLM 개발 경험을 언급한 해외 공고 중&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;2024 상&lt;/th&gt;
 &lt;th&gt;2024 하&lt;/th&gt;
 &lt;th&gt;2025 상&lt;/th&gt;
@@ -496,15 +531,19 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: Hacker News와 채용 페이지 공고를 합쳐 반기별로 묶었습니다. 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;2026년 하반기에 MCP, 툴 호출, 컨텍스트·메모리 관리를 묻는 공고의 64~82%가 에이전트도 같이 묻습니다.&lt;/strong&gt; 전체 평균(57%)보다 높아서, 에이전트를 묻는 공고가 늘 때 함께 늘어난 항목으로 봤습니다. 비용·지연 최적화를 묻는 공고는 에이전트도 묻는 비율이 전체 평균과 비슷해서, 에이전트와 따로 늘어난 항목으로 봤습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;MCP는 그 밖의 팀이 더 많이 묻습니다.&lt;/strong&gt; 2026년 하반기에 그 밖의 팀 공고의 17%, AI 제품을 만드는 팀 공고의 11%이고, 상반기에도 8%와 4%로 같은 방향이었습니다. 사내 시스템을 에이전트에 연결하는 일을 그 밖의 팀이 맡는 경우가 많기 때문일 수 있습니다.&lt;/p&gt;
 &lt;h3&gt;RAG와 프롬프트 작성은 그대로입니다&lt;/h3&gt;
 &lt;p&gt;RAG와 검색은 3년 내내 15~22%, 프롬프트 작성은 10% 안팎으로 큰 변화가 없습니다. LLM API를 불러 기능을 만드는 경험은 조금 줄었지만 &lt;strong&gt;여전히 33%가 묻습니다.&lt;/strong&gt; 2026년에 에이전트를 묻는 공고의 절반 가까이가 API 연동이나 RAG를 같이 묻습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+LLM 개발 경험을 언급한 해외 공고 가운데 그대로인 항목을 묻는 비율&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;sk_flat&quot; style=&quot;width:100%;height:300px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;LLM 개발 경험을 언급한 해외 공고 중&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;2024 상&lt;/th&gt;
 &lt;th&gt;2024 하&lt;/th&gt;
 &lt;th&gt;2025 상&lt;/th&gt;
@@ -543,12 +582,16 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: Hacker News와 채용 페이지 공고를 합쳐 반기별로 묶었습니다. 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;h3&gt;막연하게 적은 공고가 사라졌습니다&lt;/h3&gt;
 &lt;p&gt;2024년 상반기에는 「생성형 AI에 익숙하면 좋다」, 「NLP나 대규모 언어 모델이나 생성형 AI 경험」처럼 무엇을 해 봤어야 하는지 적지 않은 문장이 공고의 17%에 있었고, 그런 문장만 적은 공고도 9%였습니다. 2026년 하반기에는 그런 문장만 적은 공고가 거의 없습니다. 대신 공고 하나가 묻는 항목 수가 늘어서, &lt;strong&gt;항목을 세 가지 이상 묻는 공고가 절반 가까이 됐습니다.&lt;/strong&gt; 그 밖의 팀의 공고도 2025년 하반기부터 같은 방향입니다. LLM이 구체적인 항목을 하나라도 찾으면 막연한 문장을 따로 적지 않았을 수 있지만, 공고당 항목 수가 함께 늘어서 공고가 실제로 구체적으로 바뀌었다고 봤습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+LLM 개발 경험을 언급한 해외 공고가 얼마나 구체적으로 묻는가&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;LLM 개발 경험을 언급한 해외 공고 중&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;2024 상&lt;/th&gt;
 &lt;th&gt;2024 하&lt;/th&gt;
 &lt;th&gt;2025 상&lt;/th&gt;
@@ -596,12 +639,16 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 마지막 줄은 그 밖의 팀 공고만 계산한 것입니다. Hacker News와 채용 페이지 공고를 합쳐 반기별로 묶었습니다. 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;h3&gt;공고에 적힌 도구 이름도 바뀌었습니다&lt;/h3&gt;
 &lt;p&gt;아래 표는 요구 여부와 상관없이 공고에 이름이 나오는 비율이라, 요구로 분류하지 않은 AI 코딩 도구도 들어 있습니다. 2024년 상반기에 LLM 개발 경험을 언급한 공고에서 가장 자주 나온 이름은 PyTorch와 TensorFlow였습니다. 2026년 하반기에는 MCP가 가장 많고 Claude, PyTorch, Claude Code, Cursor, Codex 순입니다. &lt;strong&gt;모델을 다루는 라이브러리 이름이 줄어든 자리에 에이전트 프로토콜과 AI 코딩 도구 이름이 들어왔습니다.&lt;/strong&gt; LangChain은 2025년에 늘어난 뒤 조금 줄었습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+해외 공고에 도구 이름이 나오는 비율&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;해외, 이름이 나오는 공고의 비율&lt;/th&gt;
+&lt;th&gt;이름&lt;/th&gt;
 &lt;th&gt;2024 상&lt;/th&gt;
 &lt;th&gt;2025 하&lt;/th&gt;
 &lt;th&gt;2026 하&lt;/th&gt;
@@ -658,17 +705,21 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 요구 여부와 상관없이 공고에 이름이 나오는 비율입니다. 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;h2&gt;국내 공고, 2026년 10월&lt;/h2&gt;
 &lt;h3&gt;에이전트는 비슷하게 묻고, 멀티모달과 추론 서빙은 국내가 더 묻습니다&lt;/h3&gt;
 &lt;p&gt;국내는 지난 공고가 적어서 2026년 10월 공고를 해외 2026년 공고와 나란히 놓았습니다. 국내 공고는 이전 글과 같이 스타트업·중견기업 공고와 대형 IT 기업 공고를 합친 것입니다. 해외는 회사 30곳의 채용 페이지 공고입니다. 이전 글은 일반 소프트웨어 기업 17곳만 상대로 했지만, 이번에는 AI 제품을 만드는 팀도 보려고 30곳을 모두 씁니다. Hacker News 글은 짧아서 공고 하나가 묻는 항목이 적어 뺐습니다. 해외 쪽은 그 밖의 팀 공고가 대부분 일반 소프트웨어 기업에서, AI 제품을 만드는 팀 공고가 대부분 AI 전문 기업에서 나왔습니다.&lt;/p&gt;
 &lt;p&gt;국내 공고는 공고당 항목을 해외보다 조금 더 많이 적어서, 두 배 가까이 차이 나는 항목만 다르다고 봤습니다.&lt;/p&gt;
 &lt;p&gt;그 밖의 팀부터 보면, &lt;strong&gt;가장 많이 묻는 항목은 양쪽 모두 에이전트이고 비율도 절반 남짓으로 비슷합니다(국내 51%, 해외 58%).&lt;/strong&gt; 공고가 요구하는 일의 깊이도 비슷합니다. 가장 깊은 요구가 API를 쓰는 일인 공고가 35% 안팎, LLM 시스템을 만드는 일인 공고가 절반이고, 모델을 학습시키는 일은 거의 묻지 않습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;국내 그 밖의 팀 공고는 34%가 RAG를 묻는데, 해외는 17%입니다.&lt;/strong&gt; 「검색 / RAG API 서버 개발」, 「RAG·임베딩·벡터 검색 pgvector/faiss」처럼 구체적으로 적습니다. LLM API 연동도 국내가 더 묻지만(46%, 해외 31%) 차이는 그보다 작습니다. 추론 서빙은 두 배가 넘고(6%, 2%) 비용·지연 최적화도 국내가 더 묻지만(8%, 4%), 공고 수가 적어 표에만 적었습니다. 반대로 가드레일과 안전은 국내가 훨씬 덜 묻습니다. 해외 공고는 21%가 「프롬프트 주입, 탈옥 같은 LLM 특유의 공격 경로에 익숙할 것」(Replit)처럼 적는데, 국내는 7%입니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+그 밖의 팀 공고에서 각 항목을 묻는 비율, 국내와 해외&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;sk_kr&quot; style=&quot;width:100%;height:420px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;그 밖의 팀, LLM 개발 경험을 언급한 공고 중&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;국내&lt;/th&gt;
 &lt;th&gt;해외&lt;/th&gt;
 &lt;/tr&gt;
@@ -741,13 +792,17 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 국내는 2026년 10월 공고, 해외는 회사 30곳의 2026년 채용 페이지 공고. 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;p&gt;AI 제품을 만드는 팀에서는 에이전트, API 연동, 프롬프트 작성, 가드레일은 양쪽이 비슷하고 LLM 평가는 해외가 조금 더 묻습니다. &lt;strong&gt;국내는 멀티모달, 구조화 출력, 추론 서빙을 해외보다 몇 배 더 묻고, RAG(47%와 26%)와 파인튜닝(27%와 15%)도 두 배 가까이 더 묻습니다.&lt;/strong&gt; 추론 서빙은 「vLLM, TensorRT-LLM 등으로 모델을 서비스에 배포」, 「Qwen 등의 Self-hosted Model을 활용」, 「자체 모델 서빙·경량화 및 상용 API 대체 검증」 같은 문장으로 적힙니다.&lt;/p&gt;
 &lt;p&gt;공고가 요구하는 가장 깊은 일로 나누면, AI 제품을 만드는 팀끼리 모델을 학습시키는 일까지 요구하는 공고가 국내 30%, 해외 22%입니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+AI 제품을 만드는 팀 공고에서 각 항목을 묻는 비율, 국내와 해외&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;sk_kr_ai&quot; style=&quot;width:100%;height:480px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;AI 제품을 만드는 팀, LLM 개발 경험을 언급한 공고 중&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;국내&lt;/th&gt;
 &lt;th&gt;해외&lt;/th&gt;
 &lt;/tr&gt;
@@ -835,6 +890,8 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 국내는 2026년 10월 공고, 해외는 회사 30곳의 2026년 채용 페이지 공고. 분모는 LLM 개발 경험을 언급한 공고입니다.
+:::&lt;/p&gt;
 &lt;p&gt;이전 글에서는 국내 공고가 AI 경험을 묻는 비율이 해외와 거의 같다고 썼습니다. 묻는 내용을 들여다봐도 에이전트와 평가는 비슷합니다. 채용 페이지 공고의 AI 제품을 만드는 팀으로 보면, 해외가 지금 국내만큼 파인튜닝과 모델 학습을 묻던 때는 2024년 하반기에서 2025년 상반기입니다. 그러나 &lt;strong&gt;추론 서빙은 해외 어느 반기에도 지금 국내만큼 높았던 적이 없어서, 국내가 늦다는 것만으로는 설명되지 않습니다.&lt;/strong&gt; 국내 공고에는 오픈소스 모델을 직접 서빙한다는 문장이 자주 나오고, vLLM도 LLM 개발 경험을 언급한 국내 공고의 9%에 나옵니다(해외 2%). 모델을 직접 띄우는 회사가 많아서일 수 있습니다.&lt;/p&gt;
 &lt;h2&gt;끝으로&lt;/h2&gt;
 &lt;p&gt;2024년 상반기에 「LLM 개발 경험」은 API를 불러 봤거나, RAG를 붙여 봤거나, 파인튜닝을 해 봤거나, 아니면 그냥 생성형 AI에 익숙하다는 뜻이었습니다. &lt;strong&gt;2026년 하반기에 이 말은 무엇보다 에이전트를 만들어 봤다는 뜻이고, 그다음은 그 결과를 평가해 봤다는 뜻입니다.&lt;/strong&gt; 국내 공고도 에이전트를 가장 많이 묻습니다.&lt;/p&gt;
@@ -890,13 +947,15 @@
 &lt;h2&gt;해외 공고 3년치&lt;/h2&gt;
 &lt;h3&gt;전체로는 1년째 그대로지만 그 밖의 팀은 점점 더 묻습니다&lt;/h3&gt;
 &lt;p&gt;Hacker News 공고에서 LLM 개발 경험을 언급한 비율은 2024년 초 13%에서 &lt;strong&gt;2025년 3분기 35% 안팎까지 늘었고, 그 뒤 1년 동안 그대로입니다.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;AI 제품을 만드는 팀의 공고는 2025년 3분기부터 더 늘지 않았지만, &lt;strong&gt;그 밖의 팀 공고는 2024년 초 1%에서 2026년 16%까지 꾸준히 늘었습니다.&lt;/strong&gt; 2025년 4분기부터는 AI 제품을 만드는 팀의 공고 비중이 줄었습니다(아래 표 마지막 열). 이 팀이 LLM 개발 경험을 가장 많이 묻기 때문에, 그 밖의 팀에서 늘어난 만큼이 전체 평균에 드러나지 않았습니다.&lt;/p&gt;
+&lt;p&gt;AI 제품을 만드는 팀의 공고는 2025년 3분기부터 더 늘지 않았지만, &lt;strong&gt;그 밖의 팀 공고는 2024년 초 1%에서 2026년 16%까지 꾸준히 늘었습니다.&lt;/strong&gt; 2025년 4분기부터는 AI 제품을 만드는 팀의 공고 비중이 줄었습니다(표의 마지막 열). 이 팀이 LLM 개발 경험을 가장 많이 묻기 때문에, 그 밖의 팀에서 늘어난 만큼이 전체 평균에 드러나지 않았습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;일반 소프트웨어 기업의 채용 페이지에서도 그 밖의 팀 공고는 LLM 개발 경험을 점점 더 묻습니다.&lt;/strong&gt; 언급 비율이 2024년에는 분기마다 2~3%였고, 2026년 2분기부터는 24%입니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+Hacker News 공고에서 LLM 개발 경험을 언급한 비율&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;spread&quot; style=&quot;width:100%;height:340px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;Hacker News, LLM 개발 경험 언급&lt;/th&gt;
+&lt;th&gt;분기&lt;/th&gt;
 &lt;th&gt;전체&lt;/th&gt;
 &lt;th&gt;AI 제품을 만드는 팀&lt;/th&gt;
 &lt;th&gt;그 밖의 팀&lt;/th&gt;
@@ -983,13 +1042,17 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 마지막 열은 그 분기 공고 가운데 AI 제품을 만드는 팀의 공고가 차지하는 비중입니다.
+:::&lt;/p&gt;
 &lt;h3&gt;역할별로 봐도 모바일을 빼면 고르게 늘었습니다&lt;/h3&gt;
 &lt;p&gt;일반 소프트웨어 기업의 그 밖의 팀 공고를 역할별로 나눠 보면, LLM 개발 경험을 묻는 공고는 2025년까지 어느 역할이든 12%를 넘지 않았습니다. &lt;strong&gt;2026년에는 모바일을 뺀 다섯 역할 모두 공고의 16~26%가 묻습니다.&lt;/strong&gt; 모바일은 공고가 54건뿐이라 오차가 큽니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+일반 소프트웨어 기업의 그 밖의 팀 공고에서 LLM 개발 경험을 언급한 비율, 역할별&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;roles&quot; style=&quot;width:100%;height:340px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;일반 소프트웨어 기업, 그 밖의 팀, LLM 개발 경험 언급&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
 &lt;th&gt;2024&lt;/th&gt;
 &lt;th&gt;2025&lt;/th&gt;
 &lt;th&gt;2026&lt;/th&gt;
@@ -1034,13 +1097,17 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 회사 17곳의 채용 페이지 공고. 모바일은 2026년 공고가 54건입니다.
+:::&lt;/p&gt;
 &lt;h3&gt;AI 전문 기업은 연구자보다 제품 엔지니어를 더 뽑게 됐습니다&lt;/h3&gt;
 &lt;p&gt;&lt;strong&gt;AI 전문 기업 공고에서 모델 연구 역할은 2024년 24%에서 2026년 14%로 줄었습니다.&lt;/strong&gt; 대신 AI 제품 엔지니어(LLM으로 제품 기능을 만드는 역할)와 백엔드, 인프라 공고가 늘었습니다. 13곳에서 한 곳씩 빼고 다시 계산해도 2026년 모델 연구 비중은 12~15%라, 어느 회사를 빼도 크게 달라지지 않습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+AI 전문 기업 13곳의 공고에서 각 역할이 차지하는 비중&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;aimix&quot; style=&quot;width:100%;height:320px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;AI 전문 기업 13곳의 공고에서 차지하는 비중&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
 &lt;th&gt;2024&lt;/th&gt;
 &lt;th&gt;2025&lt;/th&gt;
 &lt;th&gt;2026&lt;/th&gt;
@@ -1073,15 +1140,18 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;한 공고가 여러 역할을 뽑기도 해서 합은 100%가 아닙니다.&lt;/p&gt;
+&lt;p&gt;주: 한 공고가 여러 역할을 뽑기도 해서 합은 100%가 아닙니다.
+:::&lt;/p&gt;
 &lt;h3&gt;일반 소프트웨어 기업은 AI 코딩 도구를 필수 요건으로 적기 시작했습니다&lt;/h3&gt;
 &lt;p&gt;AI 코딩 도구를 쓰라는 문장은 2025년 초까지 공고에 거의 없다가, 2026년 3분기에는 일반 소프트웨어 기업 공고의 60%에 나옵니다. 다만 그중에는 GitLab의 「모든 팀원이 일상 업무에 AI를 쓰기를 기대한다」처럼 회사의 모든 공고에 붙는 회사 소개 문장이 많습니다. &lt;strong&gt;회사 소개를 빼고 직무 요건에 적은 것만 세도 35%이고, 필수 요건으로 적는 공고는 23%입니다.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;AI 전문 기업은 이 항목을 덜 묻습니다.&lt;/strong&gt; 2026년 3분기에도 AI 코딩 도구를 언급한 공고가 29%입니다. 다들 쓰고 있어서 굳이 적지 않았을 수도 있고, 공고 양식에 그런 칸이 없을 수도 있습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+일반 소프트웨어 기업 공고에서 AI 코딩 도구를 적은 비율&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;tools&quot; style=&quot;width:100%;height:340px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;일반 소프트웨어 기업, AI 코딩 도구&lt;/th&gt;
+&lt;th&gt;분기&lt;/th&gt;
 &lt;th&gt;언급&lt;/th&gt;
 &lt;th&gt;직무 요건&lt;/th&gt;
 &lt;th&gt;필수 요건&lt;/th&gt;
@@ -1156,15 +1226,19 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 언급은 회사 소개를 포함해 공고 어디든 적힌 것, 직무 요건은 자격·우대 항목이나 맡을 일에 적힌 것, 필수 요건은 자격 항목에 적힌 것입니다.
+:::&lt;/p&gt;
 &lt;h3&gt;AI 결과물 검토와 코드 읽기는 늘고, 테스트는 그대로입니다&lt;/h3&gt;
 &lt;p&gt;AI 코딩 도구를 쓰라는 문장 옆에 그 결과를 사람이 검토하라는 문장이 붙기 시작했습니다. 예를 들어 Notion 공고에는 「AI 도구와 에이전트를 동료처럼 쓰고, 일을 명확하게 맡기고, 만들어진 변경을 검토하고, 동작을 테스트한다」는 문장이 있습니다. &lt;strong&gt;이런 요구는 2025년까지 거의 없었고, 2026년에는 일반 소프트웨어 기업 공고의 7%에 나옵니다.&lt;/strong&gt; AI 코딩 도구를 직무 요건에 적은 공고로 좁히면 20%입니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;일반 소프트웨어 기업 공고에서 테스트 코드 작성·테스트 자동화·CI 같은 테스트를 요구하는 비율은 2024년 34%, 2026년 32%로 거의 같습니다.&lt;/strong&gt; 풀스택·프론트엔드·모바일에서는 줄고 인프라·데이터에서는 늘어서 평균은 그대로입니다.&lt;/p&gt;
 &lt;p&gt;대신 코드를 읽고 디버깅하는 일(기존 코드를 이해하고, 문제를 찾고, 다른 사람의 코드를 리뷰하는 일)을 묻는 공고가 2024년 38%에서 2026년 48%로 늘었습니다. &lt;strong&gt;백엔드·인프라·데이터 공고를 하나씩 따로 봐도 모두 늘었습니다.&lt;/strong&gt; LLM이 낸 결과를 평가하는 일은 주로 AI 제품을 만드는 팀에서 늘었고, 그 밖의 팀에서는 2026년에도 5%입니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+그 밖의 팀 공고에서 각 항목을 요구한 비율, 역할별&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;verify&quot; style=&quot;width:100%;height:320px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;그 밖의 팀&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
 &lt;th&gt;테스트&lt;/th&gt;
 &lt;th&gt;AI 결과물 검토&lt;/th&gt;
 &lt;th&gt;코드 읽기·디버깅&lt;/th&gt;
@@ -1209,13 +1283,16 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;칸마다 2024→2025→2026 순서입니다. 프론트엔드와 모바일 공고는 2026년에 64건, 54건이라 오차가 큽니다.&lt;/p&gt;
+&lt;p&gt;주: 칸마다 2024→2025→2026 순서입니다. 프론트엔드와 모바일 공고는 2026년에 64건, 54건이라 오차가 큽니다.
+:::&lt;/p&gt;
 &lt;h3&gt;주니어 공고 비중은 조금씩 늘었습니다&lt;/h3&gt;
 &lt;p&gt;신입이나 경력 2년 이하를 찾는 공고는 Hacker News, AI 전문 기업, 일반 소프트웨어 기업 모두 3년 내내 2~7%였고, 조금씩 늘었습니다. &lt;strong&gt;적어도 이 기간 공고에서는 주니어 자리가 줄어든 모습이 보이지 않습니다.&lt;/strong&gt; 시니어 공고도 늘었습니다. AI 전문 기업에서 시니어 이상을 찾는 공고는 41%에서 55%가 됐습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+신입이나 경력 2년 이하를 찾는 공고의 비중&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;주니어 공고 비중&lt;/th&gt;
+&lt;th&gt;공고 출처&lt;/th&gt;
 &lt;th&gt;2024&lt;/th&gt;
 &lt;th&gt;2025&lt;/th&gt;
 &lt;th&gt;2026&lt;/th&gt;
@@ -1240,17 +1317,25 @@
 &lt;td&gt;5%&lt;/td&gt;
 &lt;td&gt;6%&lt;/td&gt;
 &lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;:::&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;h2&gt;국내 공고, 2026년 10월&lt;/h2&gt;
 &lt;h3&gt;국내와 해외는 뽑는 사람의 구성이 다릅니다&lt;/h3&gt;
 &lt;p&gt;국내 공고도 해외와 같은지 봤습니다. 여기서 「국내」는 2026년 10월에 올라와 있던 국내 개발 공고 2,719건이고, 「해외」는 일반 소프트웨어 기업 17곳의 2026년 공고 907건입니다. AI 전문 기업은 공고 대부분이 AI 제품을 만드는 팀의 공고라서 뺐고, Hacker News는 몇 줄짜리 글이 많아서 뺐습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;국내에는 AI 제품을 만드는 팀의 공고가 많고 시니어 공고가 적습니다&lt;/strong&gt;(아래 표). 국내 공고에 스타트업 공고가 많기 때문일 수 있습니다. 역할 구성도 다릅니다. 국내는 AI 제품 엔지니어·모델 연구·게임·임베디드·보안·QA 공고가 많고, 해외는 백엔드·풀스택·인프라 공고가 많습니다. 그래서 아래에서는 필요한 곳마다 팀 종류·역할·연차로 나눠서 다시 비교합니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+2026년 공고의 구성&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;kr_comp&quot; style=&quot;width:100%;height:300px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;2026년 공고의 구성&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;국내&lt;/th&gt;
 &lt;th&gt;해외&lt;/th&gt;
 &lt;/tr&gt;
@@ -1303,16 +1388,19 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;한 공고가 여러 역할을 뽑기도 해서 역할의 합은 100%가 아닙니다.&lt;/p&gt;
+&lt;p&gt;주: 국내는 2026년 10월 공고 2,719건, 해외는 일반 소프트웨어 기업 17곳의 2026년 공고 907건. 한 공고가 여러 역할을 뽑기도 해서 역할의 합은 100%가 아닙니다.
+:::&lt;/p&gt;
 &lt;h3&gt;국내와 해외가 AI 경험을 묻는 비율은 거의 같습니다&lt;/h3&gt;
 &lt;p&gt;AI 경험을 묻는 비율은 국내와 해외가 비슷했습니다. &lt;strong&gt;LLM 개발 경험을 언급한 공고는 국내 30%, 해외 28%입니다.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;AI 코딩 도구는 언급 기준으로 국내가 한참 낮은데, 이 차이는 대부분 해외 회사가 모든 공고에 붙이는 회사 소개 문장에서 나옵니다. &lt;strong&gt;직무 요건에 적은 것만 보면 국내와 해외가 거의 같고&lt;/strong&gt;, AI 결과물 검토도 같습니다(아래 표).&lt;/p&gt;
 &lt;p&gt;국내에는 AI 제품을 만드는 팀이 많으니 그 밖의 팀 공고만 따로 봤습니다. 이때도 비슷합니다(아래 표 마지막 두 줄). LLM 개발 경험은 국내가 조금 낮으며, 이유는 아래 역할별 비교에서 다룹니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+2026년 공고에서 각 항목을 적은 비율&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;kr_level&quot; style=&quot;width:100%;height:400px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;2026년, 각 항목을 적은 공고의 비율&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;국내&lt;/th&gt;
 &lt;th&gt;해외&lt;/th&gt;
 &lt;/tr&gt;
@@ -1360,12 +1448,16 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 마지막 두 줄은 그 밖의 팀 공고만 계산한 것입니다.
+:::&lt;/p&gt;
 &lt;h3&gt;대형 IT 기업도 LLM 개발 경험은 나머지 국내 회사와 같은 비율로 묻습니다&lt;/h3&gt;
 &lt;p&gt;국내 공고 가운데 244건은 네이버·카카오·라인·쿠팡·당근·토스의 공고입니다. 이 회사들은 시니어 공고가 많고 AI 제품을 만드는 팀의 공고가 적어서, 그 밖의 팀 공고끼리 비교했습니다. &lt;strong&gt;LLM 개발 경험은 대형 IT 기업과 나머지 국내 회사가 16%로 같습니다.&lt;/strong&gt; AI 코딩 도구는 대형 IT 기업이 덜 적고, 회사마다 차이가 큽니다. 팀 구분 없이 보면 직무 요건에 절반 넘게 적는 회사도 있고 15% 안팎인 회사도 있습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+2026년 그 밖의 팀 공고에서 각 항목을 적은 비율&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;2026년, 그 밖의 팀 공고&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;대형 IT 기업&lt;/th&gt;
 &lt;th&gt;나머지 국내 회사&lt;/th&gt;
 &lt;th&gt;해외&lt;/th&gt;
@@ -1398,12 +1490,16 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 대형 IT 기업은 네이버·카카오·라인·쿠팡·당근·토스, 해외는 일반 소프트웨어 기업 17곳입니다.
+:::&lt;/p&gt;
 &lt;h3&gt;대형 IT 기업의 지난 공고도 해외와 같은 속도로 바뀌었습니다&lt;/h3&gt;
 &lt;p&gt;네이버·라인·쿠팡·당근은 2024년부터의 지난 공고도 볼 수 있었습니다. &lt;strong&gt;LLM 개발 경험과 AI 코딩 도구 모두 해외 일반 소프트웨어 기업과 거의 같은 속도로 늘었습니다&lt;/strong&gt;(아래 표). 둘 다 2025년까지 조금씩 늘다가 2026년에 크게 늘었고, 회사를 하나씩 따로 봐도 2026년에 둘 다 2024년보다 많이 묻습니다. 2026년 187건 가운데 151건은 10월에 올라와 있던 공고입니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+국내 대형 IT 기업과 해외 공고에서 각 항목을 적은 비율, 연도별&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;각 항목을 적은 공고의 비율&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;2024&lt;/th&gt;
 &lt;th&gt;2025&lt;/th&gt;
 &lt;th&gt;2026&lt;/th&gt;
@@ -1448,12 +1544,16 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 국내 대형 IT 기업은 네이버·라인·쿠팡·당근의 2024년부터의 공고, 해외는 일반 소프트웨어 기업 17곳입니다.
+:::&lt;/p&gt;
 &lt;h3&gt;국내와 해외 모두 풀스택·데이터 공고가 LLM 개발 경험을 가장 많이 묻습니다&lt;/h3&gt;
 &lt;p&gt;그 밖의 팀 공고를 역할별로 보면, &lt;strong&gt;국내와 해외 모두 풀스택과 데이터가 LLM 개발 경험을 가장 많이 묻고, 모바일이 가장 적게 묻습니다.&lt;/strong&gt; 국내는 풀스택이 해외보다 높고 프론트엔드는 낮습니다. 해외 모바일과 프론트엔드는 공고가 54건, 64건뿐이라 오차가 큽니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+그 밖의 팀 공고에서 LLM 개발 경험을 언급한 비율, 역할별&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;그 밖의 팀, LLM 개발 경험 언급&lt;/th&gt;
+&lt;th&gt;역할&lt;/th&gt;
 &lt;th&gt;국내&lt;/th&gt;
 &lt;th&gt;해외&lt;/th&gt;
 &lt;/tr&gt;
@@ -1491,11 +1591,15 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 해외 모바일과 프론트엔드는 공고가 54건, 64건입니다.
+:::&lt;/p&gt;
 &lt;p&gt;그 밖의 팀 전체로 보면 국내가 조금 낮은데, 게임·임베디드·보안·QA 공고 때문입니다. 이 네 역할은 국내에 더 많고, 국내에서는 LLM 개발 경험을 거의 묻지 않습니다. &lt;strong&gt;이 넷을 빼고 위 표의 여섯 역할만 보면 국내와 해외 모두 19%입니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;:::table-figure
+그 밖의 팀 공고에서 게임·임베디드·보안·QA가 미치는 영향&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;그 밖의 팀&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;국내&lt;/th&gt;
 &lt;th&gt;해외&lt;/th&gt;
 &lt;/tr&gt;
@@ -1521,14 +1625,21 @@
 &lt;td&gt;16%&lt;/td&gt;
 &lt;td&gt;21%&lt;/td&gt;
 &lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;:::&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;h3&gt;국내 공고는 연차에 따른 차이가 거의 없습니다&lt;/h3&gt;
 &lt;p&gt;그 밖의 팀 공고를 연차별로 나누면, &lt;strong&gt;국내는 주니어든 시니어든 LLM 개발 경험과 AI 코딩 도구를 묻는 비율이 비슷합니다.&lt;/strong&gt; 해외는 주니어 공고가 덜 묻는 것처럼 보이지만, 48건뿐이라 오차가 큽니다. 연차는 공고 문구를 보고 LLM이 판단했습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+그 밖의 팀 공고에서 각 항목을 언급한 비율, 연차별&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;그 밖의 팀, 연차별 언급 비율&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;주니어&lt;/th&gt;
 &lt;th&gt;미드&lt;/th&gt;
 &lt;th&gt;시니어&lt;/th&gt;
@@ -1561,12 +1672,16 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 연차는 공고 문구를 보고 LLM이 판단했습니다. 해외 주니어 공고는 48건입니다.
+:::&lt;/p&gt;
 &lt;p&gt;국내 공고는 대부분 요구 연차를 숫자로 적어서, 최소 연차로도 나눠 봤습니다. 전체 공고로 보면 연차가 높을수록 LLM 개발 경험을 덜 묻는 것 같지만(아래 표 둘째 줄), &lt;strong&gt;연차가 낮을수록 AI 제품을 만드는 팀의 공고가 많아서 생긴 차이입니다.&lt;/strong&gt; 이 팀은 연차와 상관없이 LLM 개발 경험을 많이 묻습니다. 그 밖의 팀만 보면 2년 이하부터 7년 이상까지 모두 16~17%입니다. Hacker News 전체 평균이 1년째 그대로였던 것도 팀 구성이 바뀐 탓이었습니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure{fold}
+국내 공고, 요구 연차별&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;kr_seniority&quot; style=&quot;width:100%;height:260px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;국내, 요구 연차별&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
 &lt;th&gt;2년 이하&lt;/th&gt;
 &lt;th&gt;3~6년&lt;/th&gt;
 &lt;th&gt;7년 이상&lt;/th&gt;
@@ -1603,6 +1718,12 @@
 &lt;td&gt;32%&lt;/td&gt;
 &lt;td&gt;19%&lt;/td&gt;
 &lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;:::&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;h3&gt;국내 공고는 AI 코딩 도구를 풀스택·모바일·프론트엔드에서 많이 묻습니다&lt;/h3&gt;
@@ -1613,132 +1734,82 @@
 &lt;li&gt;풀스택 공고 201건은 176개 회사가 냈습니다. 회사 한 곳당 한 건 남짓입니다.&lt;/li&gt;
 &lt;li&gt;필수 요건으로 적는 비율도 세 역할 모두 국내가 높습니다.&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;AI 결과물 검토도 같은 세 역할에서 국내가 높습니다(아래 세 번째 표).&lt;/p&gt;
+&lt;p&gt;AI 결과물 검토도 같은 세 역할에서 국내가 높습니다(아래 표 마지막 두 줄).&lt;/p&gt;
 &lt;p&gt;국내와 해외 모두 AI 제품을 만드는 팀이 AI 코딩 도구를 덜 묻습니다. 언급 기준으로 국내는 AI 제품을 만드는 팀 24%, 그 밖의 팀 33%이고, 해외 채용 페이지 공고는 26%, 44%입니다.&lt;/p&gt;
+&lt;p&gt;:::table-figure
+그 밖의 팀 공고에서 AI 코딩 도구와 AI 결과물 검토를 적은 비율, 역할별&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;kr_roles&quot; style=&quot;width:100%;height:340px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;그 밖의 팀, AI 코딩 도구 직무 요건&lt;/th&gt;
-&lt;th&gt;국내&lt;/th&gt;
-&lt;th&gt;해외&lt;/th&gt;
+&lt;th&gt;항목&lt;/th&gt;
+&lt;th&gt;풀스택&lt;/th&gt;
+&lt;th&gt;모바일&lt;/th&gt;
+&lt;th&gt;프론트엔드&lt;/th&gt;
+&lt;th&gt;백엔드&lt;/th&gt;
+&lt;th&gt;데이터&lt;/th&gt;
+&lt;th&gt;인프라&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
 &lt;tbody&gt;
 &lt;tr&gt;
-&lt;td&gt;풀스택&lt;/td&gt;
+&lt;td&gt;AI 코딩 도구 직무 요건, 국내&lt;/td&gt;
 &lt;td&gt;56%&lt;/td&gt;
-&lt;td&gt;39%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;모바일&lt;/td&gt;
 &lt;td&gt;57%&lt;/td&gt;
-&lt;td&gt;30%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;프론트엔드&lt;/td&gt;
 &lt;td&gt;51%&lt;/td&gt;
-&lt;td&gt;36%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;백엔드&lt;/td&gt;
 &lt;td&gt;37%&lt;/td&gt;
-&lt;td&gt;32%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;데이터&lt;/td&gt;
 &lt;td&gt;27%&lt;/td&gt;
-&lt;td&gt;29%&lt;/td&gt;
+&lt;td&gt;24%&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;인프라&lt;/td&gt;
-&lt;td&gt;24%&lt;/td&gt;
+&lt;td&gt;AI 코딩 도구 직무 요건, 해외&lt;/td&gt;
+&lt;td&gt;39%&lt;/td&gt;
+&lt;td&gt;30%&lt;/td&gt;
+&lt;td&gt;36%&lt;/td&gt;
+&lt;td&gt;32%&lt;/td&gt;
+&lt;td&gt;29%&lt;/td&gt;
 &lt;td&gt;39%&lt;/td&gt;
 &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;table&gt;
-&lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;그 밖의 팀, AI 코딩 도구 필수 요건&lt;/th&gt;
-&lt;th&gt;국내&lt;/th&gt;
-&lt;th&gt;해외&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;풀스택&lt;/td&gt;
+&lt;td&gt;AI 코딩 도구 필수 요건, 국내&lt;/td&gt;
 &lt;td&gt;43%&lt;/td&gt;
-&lt;td&gt;26%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;모바일&lt;/td&gt;
 &lt;td&gt;43%&lt;/td&gt;
-&lt;td&gt;26%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;프론트엔드&lt;/td&gt;
 &lt;td&gt;33%&lt;/td&gt;
-&lt;td&gt;30%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;백엔드&lt;/td&gt;
 &lt;td&gt;23%&lt;/td&gt;
-&lt;td&gt;18%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;데이터&lt;/td&gt;
 &lt;td&gt;16%&lt;/td&gt;
-&lt;td&gt;17%&lt;/td&gt;
+&lt;td&gt;14%&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;인프라&lt;/td&gt;
-&lt;td&gt;14%&lt;/td&gt;
+&lt;td&gt;AI 코딩 도구 필수 요건, 해외&lt;/td&gt;
+&lt;td&gt;26%&lt;/td&gt;
+&lt;td&gt;26%&lt;/td&gt;
+&lt;td&gt;30%&lt;/td&gt;
+&lt;td&gt;18%&lt;/td&gt;
+&lt;td&gt;17%&lt;/td&gt;
 &lt;td&gt;20%&lt;/td&gt;
 &lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;table&gt;
-&lt;thead&gt;
 &lt;tr&gt;
-&lt;th&gt;그 밖의 팀, AI 결과물 검토&lt;/th&gt;
-&lt;th&gt;국내&lt;/th&gt;
-&lt;th&gt;해외&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr&gt;
-&lt;td&gt;풀스택&lt;/td&gt;
+&lt;td&gt;AI 결과물 검토, 국내&lt;/td&gt;
 &lt;td&gt;14%&lt;/td&gt;
-&lt;td&gt;7%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;모바일&lt;/td&gt;
 &lt;td&gt;17%&lt;/td&gt;
-&lt;td&gt;2%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;프론트엔드&lt;/td&gt;
 &lt;td&gt;15%&lt;/td&gt;
-&lt;td&gt;13%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;백엔드&lt;/td&gt;
 &lt;td&gt;10%&lt;/td&gt;
-&lt;td&gt;9%&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr&gt;
-&lt;td&gt;데이터&lt;/td&gt;
 &lt;td&gt;6%&lt;/td&gt;
-&lt;td&gt;3%&lt;/td&gt;
+&lt;td&gt;5%&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
-&lt;td&gt;인프라&lt;/td&gt;
-&lt;td&gt;5%&lt;/td&gt;
+&lt;td&gt;AI 결과물 검토, 해외&lt;/td&gt;
+&lt;td&gt;7%&lt;/td&gt;
+&lt;td&gt;2%&lt;/td&gt;
+&lt;td&gt;13%&lt;/td&gt;
+&lt;td&gt;9%&lt;/td&gt;
+&lt;td&gt;3%&lt;/td&gt;
 &lt;td&gt;8%&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
+&lt;p&gt;주: 차트는 직무 요건 기준입니다.
+:::&lt;/p&gt;
 &lt;h2&gt;끝으로&lt;/h2&gt;
 &lt;p&gt;대부분의 역할에서 공고는 LLM 개발 경험과 AI 코딩 도구 경험을 새로 묻기 시작했습니다. 국내 공고도 비슷한 비율로 묻고, &lt;strong&gt;대형 IT 기업의 공고는 지난 3년 동안 해외와 같은 속도로 바뀌었습니다.&lt;/strong&gt; 다른 점은 국내의 풀스택·모바일·프론트엔드 공고가 AI 코딩 도구 경험을 해외보다 더 많이 묻는다는 것입니다.&lt;/p&gt;
 &lt;p&gt;&amp;lt;script src=&quot;/js/vendor/echarts-6.0.0.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
