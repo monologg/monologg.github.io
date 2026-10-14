@@ -25,7 +25,7 @@ Tags: hiring, coding-test, ai-engineering, career
 >
 > 1. [AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다](/posts/2026/10/13/2026-10-13-ai-asks-in-dev-job-postings/)
 > 2. [LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다](/posts/2026/10/14/2026-10-14-llm-skills-asked-in-job-postings/)
-> 3. 코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다 (이 글)
+> 3. **코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다**
 >
 > 2026년 10월에 회사 50곳의 공식 채용 안내를 2024년부터 시점별로 열어 봤습니다. 1·2편이 채용 공고를 봤다면, 이 글은 주로 공고 밖의 채용 절차를 보고 국내는 공고의 전형 칸도 함께 봅니다.
 
@@ -165,7 +165,7 @@ Tags: hiring, ai-engineering, llm, agents, data-analysis, career
 > **개발자 채용 트렌드**
 >
 > 1. [AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다](/posts/2026/10/13/2026-10-13-ai-asks-in-dev-job-postings/)
-> 2. LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다 (이 글)
+> 2. **LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다**
 > 3. [코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다](/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/)
 >
 > 1편에서 본 공고 가운데 LLM 개발 경험을 언급한 공고만 골라, 어떤 지식을 묻는지 항목 단위로 뽑았습니다. 분류는 LLM에게 맡겼습니다.
@@ -384,7 +384,7 @@ Tags: hiring, ai-engineering, llm, data-analysis, career
 
 > **개발자 채용 트렌드**
 >
-> 1. AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다 (이 글)
+> 1. **AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다**
 > 2. [LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다](/posts/2026/10/14/2026-10-14-llm-skills-asked-in-job-postings/)
 > 3. [코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다](/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/)
 >
