@@ -7,7 +7,7 @@
       s: dark ? ["#3987e5", "#d95926", "#199e70"] : ["#2a78d6", "#eb6834", "#1baf7a"], dim: dark ? "#55554f" : "#c9c7bf"};
   }
   function base(t) { return {backgroundColor: "transparent", textStyle: {fontFamily: FONT, color: t.fg2}, animation: false, tooltip: {trigger: "axis", valueFormatter: function (v) { return Math.round(v) + "%"; }}}; }
-  function axX(t) { return {type: "category", data: Q, boundaryGap: false, axisLine: {lineStyle: {color: t.grid}}, axisTick: {show: false}, axisLabel: {color: t.fg2, interval: 3, formatter: function (v) { return v.slice(-2) === "Q1" ? v.slice(0, 4) : ""; }}}; }
+  function axX(t) { return {type: "category", data: Q, boundaryGap: false, axisLine: {lineStyle: {color: t.grid}}, axisTick: {show: false}, axisLabel: {color: t.fg2, interval: 3, formatter: function (v) { return v.slice(-2) === "1Q" ? v.slice(0, 4) : ""; }}}; }
   function axY(t, max) { return {type: "value", min: 0, max: max, axisLabel: {formatter: "{value}%", color: t.fg2}, splitLine: {lineStyle: {color: t.grid}}}; }
   function line(t, name, data, color) { return {name: name, type: "line", data: data, symbol: "none", lineStyle: {width: 2.5, color: color}, itemStyle: {color: color}, endLabel: {show: true, formatter: function (p) { return p.seriesName + " " + Math.round(p.value) + "%"; }, color: t.fg, fontSize: 12, fontWeight: 500}, labelLayout: {moveOverlap: "shiftY"}}; }
   var cv;
@@ -38,16 +38,16 @@
     sk_new: function (t) { return sk(t, "new", ["mcp_agent_protocols", "tool_calling", "context_memory", "inference_optimization"], [t.s[1], t.s[0], t.s[2], t.dim], 15, 150); },
     sk_flat: function (t) { return sk(t, "flat", ["llm_app_integration", "rag_retrieval", "prompt_engineering"], [t.s[0], t.s[1], t.s[2]], 50, 130); },
     sk_depth: function (t) { var D = X.skills.depth; return stackH(t, [{name: "모델을 학습시키는 일", data: D.train_model, color: t.s[1]}, {name: "LLM 시스템을 만드는 일", data: D.build_system, color: t.s[0]}, {name: "LLM API를 쓰는 일", data: D.use_api, color: t.s[2]}, {name: "요구 없음", data: D.none, color: t.dim}]); },
-    sk_kr: function (t) { var K = X.skills.kr_nonai; return hbar(t, K.labels, [{name: "국내", data: K.wanted, color: t.s[0]}, {name: "해외 채용 페이지 2026", data: K.overseas_2026, color: t.s[1]}], 60, 110); },
-    sk_kr_ai: function (t) { var K = X.skills.kr_ai; return hbar(t, K.labels, [{name: "국내", data: K.wanted, color: t.s[0]}, {name: "해외 채용 페이지 2026", data: K.overseas_2026, color: t.s[1]}], 60, 110); },
-    spread: function (t) { return lines(t, [line(t, "AI 제품을 만드는 팀", X.spread.hn_ai, t.s[1]), line(t, "그 밖의 팀", X.spread.hn_non, t.s[0])], 70, 170); },
-    roles: function (t) { return hbar(t, X.roles.labels, [{name: "2024", data: X.roles.general_tech_2024, color: t.dim}, {name: "2026", data: X.roles.general_tech_2026, color: t.s[0]}], 30); },
+    sk_kr: function (t) { var K = X.skills.kr_nonai; return hbar(t, K.labels, [{name: "국내", data: K.kr, color: t.s[0]}, {name: "해외", data: K.overseas_2026, color: t.s[1]}], 60, 110); },
+    sk_kr_ai: function (t) { var K = X.skills.kr_ai; return hbar(t, K.labels, [{name: "국내", data: K.kr, color: t.s[0]}, {name: "해외", data: K.overseas_2026, color: t.s[1]}], 60, 110); },
+    spread: function (t) { return lines(t, [line(t, "AI 제품을 만드는 팀", X.spread.hn_ai, t.s[1]), line(t, "전체", X.spread.hn_all, t.dim), line(t, "그 밖의 팀", X.spread.hn_non, t.s[0])], 70, 170); },
+    roles: function (t) { return hbar(t, X.roles.labels, [{name: "2024", data: X.roles.general_tech_2024, color: t.dim}, {name: "2025", data: X.roles.general_tech_2025, color: t.s[1]}, {name: "2026", data: X.roles.general_tech_2026, color: t.s[0]}], 30); },
     aimix: function (t) { return hbar(t, X.mix.labels, [{name: "2024", data: X.mix["2024"], color: t.dim}, {name: "2025", data: X.mix["2025"], color: t.s[1]}, {name: "2026", data: X.mix["2026"], color: t.s[0]}], 40); },
     tools: function (t) { return lines(t, [line(t, "언급", X.tools_gt.mention, t.s[0]), line(t, "직무 요건", X.tools_gt.in_role, t.s[2]), line(t, "필수 요건", X.tools_gt.required, t.s[1])], 70, 150); },
     verify: function (t) { var V = X.verify; return hbar(t, V.labels, [{name: "2024", data: V.y2024, color: t.dim}, {name: "2025", data: V.y2025, color: t.s[1]}, {name: "2026", data: V.y2026, color: t.s[0]}], 60, 128); },
-    kr_comp: function (t) { var K = X.korea.composition; return hbar(t, K.labels, [{name: "국내", data: K.wanted, color: t.s[0]}, {name: "해외 일반 SW 기업", data: K.general_tech, color: t.s[1]}, {name: "Hacker News", data: K.hn, color: t.dim}], 80, 150); },
-    kr_level: function (t) { var K = X.korea.level; return hbar(t, K.labels, [{name: "국내", data: K.wanted, color: t.s[0]}, {name: "해외 일반 SW 기업", data: K.general_tech, color: t.s[1]}, {name: "Hacker News", data: K.hn, color: t.dim}], 50, 150); },
-    kr_roles: function (t) { var K = X.korea.roles; return hbar(t, K.labels, [{name: "국내", data: K.wanted_q5, color: t.s[0]}, {name: "해외 일반 SW 기업", data: K.general_tech_q5, color: t.s[1]}], 70); },
+    kr_comp: function (t) { var K = X.korea.composition; return hbar(t, K.labels, [{name: "국내", data: K.kr, color: t.s[0]}, {name: "해외", data: K.general_tech, color: t.s[1]}], 80, 150); },
+    kr_level: function (t) { var K = X.korea.level; return hbar(t, K.labels, [{name: "국내", data: K.kr, color: t.s[0]}, {name: "해외", data: K.general_tech, color: t.s[1]}], 50, 150); },
+    kr_roles: function (t) { var K = X.korea.roles; return hbar(t, K.labels, [{name: "국내", data: K.kr_q5, color: t.s[0]}, {name: "해외", data: K.general_tech_q5, color: t.s[1]}], 70); },
     kr_seniority: function (t) { var K = X.korea.seniority; return hbar(t, K.labels, [{name: "전체 공고", data: K.all_q7, color: t.dim}, {name: "그 밖의 팀만", data: K.nonai_q7, color: t.s[0]}, {name: "AI 제품을 만드는 팀의 비중", data: K.ai_share, color: t.s[1]}], 50); }
   };
   function draw() {
@@ -60,7 +60,7 @@
       c.setOption(OPT[id](t), true); c.resize();
     });
   }
-  fetch("/data/job-postings-2024-2026.json?v=20261014a").then(function (r) { return r.json(); }).then(function (d) { X = d; Q = X.quarters; draw(); });
+  fetch("/data/job-postings-2024-2026.json?v=20261014f").then(function (r) { return r.json(); }).then(function (d) { X = d; Q = X.quarters.map(function (q) { return q.slice(0, 4) + " " + q.slice(-1) + "Q"; }); draw(); });
   new MutationObserver(draw).observe(document.documentElement, {attributes: true, attributeFilter: ["class"]});
   var tm; window.addEventListener("resize", function () { clearTimeout(tm); tm = setTimeout(draw, 150); });
 })();

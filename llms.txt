@@ -10,8 +10,8 @@
 - https://huggingface.co/monologg
 
 ## Articles
-- [LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다](https://monologg.kr/posts/2026/10/14/2026-10-14-llm-skills-asked-in-job-postings/): LLM 개발 경험을 언급한 공고 3,701건을 LLM에게 다시 읽혀 어떤 LLM 지식을 묻는지 셌습니다. 2024년에는 API 연동과 파인튜닝을 묻던 공고가 2026년에는 에이전트와 결과 평가를 묻고, MCP처럼 새 항목이 생겼습니다.
-- [AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다](https://monologg.kr/posts/2026/10/13/2026-10-13-ai-asks-in-dev-job-postings/): 해외 개발자 공고 1만 8천 건과 국내 원티드 공고 2,738건을 LLM에게 분류하게 했습니다. LLM 개발 경험은 AI 제품을 안 만드는 팀도 묻기 시작했고, AI 코딩 도구는 필수 요건이 되고 있습니다. 원티드 공고도 같은 흐름입니다.
+- [개발자 채용 트렌드 2편: LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다](https://monologg.kr/posts/2026/10/14/2026-10-14-llm-skills-asked-in-job-postings/): LLM 개발 경험을 언급한 공고 3,500여 건을 LLM에게 다시 읽혀 어떤 LLM 지식을 묻는지 정리했습니다. 2024년에는 API 연동과 파인튜닝을 묻던 공고가 2026년에는 에이전트와 결과 평가를 묻고, MCP처럼 새 항목이 생겼습니다.
+- [개발자 채용 트렌드 1편: AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다](https://monologg.kr/posts/2026/10/13/2026-10-13-ai-asks-in-dev-job-postings/): 해외 개발자 공고 1만 8천 건과 국내 개발 공고 2,700여 건을 LLM에게 분류하게 했습니다. LLM 개발 경험은 AI 제품을 안 만드는 팀도 묻기 시작했고, AI 코딩 도구는 필수 요건이 되고 있습니다. 대형 IT 기업을 포함한 국내 공고도 비슷합니다.
 - [서명 키가 만료돼도 apt update는 정상 종료됩니다](https://monologg.kr/posts/2026/10/12/2026-10-12-apt-update-stale-index-check/): GitHub CLI의 APT 저장소 서명 키가 만료되자 apt update는 경고만 남기고 종료 코드 0으로 끝났고, 서버의 gh 저장소는 23일 동안 멈춰 있었습니다. 컨테이너로 재현한 과정과, 일반 계정으로 서명 키 만료·검증 실패·뒤처진 인덱스를 찾는 점검 스크립트를 정리합니다.
 - [리눅스 서버는 Tailscale 주소에만 포트를 열어도 같은 LAN에서 닿습니다](https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/): 인증 없는 홈랩 서비스를 Tailscale 주소에만 바인딩했는데도, 리눅스의 weak host model 때문에 같은 LAN 기기에서 닿는 상태였습니다. nftables 규칙으로 막고 매시간 노출을 검사하는 방법을 정리했습니다.
 - [Perplexity vs Claude 내장 검색 vs Codex 내장 검색: Codex 검색의 순위는 judge가 어느 회사 모델이냐에 따라 뒤집혔습니다](https://monologg.kr/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/): 웹 검색 3종을 실사용 쿼리 58개로 블라인드 평가했습니다. Claude judge와 GPT judge 모두 Perplexity가 Claude 내장 검색보다 낫다고 봤지만, Codex 검색의 순위는 judge에 따라 뒤집혔습니다.
