@@ -43,7 +43,7 @@
     spread: function (t) { return lines(t, [line(t, "AI 제품을 만드는 팀", X.spread.hn_ai, t.s[1]), line(t, "전체", X.spread.hn_all, t.dim), line(t, "그 밖의 팀", X.spread.hn_non, t.s[0])], 70, 170); },
     roles: function (t) { return hbar(t, X.roles.labels, [{name: "2024", data: X.roles.general_tech_2024, color: t.dim}, {name: "2025", data: X.roles.general_tech_2025, color: t.s[1]}, {name: "2026", data: X.roles.general_tech_2026, color: t.s[0]}], 30); },
     aimix: function (t) { return hbar(t, X.mix.labels, [{name: "2024", data: X.mix["2024"], color: t.dim}, {name: "2025", data: X.mix["2025"], color: t.s[1]}, {name: "2026", data: X.mix["2026"], color: t.s[0]}], 40); },
-    tools: function (t) { return lines(t, [line(t, "언급", X.tools_gt.mention, t.s[0]), line(t, "직무 요건", X.tools_gt.in_role, t.s[2]), line(t, "필수 요건", X.tools_gt.required, t.s[1])], 70, 150); },
+    tools: function (t) { return lines(t, [line(t, "언급", X.tools_gt.mention, t.s[0]), line(t, "요건", X.tools_gt.in_role, t.s[2]), line(t, "필수", X.tools_gt.required, t.s[1])], 70, 150); },
     verify: function (t) { var V = X.verify; return hbar(t, V.labels, [{name: "2024", data: V.y2024, color: t.dim}, {name: "2025", data: V.y2025, color: t.s[1]}, {name: "2026", data: V.y2026, color: t.s[0]}], 60, 128); },
     kr_comp: function (t) { var K = X.korea.composition; return hbar(t, K.labels, [{name: "국내", data: K.kr, color: t.s[0]}, {name: "해외", data: K.general_tech, color: t.s[1]}], 80, 150); },
     kr_level: function (t) { var K = X.korea.level; return hbar(t, K.labels, [{name: "국내", data: K.kr, color: t.s[0]}, {name: "해외", data: K.general_tech, color: t.s[1]}], 50, 150); },
@@ -60,7 +60,7 @@
       c.setOption(OPT[id](t), true); c.resize();
     });
   }
-  fetch("/data/job-postings-2024-2026.json?v=20261014f").then(function (r) { return r.json(); }).then(function (d) { X = d; Q = X.quarters.map(function (q) { return q.slice(0, 4) + " " + q.slice(-1) + "Q"; }); draw(); });
+  fetch("/data/job-postings-2024-2026.json?v=20261014g").then(function (r) { return r.json(); }).then(function (d) { X = d; Q = X.quarters.map(function (q) { return q.slice(0, 4) + " " + q.slice(-1) + "Q"; }); draw(); });
   new MutationObserver(draw).observe(document.documentElement, {attributes: true, attributeFilter: ["class"]});
   var tm; window.addEventListener("resize", function () { clearTimeout(tm); tm = setTimeout(draw, 150); });
 })();
