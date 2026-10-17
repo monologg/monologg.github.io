@@ -1141,7 +1141,7 @@ UDP까지 보게 된 건 avahi-daemon 때문입니다. 우분투 데스크톱 �
 
 ---
 
-# 어느 모델이 채점해도 Perplexity MCP가 Claude Code 내장 검색보다 나았습니다
+# 에이전트 웹 검색 2편: 어느 모델이 채점해도 Perplexity MCP가 Claude Code 내장 검색보다 나았습니다
 
 URL: https://monologg.kr/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/
 Published: 2026-09-23
@@ -2224,7 +2224,7 @@ claude mcp add --transport http --scope user plane \
 
 ---
 
-# Tavily vs Perplexity vs Parallel: 실사용 쿼리 50개로 돌린 블라인드 평가
+# 에이전트 웹 검색 1편: 검색 API 셋을 50개 쿼리로 블라인드 평가하니 결론은 Perplexity였습니다
 
 URL: https://monologg.kr/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/
 Published: 2026-07-22
@@ -2353,7 +2353,7 @@ class PerplexityWebSearchProvider(WebSearchProvider):
 
 ---
 
-# httpx2, Pydantic이 이어받은 httpx — 바꿔도 될까, 얼마나 빨라졌을까
+# httpx2는 httpx 코드 그대로 쓰이고 병렬 요청에서 훨씬 빠릅니다
 
 URL: https://monologg.kr/posts/2026/07/17/2026-07-17-httpx2-pydantic-fork-migration-benchmark/
 Published: 2026-07-17
