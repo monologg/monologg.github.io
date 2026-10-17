@@ -1369,7 +1369,7 @@ CCR v2 worker registration failed for session cse_… 404
 
 ---
 
-# 2026년 hwp 오픈소스 지형도, 리더 16종과 편집기 6종을 공공 서식으로 돌려 봤다
+# 2026년 hwp 오픈소스 22종을 공공 서식으로 돌리니 표까지 살려 읽는 것은 4종입니다
 
 URL: https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-open-source-landscape-2026/
 Published: 2026-09-07
@@ -1465,7 +1465,7 @@ python-hwpx로 XML을 직접 만질 때는 구조를 알아야 합니다. hwpx�
 
 ---
 
-# 한컴 없이 hwp 표 칸에 사진 넣기, 파서와 렌더러를 통과해도 한컴에서는 달랐다
+# 한컴 없이 hwp 표 칸에 사진을 넣으려면 hwpx로 바꿔야 했습니다
 
 URL: https://monologg.kr/posts/2026/09/07/2026-09-07-hwp-table-cell-picture-without-hancom/
 Published: 2026-09-07
@@ -1786,7 +1786,7 @@ Remote Control은 명시적으로 켤 때만 붙는 게 기본 동작입니다. 
 
 ---
 
-# cron을 Dagu로 바꾼 이유: Airflow는 왜 안 됐나
+# cron은 Job이 안 돌아도 아무도 모릅니다, 그래서 Dagu로 바꿨습니다
 
 URL: https://monologg.kr/posts/2026/07/29/2026-07-29-cron-to-dagu-claude-p/
 Published: 2026-07-29
