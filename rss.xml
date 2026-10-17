@@ -3324,53 +3324,6 @@ except httpx.TimeoutException as exc:
 &lt;li&gt;&lt;a href=&quot;https://github.com/encode/httpcore/pull/953&quot;&gt;anyio fast_acquire 최적화 원본 PR — encode/httpcore#953&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/encode/httpx/discussions/3100&quot;&gt;Httpx not production ready under load — encode/httpx#3100&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>Antigravity 터미널에서 Claude Code Shift+Enter 개행 설정하기</title><link>https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/17/2026-03-17-antigravity-claude-code-shift-enter-setup/</guid><description>Antigravity 내장 터미널에서 Claude Code의 Shift+Enter 개행이 동작하지 않는 문제를 keybindings.json 수동 설정으로 해결하는 과정을 정리했습니다. /terminal-setup이 지원되지 않는 이유와 임시 대안도 함께 다룹니다.</description><pubDate>Tue, 17 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;Antigravity에서 SSH로 우분투 서버에 접속해 Claude Code를 쓰는데, Shift+Enter가 개행 대신 입력을 그대로 전송해 버렸습니다. 답부터 말하면, 로컬 Antigravity의 &lt;code&gt;keybindings.json&lt;/code&gt;에 &lt;code&gt;shift+enter&lt;/code&gt; → &lt;code&gt;workbench.action.terminal.sendSequence&lt;/code&gt; 항목 하나를 추가하면 해결됩니다. 이 글에서 왜 &lt;code&gt;/terminal-setup&lt;/code&gt;으로는 안 되는지와 함께 그 과정을 정리합니다.&lt;/p&gt;
-&lt;h2&gt;&lt;code&gt;/terminal-setup&lt;/code&gt;이 동작하지 않는 이유&lt;/h2&gt;
-&lt;p&gt;Claude Code에는 &lt;code&gt;/terminal-setup&lt;/code&gt;이라는 명령이 있습니다. VS Code 계열 터미널에서 Shift+Enter 단축키를 자동으로 잡아주는 기능입니다. 그런데 Antigravity에서 실행하면 이런 메시지가 뜹니다.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Terminal setup cannot be run from antigravity.
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;현재 &lt;code&gt;/terminal-setup&lt;/code&gt; 자동 설정 대상은 VS Code, Cursor, Windsurf, Zed, Alacritty 정도입니다. Antigravity는 VS Code 포크 IDE지만 아직 자동 설정 대상에 포함되지 않아서, 수동 설정이 필요합니다.&lt;/p&gt;
-&lt;h2&gt;핵심은 로컬 IDE 키바인딩&lt;/h2&gt;
-&lt;p&gt;여기서 짚고 넘어갈 포인트가 하나 있습니다. SSH로 원격 서버에 접속해서 Claude Code를 쓰더라도, Shift+Enter 처리는 &lt;strong&gt;서버가 아니라 로컬 IDE&lt;/strong&gt;에서 먼저 잡힙니다. VS Code 계열 IDE는 키 입력을 IDE가 먼저 처리한 뒤 &lt;code&gt;workbench.action.terminal.sendSequence&lt;/code&gt; 같은 방식으로 터미널에 시퀀스를 전달하는 구조거든요. 그래서 서버 쪽 &lt;code&gt;.bashrc&lt;/code&gt;나 &lt;code&gt;stty&lt;/code&gt; 설정을 아무리 바꿔도 소용이 없고, 로컬 Antigravity의 키바인딩을 건드려야 합니다.&lt;/p&gt;
-&lt;h2&gt;Antigravity keybindings.json 수동 설정&lt;/h2&gt;
-&lt;p&gt;설정 절차는 다음과 같습니다.&lt;/p&gt;
-&lt;ol&gt;
-&lt;li&gt;Antigravity에서 &lt;code&gt;Cmd+Shift+P&lt;/code&gt; (macOS) 또는 &lt;code&gt;Ctrl+Shift+P&lt;/code&gt; (Linux/Windows) 실행&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Open Keyboard Shortcuts (JSON)&lt;/code&gt; 검색 후 선택&lt;/li&gt;
-&lt;li&gt;열린 &lt;code&gt;keybindings.json&lt;/code&gt; 파일에 아래 항목 추가&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre&gt;&lt;code&gt;{
-  &quot;key&quot;: &quot;shift+enter&quot;,
-  &quot;command&quot;: &quot;workbench.action.terminal.sendSequence&quot;,
-  &quot;args&quot;: { &quot;text&quot;: &quot;\u001b\r&quot; },
-  &quot;when&quot;: &quot;terminalFocus&quot;
-}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;이미 &lt;code&gt;keybindings.json&lt;/code&gt;에 다른 설정이 있다면, 배열 안에 쉼표를 찍고 이 객체만 추가하면 됩니다.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;[
-  {
-    &quot;key&quot;: &quot;ctrl+l&quot;,
-    &quot;command&quot;: &quot;workbench.action.terminal.clear&quot;
-  },
-  {
-    &quot;key&quot;: &quot;shift+enter&quot;,
-    &quot;command&quot;: &quot;workbench.action.terminal.sendSequence&quot;,
-    &quot;args&quot;: { &quot;text&quot;: &quot;\u001b\r&quot; },
-    &quot;when&quot;: &quot;terminalFocus&quot;
-  }
-]
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;추가한 뒤에는 Antigravity 창을 완전히 닫고 다시 열어야 적용됩니다. &lt;code&gt;Reload Window&lt;/code&gt;로도 되는 경우가 있지만, 제 경험상 완전 재시작이 확실하더라고요.&lt;/p&gt;
-&lt;h2&gt;기존 바인딩과 충돌하는 경우&lt;/h2&gt;
-&lt;p&gt;기존에 &lt;code&gt;shift+enter&lt;/code&gt;를 다른 command에 바인딩해 뒀다면 새 바인딩이 제대로 동작하지 않을 수 있습니다. 이 경우 기존 항목을 지우거나 &lt;code&gt;&quot;when&quot;&lt;/code&gt; 조건을 좁혀서 충돌을 피해야 합니다. 위 설정은 &lt;code&gt;&quot;when&quot;: &quot;terminalFocus&quot;&lt;/code&gt; 조건 덕분에 터미널에 포커스가 있을 때만 동작하므로, 대부분의 경우 충돌이 생기지 않습니다.&lt;/p&gt;
-&lt;h2&gt;설정 전에 쓸 수 있는 임시 대안&lt;/h2&gt;
-&lt;p&gt;설정을 바꾸기 전까지 당장 여러 줄 입력이 필요하면, Claude Code가 기본 제공하는 대안을 쓸 수 있습니다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;code&gt;\&lt;/code&gt; + Enter: 백슬래시를 치고 Enter를 누르면 개행으로 처리됩니다.&lt;/li&gt;
-&lt;li&gt;&lt;code&gt;Ctrl+J&lt;/code&gt;: 멀티라인 입력 전환 단축키로, 일부 터미널에서 바로 동작합니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;둘 다 Claude Code 공식 문서에 나와 있는 방법입니다.&lt;/p&gt;
-&lt;p&gt;Antigravity가 &lt;code&gt;/terminal-setup&lt;/code&gt; 대상에 포함되면 이 수동 작업이 필요 없어지겠지만, 그 전까지는 &lt;code&gt;keybindings.json&lt;/code&gt; 항목 하나로 해결됩니다.&lt;/p&gt;
 </content:encoded></item><item><title>MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교</title><link>https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</guid><description>Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했습니다.</description><pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;MCP 서버를 여러 개 연결하다 보면 도구 수가 순식간에 불어납니다. Atlassian MCP 하나만 연결해도 72개 도구가 딸려오거든요. 여기에 Perplexity, Slack, Plane 같은 MCP를 추가하면 금세 100개를 넘깁니다. Antigravity처럼 100개 tool 제한이 있는 환경에서는 Atlassian 하나를 켜는 순간 다른 MCP를 붙일 수조차 없게 됩니다.&lt;/p&gt;
 &lt;p&gt;이 문제를 푸는 방법은 크게 세 가지입니다. Claude Code에 내장된 기능 두 가지와, 서버 앞에 proxy를 두는 tool-filter-mcp입니다. 이 글에서는 각각의 동작 방식과 언제 어떤 방법이 맞는지를 정리합니다.&lt;/p&gt;
 &lt;h2&gt;Claude Code 내장 기능 하나, MCP Tool Search&lt;/h2&gt;
