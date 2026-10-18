@@ -3,7 +3,6 @@
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;구독 하나로 집 서버의 아침 브리핑까지 돌립니다&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
-&lt;p&gt;뒤 글은 발행되는 대로 이 목록에 붙입니다. 자동 메모리에 적힌 교정이 다시 어겨지는 문제, 사람 없이 도는 &lt;code&gt;claude -p&lt;/code&gt;의 함정, 레포 여럿을 상위 레포 하나로 묶은 이유, 에이전트가 일하는 티켓을 쓰는 법을 한 편씩 다룰 예정입니다.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;2026년 10월 기준입니다. Claude Code 2.1.300과 Dagu 2.18.2에서 확인했고, 약관과 공식 문서는 2026-10-06에 확인했습니다.&lt;/p&gt;
