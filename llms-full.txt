@@ -31,7 +31,7 @@ Tags: claude-code, claude-p, hermes-agent, dagu, mcp, homelab
 
 이 글은 왜 걷어냈고 그 자리에 무엇이 들어갔는지를 한 편에 그린 것입니다. 설정 파일과 함정까지 적으면 길어져서, 이 글은 구성과 그렇게 한 이유까지만 다룹니다.
 
-![Claude Code 운영 구성도. 구독 로그인 하나 아래 집 서버의 대화형 세션과 예약 잡, 설정 원본 레포가 있고, 이슈 트래커는 MCP 커넥터로, 폰과 웹은 원격 제어로 같은 서버에 닿는다](./overview.svg)
+![Claude Code 운영 구성도. 구독 로그인 하나 아래 집 서버의 대화형 세션과 예약 잡, 설정 원본 레포가 있고, 이슈 트래커는 MCP 커넥터로, 폰과 맥은 Claude 앱의 원격 제어로 같은 서버에 닿는다](./overview.svg)
 
 ## Hermes Agent에서 얻은 것은 cron뿐이었습니다
 
