@@ -29,7 +29,6 @@
 &lt;/ul&gt;
 &lt;p&gt;다만 Authentication 문서에 따르면 setup-token 토큰은 모델 요청만 할 수 있어서 claude.ai 커넥터와 원격 제어는 못 씁니다. 아래에서 말할 티켓 커넥터를 세션에서 쓰려면 &lt;code&gt;/login&lt;/code&gt; 쪽이어야 합니다.&lt;/p&gt;
 &lt;p&gt;주의할 변화가 하나 있습니다. 헤드리스 문서는 &lt;code&gt;--bare&lt;/code&gt;가 앞으로 &lt;code&gt;-p&lt;/code&gt;의 기본값이 된다고 적었고, &lt;code&gt;--bare&lt;/code&gt;는 &lt;code&gt;/login&lt;/code&gt; 결과와 &lt;code&gt;CLAUDE_CODE_OAUTH_TOKEN&lt;/code&gt;을 읽지 않습니다. 그 버전이 나오면 구독 로그인으로 돌던 잡이 인증 실패로 멈추므로, CLI를 올릴 때 변경 기록에서 이 항목을 확인합니다.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;./claude-headless-docs.png&quot; alt=&quot;Claude Code 공식 문서의 「Run Claude Code programmatically」 페이지. claude -p로 비대화형 실행을 하는 기본 사용법이 적혀 있다&quot; /&gt;&lt;/p&gt;
 &lt;h2&gt;대화형 세션은 레포 하나에서만 엽니다&lt;/h2&gt;
 &lt;p&gt;Claude Code의 자동 메모리는 git 레포 단위로 저장됩니다. 저는 작업대 레포, 서버 설정 레포, 개인 위키, 블로그처럼 레포 여럿을 오가며 일하는데, 레포 폴더마다 세션을 열었더니 자동 메모리 파일이 한 레포에 104개, 다른 레포에 37개 식으로 다섯 곳에 흩어졌습니다. 한 레포에서 배운 것을 다른 레포의 세션은 모르는 상태였습니다.&lt;/p&gt;
 &lt;p&gt;그래서 레포들을 서브모듈로 묶은 상위 레포 하나를 만들고 &lt;strong&gt;세션은 그 루트에서만&lt;/strong&gt; 엽니다. 메모리가 한곳에 쌓이고, 루트의 CLAUDE.md 한 장이 레포 지도 역할을 합니다. 대신 이 구조가 만드는 함정이 몇 가지 있습니다. 하위 레포의 CLAUDE.md는 세션 시작 때 실리지 않고, 그 폴더의 파일을 Read 도구로 열 때만 들어옵니다. 다른 선택지와 비교한 것과 함정은 4편에서 다룹니다.&lt;/p&gt;
@@ -57,7 +56,6 @@ steps:
 &lt;li&gt;&lt;strong&gt;경계&lt;/strong&gt; 하지 않는 것과 깨면 안 되는 것&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Plane이 내주는 원격 MCP 서버를 Claude Code에 로컬로 등록하지 않고 &lt;strong&gt;claude.ai의 커스텀 커넥터&lt;/strong&gt;로 붙인 것이 이 구성의 요점입니다. 커넥터는 계정에 붙으므로 Claude Code 세션, 웹, 데스크톱 앱, 폰 앱이 모두 같은 도구를 봅니다. 폰에서 티켓을 만들고 서버의 세션이 그 티켓을 집어 가는 흐름이 추가 설정 없이 됩니다. 커넥터를 등록하는 절차는 &lt;a href=&quot;/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/&quot;&gt;커스텀 커넥터 등록 글&lt;/a&gt;에 있고, Codex에는 같은 서버를 플러그인으로 붙였습니다.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;./plane-mcp-docs.png&quot; alt=&quot;Plane 개발자 문서의 MCP server 페이지. 호스팅 서버 주소에 Plane 계정으로 로그인해 연결하라고 안내한다&quot; /&gt;&lt;/p&gt;
 &lt;p&gt;한계도 있습니다. Plane의 작업 템플릿은 무료 플랜에서 HTTP 402로 막혀 있어 네 칸 양식을 템플릿으로 강제하지 못하고, MCP로 본문이나 코멘트를 쓸 때 HTML을 여러 줄로 보내면 빈 문단이 생기는 식으로 렌더가 깨집니다. 에이전트에게 맡길 티켓을 어떻게 쓰는지는 트래커가 무엇이든 같은 문제라, 5편에서 따로 다룹니다.&lt;/p&gt;
 &lt;h2&gt;폰에서는 서버의 세션을 엽니다&lt;/h2&gt;
 &lt;p&gt;밖에서는 Claude 앱으로 서버의 Claude Code 세션을 씁니다. 켜 둔 것은 둘입니다.&lt;/p&gt;
