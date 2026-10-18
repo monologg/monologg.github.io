@@ -35,9 +35,7 @@
 &lt;p&gt;그래서 레포들을 서브모듈로 묶은 상위 레포 하나를 만들고 &lt;strong&gt;세션은 그 루트에서만&lt;/strong&gt; 엽니다. 메모리가 한곳에 쌓이고, 루트의 CLAUDE.md 한 장이 레포 지도 역할을 합니다. 대신 이 구조가 만드는 함정이 몇 가지 있습니다. 하위 레포의 CLAUDE.md는 세션 시작 때 실리지 않고, 그 폴더의 파일을 Read 도구로 열 때만 들어옵니다. 다른 선택지와 비교한 것과 함정은 4편에서 다룹니다.&lt;/p&gt;
 &lt;h2&gt;정해진 시각의 일은 스케줄러가 claude -p로 돌립니다&lt;/h2&gt;
 &lt;p&gt;집 서버에서는 &lt;a href=&quot;https://dagu.sh/&quot;&gt;Dagu&lt;/a&gt;가 매일 아침 브리핑 일곱 개와 개인 위키 갱신 하나를 &lt;code&gt;claude -p&lt;/code&gt;로 돌립니다. 브리핑은 밤새 쌓인 글과 티켓을 추려 메신저로 보내는 잡이고, 위키 갱신은 전날 커밋과 티켓 코멘트를 읽어 저에 대한 지식 베이스에 반영하는 잡입니다. 수집한 뉴스를 요약하는 잡과 달에 한 번 도는 잡도 몇 개 있습니다. 서버 소프트웨어를 올리기 전에 릴리스 노트를 읽고 막을지 답하는 검토는 별도 러너가 띄우지만, 부르는 것은 같은 &lt;code&gt;claude -p&lt;/code&gt;입니다.&lt;/p&gt;
-&lt;p&gt;Dagu는 잡 하나를 YAML 파일 하나로 적는 스케줄러입니다.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;./dagu-yaml.png&quot; alt=&quot;Dagu 공식 사이트의 잡 정의 예. schedule과 steps를 YAML로 적는다&quot; /&gt;&lt;/p&gt;
-&lt;p&gt;제 잡 정의는 아래처럼 생겼습니다. &lt;code&gt;claude -p&lt;/code&gt;를 부르는 잡은 전부 같은 큐에 넣어 한 번에 하나만 돌게 하고, 사람이 없는 시각이라 실패하면 재시도 뒤 알림이 옵니다.&lt;/p&gt;
+&lt;p&gt;Dagu는 잡 하나를 YAML 파일 하나로 적는 스케줄러이고, 제 잡 정의는 아래처럼 생겼습니다. &lt;code&gt;claude -p&lt;/code&gt;를 부르는 잡은 전부 같은 큐에 넣어 한 번에 하나만 돌게 하고, 사람이 없는 시각이라 실패하면 재시도 뒤 알림이 옵니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;schedule: &quot;0 8 * * *&quot;
 queue: claude          # claude -p를 부르는 잡은 전부 이 큐로, 한 번에 하나만
 overlap_policy: skip
