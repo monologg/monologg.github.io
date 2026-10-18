@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>Claude Code 운영기 1편: 구독 하나로 집 서버의 아침 브리핑까지 돌립니다</title><link>https://monologg.kr/posts/2026/10/18/2026-10-18-claude-code-ops-overview/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/18/2026-10-18-claude-code-ops-overview/</guid><description>Claude Code를 Max 구독 하나로 집 서버에서 어떻게 쓰는지 한 편에 그렸습니다. 대화형 세션은 서브모듈로 묶은 상위 레포 하나에서만 열고, 정해진 시각의 일은 스케줄러가 claude -p로 돌리고, 할 일은 이슈 트래커 티켓으로 적어 MCP 커넥터로 어디서나 같은 도구로 읽고 씁니다. 구독 로그인으로 예약 실행해도 약관상 괜찮은 조건도 정리했습니다.</description><pubDate>Sun, 18 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Claude Code 운영기&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
-&lt;li&gt;&lt;strong&gt;구독 하나로 집 서버의 아침 브리핑까지 돌립니다&lt;/strong&gt; (이 글)&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;구독 하나로 집 서버의 아침 브리핑까지 돌립니다&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;뒤 글은 발행되는 대로 이 목록에 붙입니다. 자동 메모리에 적힌 교정이 다시 어겨지는 문제, 사람 없이 도는 &lt;code&gt;claude -p&lt;/code&gt;의 함정, 레포 여럿을 상위 레포 하나로 묶은 이유, 에이전트가 일하는 티켓을 쓰는 법을 한 편씩 다룰 예정입니다.&lt;/p&gt;
 &lt;/blockquote&gt;
