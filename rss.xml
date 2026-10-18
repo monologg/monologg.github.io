@@ -128,14 +128,8 @@ space to show QR code · w to toggle spawn mode
 &lt;h2&gt;대화형 세션은 레포 하나에서만 엽니다&lt;/h2&gt;
 &lt;p&gt;&lt;strong&gt;Claude Code의 자동 메모리는 git 레포 단위로 저장됩니다.&lt;/strong&gt; 저는 작업대 레포, 서버 설정 레포, 개인 위키, 블로그처럼 레포 여럿을 오가며 일하는데, 레포 폴더마다 세션을 열었더니 자동 메모리 파일이 한 레포에 104개, 다른 레포에 37개 식으로 다섯 곳에 흩어졌습니다.&lt;/p&gt;
 &lt;p&gt;그래서 레포들을 서브모듈로 묶은 상위 레포 하나를 만들고 &lt;strong&gt;세션은 그 루트에서만&lt;/strong&gt; 엽니다. 메모리가 한곳에 쌓이고, 루트의 CLAUDE.md 한 장이 레포 지도 역할을 합니다. 대신 하위 레포의 CLAUDE.md는 세션 시작 때 실리지 않고 그 폴더의 파일을 Read 도구로 열 때만 들어오는 등 함정이 있는데, 다른 선택지와 비교한 것까지 적으면 길어져서 여기서는 넘어갑니다.&lt;/p&gt;
-&lt;h2&gt;Hermes를 걷어내며 잃은 것 셋&lt;/h2&gt;
-&lt;p&gt;좋은 얘기만 하면 반쪽이라, 걷어내면서 잃은 것도 적습니다.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;Discord에서 바로 대화하기&lt;/strong&gt; 메신저에서 말을 주고받던 편함은 사라졌습니다. 지금은 Claude 앱을 열어야 합니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;ChatGPT 구독의 정액 요금&lt;/strong&gt; Hermes는 ChatGPT 구독으로 돌렸는데, 이제는 Claude 구독 사용량을 씁니다. 그래서 하루 호출 수를 세어 둡니다.&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;내 서버에 뭔가 살아 있다는 느낌&lt;/strong&gt; 쓸모보다는 기분의 문제라, 그것만으로 남기지는 않았습니다.&lt;/li&gt;
-&lt;/ul&gt;
-&lt;p&gt;그래도 걷어낸 기준은 하나입니다. &lt;strong&gt;무엇을 남길지는 기능이 얼마나 많은가가 아니라 실제로 몇 번 썼는가로 정합니다.&lt;/strong&gt; 새 도구를 들일 때는 이미 있는 것 위에 얹고, 몇 주 뒤 실제로 몇 번 썼는지 세어 남길지 정합니다. 폰에서는 원격 제어 하나만 쓰는 것도, 트래커를 기능이 많은 쪽이 아니라 매일 써도 돈이 안 드는 쪽으로 고른 것도 그래서입니다.&lt;/p&gt;
+&lt;h2&gt;걷어낸 기준은 하나였습니다&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;무엇을 남길지는 기능이 얼마나 많은가가 아니라 실제로 몇 번 썼는가로 정합니다.&lt;/strong&gt; 새 도구를 들일 때는 이미 있는 것 위에 얹고, 몇 주 뒤 실제로 몇 번 썼는지 세어 남길지 정합니다. 폰에서는 원격 제어 하나만 쓰는 것도, 트래커를 기능이 많은 쪽이 아니라 매일 써도 돈이 안 드는 쪽으로 고른 것도 그래서입니다.&lt;/p&gt;
 </content:encoded></item><item><title>개발자 채용 트렌드 3편: 코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다</title><link>https://monologg.kr/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/</guid><description>회사 50곳의 공식 채용 안내를 2024년부터 시점별로 열어 봤습니다. 코딩 테스트는 남아 있고, 해외는 규칙을 공개한 회사 대부분이 AI를 쓰는 라운드와 막는 라운드를 함께 두기 시작했습니다. 국내는 신입 공채 일부가 코딩 테스트를 AI 활용 평가로 바꿨습니다.</description><pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;개발자 채용 트렌드&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
