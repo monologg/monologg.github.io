@@ -1,4 +1,54 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>개발자 채용 트렌드 3편: 코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다</title><link>https://monologg.kr/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/</guid><description>회사 50곳의 공식 채용 안내를 2024년부터 시점별로 열어 봤습니다. 코딩 테스트는 남아 있고, 해외는 규칙을 공개한 회사 대부분이 AI를 쓰는 라운드와 막는 라운드를 함께 두기 시작했습니다. 국내는 신입 공채 일부가 코딩 테스트를 AI 활용 평가로 바꿨습니다.</description><pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>Claude Code 운영기 1편: 구독 하나로 집 서버의 아침 브리핑까지 돌립니다</title><link>https://monologg.kr/posts/2026/10/18/2026-10-18-claude-code-ops-overview/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/18/2026-10-18-claude-code-ops-overview/</guid><description>Claude Code를 Max 구독 하나로 집 서버에서 어떻게 쓰는지 한 편에 그렸습니다. 대화형 세션은 서브모듈로 묶은 상위 레포 하나에서만 열고, 정해진 시각의 일은 스케줄러가 claude -p로 돌리고, 할 일은 이슈 트래커 티켓으로 적어 MCP 커넥터로 어디서나 같은 도구로 읽고 씁니다. 구독 로그인으로 예약 실행해도 약관상 괜찮은 조건도 정리했습니다.</description><pubDate>Sun, 18 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Claude Code 운영기&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;구독 하나로 집 서버의 아침 브리핑까지 돌립니다&lt;/strong&gt; (이 글)&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;뒤 글은 발행되는 대로 이 목록에 붙입니다. 자동 메모리에 적힌 교정이 다시 어겨지는 문제, 사람 없이 도는 &lt;code&gt;claude -p&lt;/code&gt;의 함정, 레포 여럿을 상위 레포 하나로 묶은 이유, 에이전트가 일하는 티켓을 쓰는 법을 한 편씩 다룰 예정입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;2026년 10월 기준입니다. Claude Code 2.1.300과 Dagu 2.18.2에서 확인했고, 약관과 공식 문서는 2026-10-06에 연 판입니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;저는 Claude Code를 &lt;strong&gt;Max 구독 하나로, 집에 둔 리눅스 서버에서&lt;/strong&gt; 씁니다. 대화형 세션은 레포 여럿을 서브모듈로 묶은 상위 레포 하나에서만 열고, 정해진 시각에 할 일은 스케줄러가 &lt;code&gt;claude -p&lt;/code&gt;로 사람 없이 돌립니다. 할 일은 이슈 트래커에 티켓으로 적어 Claude Code·웹·폰 어디서나 같은 MCP 도구로 읽고 쓰고, 밖에서는 폰으로 그 서버에 새 세션을 엽니다. 구독 로그인으로 사람 없이 돌려도 약관상 괜찮은 조건이 있고, 곧 바뀔 기본값 하나는 지켜봐야 합니다.&lt;/p&gt;
+&lt;p&gt;이 구성을 한 편에 그려 두는 이유는 뒤에 올 글들 때문입니다. 자동 메모리가 레포마다 갈리는 문제나 사람 없이 도는 &lt;code&gt;claude -p&lt;/code&gt;가 남기는 프로세스 같은 이야기는, 어떤 형태로 운영하는지 모르고 읽으면 갑작스럽습니다. 그래서 이번 글은 전체 그림과, 왜 이 구성인지의 판단 기준 둘까지만 다룹니다. 설정 파일과 함정은 뒤 글에 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./overview.svg&quot; alt=&quot;Claude Code 운영 구성도. 구독 로그인 하나 아래 집 서버의 대화형 세션과 예약 잡, 설정 원본 레포가 있고, 이슈 트래커는 MCP 커넥터로, 폰과 웹은 원격 제어로 같은 서버에 닿는다&quot; /&gt;&lt;/p&gt;
+&lt;h2&gt;구독 로그인으로 claude -p를 예약 실행해도 되나&lt;/h2&gt;
+&lt;p&gt;&lt;strong&gt;됩니다.&lt;/strong&gt; 다만 조건이 있어서 약관과 공식 문서를 직접 열어 확인했습니다. &lt;a href=&quot;https://www.anthropic.com/legal/consumer-terms&quot;&gt;Consumer Terms&lt;/a&gt;는 봇이나 스크립트로 서비스에 접속하는 것을 금지하면서 「API 키로 접속하는 경우」와 「Anthropic이 명시적으로 허용하는 경우」를 뺍니다. 무엇이 명시적 허용인지는 약관이 아니라 Claude Code 문서에 있습니다.&lt;/p&gt;
+&lt;p&gt;공식 문서는 구독 로그인으로 사람 없이 돌리는 길을 직접 안내합니다. &lt;a href=&quot;https://code.claude.com/docs/en/authentication&quot;&gt;Authentication&lt;/a&gt; 문서는 CI와 스크립트용으로 &lt;code&gt;claude setup-token&lt;/code&gt;으로 1년짜리 구독 토큰을 만들라고 적고, &lt;a href=&quot;https://code.claude.com/docs/en/github-actions&quot;&gt;GitHub Actions&lt;/a&gt; 문서는 그 토큰으로 돌리면 API 과금 대신 구독 사용량에서 빠진다고 적습니다. &lt;a href=&quot;https://code.claude.com/docs/en/headless&quot;&gt;헤드리스 문서&lt;/a&gt;는 예약 잡에서 &lt;code&gt;--permission-prompts none&lt;/code&gt;을 쓰라고 안내합니다. &lt;a href=&quot;https://code.claude.com/docs/en/legal-and-compliance&quot;&gt;Legal and compliance&lt;/a&gt;는 수정하지 않은 바이너리에 본인 구독으로 로그인하는 것을 막지 않는다고 못 박습니다.&lt;/p&gt;
+&lt;p&gt;그래서 제가 지키는 조건은 셋입니다. 수정하지 않은 공식 &lt;code&gt;claude&lt;/code&gt; 바이너리를 그대로 부르고, 로그인은 제 계정 하나이며, 토큰을 꺼내 다른 도구에 넘기거나 남 대신 돌리지 않습니다. 2026년 2월에 구독 토큰을 다른 도구에서 쓰는 것을 금지하는 문장이 문서에 들어간 적이 있는데(&lt;a href=&quot;https://www.theregister.com/software/2026/02/20/anthropic-clarifies-ban-on-third-party-tool-access-to-claude/5014546&quot;&gt;The Register&lt;/a&gt;), 겨냥한 것은 구독 토큰을 꺼내 자기 제품 안에서 쓰던 도구들이지 공식 바이너리의 예약 실행이 아니었습니다.&lt;/p&gt;
+&lt;p&gt;한도는 「개인의 일반적인 사용」을 전제로 정해져 있다는 문장도 같은 문서에 있습니다. 그래서 예약 잡의 &lt;code&gt;claude -p&lt;/code&gt; 호출은 하루 스무 번 안팎이고, 아침 잡과 월간 잡은 스케줄러의 큐 하나에 넣어 한 번에 하나씩 차례로 돌립니다.&lt;/p&gt;
+&lt;p&gt;로그인 방식은 둘 중 하나입니다. 저는 서버에서 한 번 &lt;code&gt;/login&lt;/code&gt;한 결과를 그대로 쓰고, 브라우저를 열 수 없는 곳에서는 &lt;code&gt;claude setup-token&lt;/code&gt;으로 만든 토큰을 씁니다. 다만 Authentication 문서에 따르면 setup-token 토큰은 모델 요청만 할 수 있어서 claude.ai 커넥터와 원격 제어는 못 씁니다. 아래에서 말할 티켓 커넥터를 세션에서 쓰려면 &lt;code&gt;/login&lt;/code&gt; 쪽이어야 합니다.&lt;/p&gt;
+&lt;p&gt;주의할 변화가 하나 있습니다. 헤드리스 문서는 &lt;code&gt;--bare&lt;/code&gt;가 앞으로 &lt;code&gt;-p&lt;/code&gt;의 기본값이 된다고 적었고, &lt;code&gt;--bare&lt;/code&gt;는 &lt;code&gt;/login&lt;/code&gt; 결과와 &lt;code&gt;CLAUDE_CODE_OAUTH_TOKEN&lt;/code&gt;을 읽지 않습니다. 그 버전이 나오면 구독 로그인으로 돌던 잡이 인증 실패로 멈추므로, CLI를 올릴 때 변경 기록에서 이 항목을 확인합니다.&lt;/p&gt;
+&lt;h2&gt;대화형 세션은 레포 하나에서만 엽니다&lt;/h2&gt;
+&lt;p&gt;Claude Code의 자동 메모리는 git 레포 단위로 저장됩니다. 저는 작업대 레포, 서버 설정 레포, 개인 위키, 블로그처럼 레포 여럿을 오가며 일하는데, 레포 폴더마다 세션을 열었더니 자동 메모리 파일이 한 레포에 104개, 다른 레포에 37개 식으로 다섯 곳에 흩어졌습니다. 한 레포에서 배운 것을 다른 레포의 세션은 모르는 상태였습니다.&lt;/p&gt;
+&lt;p&gt;그래서 레포들을 서브모듈로 묶은 상위 레포 하나를 만들고 &lt;strong&gt;세션은 그 루트에서만&lt;/strong&gt; 엽니다. 메모리가 한곳에 쌓이고, 루트의 CLAUDE.md 한 장이 레포 지도 역할을 합니다. 대신 이 구조가 만드는 함정이 몇 가지 있습니다. 하위 레포의 CLAUDE.md는 세션 시작 때 실리지 않고, 그 폴더의 파일을 Read 도구로 열 때만 들어옵니다. 다른 선택지와 비교한 것과 함정은 4편에서 다룹니다.&lt;/p&gt;
+&lt;h2&gt;정해진 시각의 일은 스케줄러가 claude -p로 돌립니다&lt;/h2&gt;
+&lt;p&gt;집 서버에서는 &lt;a href=&quot;https://dagu.sh/&quot;&gt;Dagu&lt;/a&gt;가 매일 아침 브리핑 일곱 개와 개인 위키 갱신 하나를 &lt;code&gt;claude -p&lt;/code&gt;로 돌립니다. 브리핑은 밤새 쌓인 글과 티켓을 추려 메신저로 보내는 잡이고, 위키 갱신은 전날 커밋과 티켓 코멘트를 읽어 저에 대한 지식 베이스에 반영하는 잡입니다. 수집한 뉴스를 요약하는 잡과 달에 한 번 도는 잡도 몇 개 있습니다. 서버 소프트웨어를 올리기 전에 릴리스 노트를 읽고 막을지 답하는 검토는 별도 러너가 띄우지만, 부르는 것은 같은 &lt;code&gt;claude -p&lt;/code&gt;입니다.&lt;/p&gt;
+&lt;p&gt;잡 정의는 아래처럼 생겼습니다. &lt;code&gt;claude -p&lt;/code&gt;를 부르는 잡은 전부 같은 큐에 넣어 한 번에 하나만 돌게 하고, 사람이 없는 시각이라 실패하면 재시도 뒤 알림이 옵니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;schedule: &quot;0 8 * * *&quot;
+queue: claude          # claude -p를 부르는 잡은 전부 이 큐로, 한 번에 하나만
+overlap_policy: skip
+steps:
+  - run: /path/to/run.py daily   # 안에서 claude -p &quot;...&quot; --permission-prompts none 을 부른다
+    retry_policy:
+      limit: 2
+      interval_sec: 300
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;컨테이너 에이전트가 아니라 호스트의 &lt;code&gt;claude -p&lt;/code&gt;인 이유와 cron 대신 Dagu를 고른 이유는 &lt;a href=&quot;/posts/2026/07/29/2026-07-29-cron-to-dagu-claude-p/&quot;&gt;7월 글&lt;/a&gt;에 적었습니다. 한 줄로 줄이면 &lt;strong&gt;cron은 잡이 안 돌아도 아무도 모르기 때문&lt;/strong&gt;입니다. 예약 잡이 끝나도 남는 MCP 프로세스, 상위 레포의 CLAUDE.md가 예약 잡에 따라 들어오는 문제, 최소 권한으로 돌리는 구성은 3편에서 다룹니다.&lt;/p&gt;
+&lt;h2&gt;할 일은 티켓으로 적고, 트래커는 MCP 커넥터로 붙입니다&lt;/h2&gt;
+&lt;p&gt;할 일은 전부 이슈 트래커 &lt;a href=&quot;https://plane.so&quot;&gt;Plane&lt;/a&gt;의 티켓입니다. 무료 플랜의 클라우드 워크스페이스를 쓰고, 에이전트에게 맡기는 티켓은 본문을 의도, 검증 방법, 사람이 정할 것, 경계의 네 칸으로 적고 결정은 코멘트에 쌓습니다. 세션은 티켓을 읽고 시작해서 종결 코멘트를 쓰고 끝납니다.&lt;/p&gt;
+&lt;p&gt;Plane이 내주는 원격 MCP 서버를 Claude Code에 로컬로 등록하지 않고 &lt;strong&gt;claude.ai의 커스텀 커넥터&lt;/strong&gt;로 붙인 것이 이 구성의 요점입니다. 커넥터는 계정에 붙으므로 Claude Code 세션, 웹, 데스크톱 앱, 폰 앱이 모두 같은 도구를 봅니다. 폰에서 티켓을 만들고 서버의 세션이 그 티켓을 집어 가는 흐름이 추가 설정 없이 됩니다. 커넥터를 등록하는 절차는 &lt;a href=&quot;/posts/2026/07/23/2026-07-23-connect-custom-mcp-server-claude-chatgpt/&quot;&gt;7월의 다른 글&lt;/a&gt;에 있고, Codex에는 같은 서버를 플러그인으로 붙였습니다.&lt;/p&gt;
+&lt;p&gt;한계도 있습니다. Plane의 작업 템플릿은 무료 플랜에서 HTTP 402로 막혀 있어 네 칸 양식을 템플릿으로 강제하지 못하고, MCP로 본문이나 코멘트를 쓸 때 HTML을 여러 줄로 보내면 빈 문단이 생기는 식으로 렌더가 깨집니다. 에이전트에게 맡길 티켓을 어떻게 쓰는지는 트래커가 무엇이든 같은 문제라, 5편에서 따로 다룹니다.&lt;/p&gt;
+&lt;h2&gt;폰에서는 서버의 세션을 엽니다&lt;/h2&gt;
+&lt;p&gt;밖에서는 Claude 앱으로 서버의 Claude Code 세션을 씁니다. 켜 둔 것은 둘입니다. 터미널에서 연 세션은 &lt;code&gt;remoteControlAtStartup&lt;/code&gt; 설정으로 전부 원격 제어가 붙게 해서 자리를 떠도 폰에서 이어 보고(&lt;a href=&quot;/posts/2026/08/17/2026-08-17-claude-code-remote-control-for-all-sessions/&quot;&gt;설정 글&lt;/a&gt;), 서버의 tmux에는 &lt;code&gt;claude remote-control&lt;/code&gt; 서버 모드를 띄워 두어 폰에서 &lt;strong&gt;새 세션&lt;/strong&gt;을 열 수 있게 합니다(&lt;a href=&quot;/posts/2026/09/19/2026-09-19-claude-code-remote-control-server-mode/&quot;&gt;서버 모드 글&lt;/a&gt;). 세션이 서버에서 도니 로컬 MCP와 파일 접근도 그대로입니다.&lt;/p&gt;
+&lt;p&gt;음성 비서를 따로 만들지 않은 것도 이 덕분입니다. Claude 앱에서 그 세션을 열어 말로 시키면 되었고, 써 보니 번거롭지 않았습니다.&lt;/p&gt;
+&lt;h2&gt;스킬과 지침은 레포 하나에서 배포합니다&lt;/h2&gt;
+&lt;p&gt;스킬 11개와 글로벌 CLAUDE.md는 설정 레포 하나에 두고 &lt;code&gt;~/.claude/&lt;/code&gt; 아래로 &lt;strong&gt;복사해 배포&lt;/strong&gt;하고, MCP 서버는 같은 레포의 스크립트로 등록합니다. 복사라서 레포만 고치고 배포를 잊기 쉬운데, 어긋난 것은 검증 스크립트가 배포본과 레포를 대조해 잡습니다. 맥에서는 세션 시작 훅이 그 레포의 main을 받아 스킬과 지침을 맞추고, 자동 메모리도 서버와 양방향으로 동기화합니다. 어느 기기에서 열어도 같은 규칙과 같은 기억으로 시작하게 하려는 설정입니다.&lt;/p&gt;
+&lt;p&gt;Codex도 같은 레포에서 지침을 받고, 같은 세션에서 Codex를 부르는 길도 열어 두었습니다(&lt;a href=&quot;/posts/2026/03/15/2026-03-15-calling-codex-from-claude-code/&quot;&gt;Codex 호출 글&lt;/a&gt;).&lt;/p&gt;
+&lt;h2&gt;왜 이 구성인가, 판단 기준 둘&lt;/h2&gt;
+&lt;p&gt;첫째, &lt;strong&gt;기능 수가 아니라 실제로 몇 번 썼는가&lt;/strong&gt;로 정합니다. 올여름 상주형 에이전트 프레임워크를 붙였다가 「cron 말고 뭐가 다르냐」로 끝나 걷어낸 적이 있습니다. 그 뒤로 새로 쓰는 길을 더할 때는 새 기기나 새 제품이 아니라 이미 있는 것 위에 얹고, 몇 주 뒤 실제로 몇 번 썼는지 세어 남길지 정합니다. 음성 모듈을 만들지 않은 것과 폰에서 쓰는 길을 원격 제어 하나로 둔 것이 그 결과입니다.&lt;/p&gt;
+&lt;p&gt;둘째, &lt;strong&gt;규칙은 조용히 망가지는 것만 적습니다.&lt;/strong&gt; 서버 설정 레포의 CLAUDE.md는 「이렇게 하면 알림 없이 실패한다」는 기록만 번호를 매겨 모은 목록입니다. 스케줄러를 바꾼 이유도, 모니터링의 완료 기준을 「일부러 죽였을 때 알림이 오는가」로 둔 것도 같은 기준에서 나왔습니다. 에이전트가 많아질수록 사람이 보지 않는 시간이 길어지는데, 그 시간에 조용히 실패하는 것이 가장 손해가 컸습니다.&lt;/p&gt;
+&lt;p&gt;다음 글은 자동 메모리에 적힌 교정이 왜 다시 어겨지는지, 재발을 세어 본 기록입니다.&lt;/p&gt;
+</content:encoded></item><item><title>개발자 채용 트렌드 3편: 코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다</title><link>https://monologg.kr/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/</guid><description>회사 50곳의 공식 채용 안내를 2024년부터 시점별로 열어 봤습니다. 코딩 테스트는 남아 있고, 해외는 규칙을 공개한 회사 대부분이 AI를 쓰는 라운드와 막는 라운드를 함께 두기 시작했습니다. 국내는 신입 공채 일부가 코딩 테스트를 AI 활용 평가로 바꿨습니다.</description><pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;개발자 채용 트렌드&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/13/2026-10-13-ai-asks-in-dev-job-postings/&quot;&gt;AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다&lt;/a&gt;&lt;/li&gt;

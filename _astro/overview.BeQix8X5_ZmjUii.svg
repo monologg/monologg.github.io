@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470" role="img" aria-labelledby="t" font-family="Pretendard, 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif">
+  <title id="t">Claude Code 운영 구성도: 구독 로그인 하나 아래 집 서버의 대화형 세션과 예약 잡, 설정 원본 레포가 있고, 이슈 트래커는 MCP 커넥터로, 폰과 웹은 원격 제어로 같은 서버에 닿는다</title>
+  <rect x="0" y="0" width="960" height="470" rx="14" fill="#f6f6f8"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b6f7a"/>
+    </marker>
+  </defs>
+  <!-- 구독 -->
+  <rect x="330" y="22" width="300" height="58" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="480" y="46" text-anchor="middle" font-size="17" font-weight="700" fill="#1f2228">Claude Max 구독</text>
+  <text x="480" y="68" text-anchor="middle" font-size="13" fill="#4b4f59">로그인 하나 · 토큰은 서버 밖으로 안 나감</text>
+  <!-- 집 서버 -->
+  <rect x="40" y="128" width="540" height="310" rx="12" fill="none" stroke="#6b6f7a" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="58" y="152" font-size="14" font-weight="700" fill="#3b3f4a">집 서버 (리눅스)</text>
+  <rect x="70" y="172" width="220" height="100" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="180" y="200" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">대화형 세션</text>
+  <text x="180" y="224" text-anchor="middle" font-size="13" fill="#4b4f59">서브모듈로 묶은 상위 레포</text>
+  <text x="180" y="244" text-anchor="middle" font-size="13" fill="#4b4f59">하나에서만 엶 · 자동 메모리 한곳</text>
+  <rect x="315" y="172" width="245" height="100" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="437" y="200" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">예약 잡</text>
+  <text x="437" y="224" text-anchor="middle" font-size="13" fill="#4b4f59">스케줄러(Dagu)가 claude -p 실행</text>
+  <text x="437" y="244" text-anchor="middle" font-size="13" fill="#4b4f59">아침 브리핑 · 위키 갱신 · 뉴스 요약</text>
+  <rect x="70" y="312" width="480" height="96" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="310" y="340" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">설정 원본 레포</text>
+  <text x="310" y="364" text-anchor="middle" font-size="13" fill="#4b4f59">스킬 · 글로벌 CLAUDE.md · MCP 등록 스크립트</text>
+  <text x="310" y="384" text-anchor="middle" font-size="13" fill="#4b4f59">~/.claude/ 로 복사 배포 · 맥은 세션 시작 훅이 받아옴</text>
+  <!-- 트래커 -->
+  <rect x="650" y="150" width="270" height="100" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="785" y="178" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">이슈 트래커 (Plane)</text>
+  <text x="785" y="202" text-anchor="middle" font-size="13" fill="#4b4f59">티켓 네 칸 + 결정은 코멘트에</text>
+  <text x="785" y="222" text-anchor="middle" font-size="13" fill="#4b4f59">claude.ai MCP 커넥터로 어디서나 같은 도구</text>
+  <!-- 폰 -->
+  <rect x="650" y="312" width="270" height="96" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="785" y="340" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">폰 · 웹 · 맥</text>
+  <text x="785" y="364" text-anchor="middle" font-size="13" fill="#4b4f59">원격 제어로 서버 세션을 잇거나 새로 엶</text>
+  <text x="785" y="384" text-anchor="middle" font-size="13" fill="#4b4f59">같은 커넥터 · 같은 티켓</text>
+  <!-- 선 -->
+  <path d="M430,80 L300,172" stroke="#6b6f7a" stroke-width="1.5" fill="none" marker-end="url(#a)"/>
+  <path d="M500,80 L470,172" stroke="#6b6f7a" stroke-width="1.5" fill="none" marker-end="url(#a)"/>
+  <path d="M580,80 L785,150" stroke="#6b6f7a" stroke-width="1.5" fill="none" marker-end="url(#a)"/>
+  <path d="M650,200 L560,210" stroke="#6b6f7a" stroke-width="1.5" fill="none" marker-start="url(#a)" marker-end="url(#a)"/>
+  <path d="M650,360 L600,360 L600,292 L180,292 L180,274" stroke="#6b6f7a" stroke-width="1.5" fill="none" marker-end="url(#a)"/>
+  <text x="615" y="190" text-anchor="middle" font-size="12" fill="#6b6f7a">MCP</text>
+  <text x="390" y="287" text-anchor="middle" font-size="12" fill="#6b6f7a">원격 제어</text>
+  <text x="700" y="108" text-anchor="middle" font-size="12" fill="#6b6f7a">claude.ai 커넥터 등록</text>
+</svg>
