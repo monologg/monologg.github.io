@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" width="960" height="470" role="img" aria-labelledby="t" font-family="Pretendard, 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif">
-  <title id="t">Claude Code 운영 구성도: 구독 로그인 하나 아래 집 서버의 대화형 세션과 예약 잡, 설정 원본 레포가 있고, 이슈 트래커는 MCP 커넥터로, 폰과 웹은 원격 제어로 같은 서버에 닿는다</title>
+  <title id="t">Claude Code 운영 구성도: 구독 로그인 하나 아래 집 서버의 대화형 세션과 예약 잡, 설정 원본 레포가 있고, 이슈 트래커는 MCP 커넥터로, iPhone과 Mac은 원격 제어로 같은 서버에 닿는다</title>
   <rect x="0" y="0" width="960" height="470" rx="14" fill="#f6f6f8"/>
   <defs>
     <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
@@ -24,16 +24,16 @@
   <rect x="70" y="312" width="480" height="96" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
   <text x="310" y="340" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">설정 원본 레포</text>
   <text x="310" y="364" text-anchor="middle" font-size="13" fill="#4b4f59">스킬 · 글로벌 CLAUDE.md · MCP 등록 스크립트</text>
-  <text x="310" y="384" text-anchor="middle" font-size="13" fill="#4b4f59">~/.claude/ 로 복사 배포 · 맥은 세션 시작 훅이 받아옴</text>
+  <text x="310" y="384" text-anchor="middle" font-size="13" fill="#4b4f59">~/.claude/ 로 복사 배포 · Mac은 세션 시작 훅이 받아옴</text>
   <!-- 트래커 -->
   <rect x="650" y="150" width="270" height="100" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
   <text x="785" y="178" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">이슈 트래커 (Plane)</text>
   <text x="785" y="202" text-anchor="middle" font-size="13" fill="#4b4f59">할 일은 전부 여기에 티켓으로</text>
   <text x="785" y="222" text-anchor="middle" font-size="13" fill="#4b4f59">claude.ai MCP 커넥터로 어디서나 같은 도구</text>
-  <!-- 폰 -->
+  <!-- iPhone -->
   <rect x="636" y="312" width="300" height="96" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
   <text x="785" y="340" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">밖에서는 Claude 앱으로</text>
-  <text x="785" y="364" text-anchor="middle" font-size="13" fill="#4b4f59">폰·맥에서 원격 제어로 서버 세션을 잇거나 엶</text>
+  <text x="785" y="364" text-anchor="middle" font-size="13" fill="#4b4f59">iPhone·Mac에서 원격 제어로 서버 세션을 잇거나 엶</text>
   <text x="785" y="384" text-anchor="middle" font-size="13" fill="#4b4f59">티켓 커넥터도 같은 것을 씀</text>
   <!-- 선 -->
   <path d="M430,80 L300,172" stroke="#6b6f7a" stroke-width="1.5" fill="none" marker-end="url(#a)"/>
