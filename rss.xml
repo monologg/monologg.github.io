@@ -31,7 +31,7 @@
 &lt;/ul&gt;
 &lt;h2&gt;cron은 일주일 만에 Dagu로 바꿨습니다&lt;/h2&gt;
 &lt;p&gt;후보부터 걸렀습니다. Airflow가 잘하는 것은 잡 사이의 의존 관계, backfill, task 간 값 전달인데 제 잡 스무 개 중 서로 의존하는 것은 하나도 없었고, 가만히 있어도 2GB를 먹으면서 컨테이너로 떠서 &lt;code&gt;claude -p&lt;/code&gt;가 안 됩니다. Kestra, Windmill, Prefect, Dagster도 같은 이유로 접었습니다. 남은 것이 &lt;a href=&quot;https://dagu.sh/&quot;&gt;Dagu&lt;/a&gt;였습니다. &lt;strong&gt;Go로 짠 16MB 단일 바이너리를 호스트에 놓고 실행하면 끝이고, DB도 메시지 브로커도 없습니다.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;cron에서 걸리던 셋이 이렇게 풀렸습니다.&lt;/p&gt;
+&lt;p&gt;cron에서 걸리던 것은 이렇게 풀렸습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;큐&lt;/strong&gt; 같은 큐에 묶인 잡은 한 번에 하나만 돌고, 겹치면 실패도 건너뛰기도 아니라 기다립니다. 10분 시간차와 &lt;code&gt;flock&lt;/code&gt;을 한꺼번에 대신합니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;catchup&lt;/strong&gt; 서버가 꺼져 있어 놓친 실행을 부팅 뒤 정해 둔 시간 안에서 한 번 돌려 줍니다.&lt;/li&gt;
@@ -63,7 +63,7 @@ steps:
 &lt;p&gt;다만 Authentication 문서에 따르면 &lt;strong&gt;setup-token 토큰은 모델 요청만 할 수 있어서 claude.ai 커넥터와 원격 제어는 못 씁니다.&lt;/strong&gt; 아래에서 말할 티켓 커넥터를 세션에서 쓰려면 &lt;code&gt;/login&lt;/code&gt; 쪽이어야 합니다.&lt;/p&gt;
 &lt;p&gt;주의할 변화가 하나 있습니다. 헤드리스 문서는 &lt;code&gt;--bare&lt;/code&gt;가 앞으로 &lt;code&gt;-p&lt;/code&gt;의 기본값이 된다고 적었고, &lt;strong&gt;&lt;code&gt;--bare&lt;/code&gt;는 &lt;code&gt;/login&lt;/code&gt; 결과와 &lt;code&gt;CLAUDE_CODE_OAUTH_TOKEN&lt;/code&gt;을 읽지 않습니다.&lt;/strong&gt; 그 버전이 나오면 구독 로그인으로 돌던 잡이 인증 실패로 멈추므로, CLI를 올릴 때 변경 기록에서 이 항목을 확인합니다.&lt;/p&gt;
 &lt;h2&gt;iPhone에서는 Discord 대신 Claude 앱으로 서버 세션을 엽니다&lt;/h2&gt;
-&lt;p&gt;Hermes만 하던 「iPhone에서 말 걸기」는 Claude Code의 원격 제어가 맡았습니다. 밖에서는 Claude 앱으로 서버의 Claude Code 세션을 쓰고, 켜 둔 것은 둘입니다.&lt;/p&gt;
+&lt;p&gt;Hermes만 하던 「iPhone에서 말 걸기」는 Claude Code의 원격 제어가 맡았습니다. 밖에서는 Claude 앱으로 서버의 Claude Code 세션을 쓰고 이어 보기와 새로 열기를 켜 뒀습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;이어 보기&lt;/strong&gt; 터미널에서 연 세션은 &lt;code&gt;remoteControlAtStartup&lt;/code&gt; 설정으로 전부 원격 제어가 붙게 해서, 자리를 떠도 iPhone에서 이어 봅니다(&lt;a href=&quot;/posts/2026/08/17/2026-08-17-claude-code-remote-control-for-all-sessions/&quot;&gt;설정 글&lt;/a&gt;).&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;새로 열기&lt;/strong&gt; 서버의 tmux에는 &lt;code&gt;claude remote-control&lt;/code&gt; 서버 모드를 띄워 두어 iPhone에서 새 세션을 엽니다(&lt;a href=&quot;/posts/2026/09/19/2026-09-19-claude-code-remote-control-server-mode/&quot;&gt;서버 모드 글&lt;/a&gt;).&lt;/li&gt;
@@ -104,7 +104,7 @@ space to show QR code · w to toggle spawn mode
 &lt;p&gt;&lt;strong&gt;Claude Code의 자동 메모리는 git 레포 단위로 저장됩니다.&lt;/strong&gt; 저는 작업대 레포, 서버 설정 레포, 개인 위키, 블로그처럼 레포 여럿을 오가며 일하는데, 레포 폴더마다 세션을 열었더니 자동 메모리 파일이 한 레포에 104개, 다른 레포에 37개 식으로 다섯 곳에 흩어졌습니다.&lt;/p&gt;
 &lt;p&gt;그래서 레포들을 서브모듈로 묶은 상위 레포 하나를 만들고 &lt;strong&gt;세션은 그 루트에서만&lt;/strong&gt; 엽니다. 메모리가 한곳에 쌓이고, 루트의 CLAUDE.md 한 장이 레포 지도 역할을 합니다. 대신 하위 레포의 CLAUDE.md는 세션 시작 때 실리지 않고 그 폴더의 파일을 Read 도구로 열 때만 들어오는 등 함정이 있는데, 다른 선택지와 비교한 것까지 적으면 길어져서 여기서는 넘어갑니다.&lt;/p&gt;
 &lt;h2&gt;걷어낸 기준은 하나였습니다&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;무엇을 남길지는 기능이 얼마나 많은가가 아니라 실제로 몇 번 썼는가로 정합니다.&lt;/strong&gt; 새 도구를 들일 때는 이미 있는 것 위에 얹고, 몇 주 뒤 실제로 몇 번 썼는지 세어 남길지 정합니다. iPhone에서는 원격 제어 하나만 쓰는 것도, 트래커를 기능이 많은 쪽이 아니라 매일 써도 돈이 안 드는 쪽으로 고른 것도 그래서입니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;무엇을 남길지는 기능이 얼마나 많은가가 아니라 실제로 몇 번 썼는가로 정합니다.&lt;/strong&gt; 새 도구를 들일 때는 이미 있는 것 위에 얹고, 몇 주 뒤 실제로 몇 번 썼는지 세어 남길지 정합니다. 그래서 iPhone에서는 원격 제어 하나만 씁니다. 트래커도 기능이 많은 쪽보다 매일 써도 돈이 안 드는 쪽으로 골랐습니다.&lt;/p&gt;
 </content:encoded></item><item><title>개발자 채용 트렌드 3편: 코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다</title><link>https://monologg.kr/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/</guid><description>회사 50곳의 공식 채용 안내를 2024년부터 시점별로 열어 봤습니다. 코딩 테스트는 남아 있고, 해외는 규칙을 공개한 회사 대부분이 AI를 쓰는 라운드와 막는 라운드를 함께 두기 시작했습니다. 국내는 신입 공채 일부가 코딩 테스트를 AI 활용 평가로 바꿨습니다.</description><pubDate>Wed, 14 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;개발자 채용 트렌드&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
