@@ -20,7 +20,7 @@ Updated: 2026-10-19
 Category: tech
 Tags: claude-code, claude-p, hermes-agent, dagu, mcp, homelab
 
-> 집 서버에 Hermes Agent를 상주시켰다가 열흘 만에 걷어냈습니다. 남은 것은 cron뿐이었고, 지금은 Max 구독 하나로 cron 자리의 Dagu가 claude -p를 돌리고 할 일은 이슈 트래커 티켓으로 적고 iPhone은 원격 제어로 서버 세션을 엽니다. 왜 걷어냈는지, cron이 왜 불편했고 Dagu로 무엇이 풀렸는지, 구독 로그인으로 예약 실행해도 약관상 괜찮은 조건까지 정리했습니다.
+> 집 서버에 Hermes Agent를 띄워 두고 쓰다가 열흘 만에 걷어냈습니다. 남은 것은 cron뿐이었고, 지금은 Max 구독 하나로 cron 자리의 Dagu가 claude -p를 돌리고 할 일은 이슈 트래커 티켓으로 적고 iPhone은 원격 제어로 서버 세션을 엽니다. 왜 걷어냈는지, cron이 왜 불편했고 Dagu로 무엇이 풀렸는지, 구독 로그인으로 예약 실행해도 약관상 괜찮은 조건까지 정리했습니다.
 
 > **Claude Code 운영기**
 >
@@ -28,7 +28,7 @@ Tags: claude-code, claude-p, hermes-agent, dagu, mcp, homelab
 
 > 2026년 10월 기준입니다. Claude Code 2.1.300과 Dagu 2.18.2에서 확인했고, Hermes Agent는 7월에, 약관과 공식 문서는 10월에 확인했습니다.
 
-올여름 집 서버에 오픈소스 에이전트 [Hermes Agent](https://github.com/NousResearch/hermes-agent)를 상주시켰다가 열흘 만에 걷어냈습니다. **제 용도에서 Hermes가 해 준 일 중 남은 것은 cron뿐이었습니다.** 지금은 Max 구독 하나로 스케줄러 Dagu가 `claude -p`를 돌리고, 할 일은 이슈 트래커 티켓으로 적고, iPhone에서는 원격 제어로 서버의 Claude Code 세션을 엽니다.
+올여름 집 서버에 오픈소스 에이전트 [Hermes Agent](https://github.com/NousResearch/hermes-agent)를 띄워 두고 쓰다가 열흘 만에 걷어냈습니다. **제 용도에서 Hermes가 해 준 일 중 남은 것은 cron뿐이었습니다.** 지금은 Max 구독 하나로 스케줄러 Dagu가 `claude -p`를 돌리고, 할 일은 이슈 트래커 티켓으로 적고, iPhone에서는 원격 제어로 서버의 Claude Code 세션을 엽니다.
 
 이 글은 왜 걷어냈고 그 자리에 무엇이 들어갔는지를 한 편에 그린 것입니다. 설정 파일과 함정까지 적으면 길어져서, 이 글은 구성과 그렇게 한 이유까지만 다룹니다.
 
@@ -36,7 +36,7 @@ Tags: claude-code, claude-p, hermes-agent, dagu, mcp, homelab
 
 ## Hermes Agent에서 얻은 것은 cron뿐이었습니다
 
-Hermes Agent는 서버에 상주하면서 크론으로 일을 돌리고 메신저로 대화하는 에이전트입니다. 7월에 열흘 남짓 써 봤고, 맡긴 일은 아침 브리핑 둘(어제의 티켓 변화, 밤새 쌓인 글)을 Discord로 보내는 것과 iPhone에서 Discord로 말을 걸면 답하는 것이었습니다.
+Hermes Agent는 서버에 늘 떠 있으면서 크론으로 일을 돌리고 메신저로 대화하는 에이전트입니다. 7월에 열흘 남짓 써 봤고, 맡긴 일은 아침 브리핑 둘(어제의 티켓 변화, 밤새 쌓인 글)을 Discord로 보내는 것과 iPhone에서 Discord로 말을 걸면 답하는 것이었습니다.
 
 이틀 뒤에 **「cron 말고 뭐가 다르냐」**는 생각이 들었고, 코드를 열어 보니 실제로 그랬습니다. 브리핑 스크립트가 티켓 조회부터 마크다운 조립까지 다 끝내서 stdout에 완성품을 내놓고, Hermes의 LLM은 그 결과를 문장 몇 줄로 다시 풀어 쓰는 일만 했습니다. Hermes가 해 주던 일은 넷인데, 셋은 이미 갖고 있던 것으로 되는 일이었습니다.
 
