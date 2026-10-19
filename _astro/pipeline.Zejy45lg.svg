@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" width="960" height="420" role="img" aria-labelledby="t" font-family="Pretendard, 'Noto Sans KR', 'Apple SD Gothic Neo', sans-serif">
+  <title id="t">티켓 브리핑 구성도: 이슈 트래커의 설명·코멘트·날짜를 수집 스크립트가 읽어 정렬·날짜 계산·코멘트 첨부·잘림 표시·추천 이력을 붙여 넘기고, 도구 없는 claude -p가 1순위와 오늘은 아닌 일을 골라 쓰면 Discord로 보낸다. 발신이 성공하면 추천 이력이 다음 날 수집 스크립트로 돌아간다</title>
+  <rect x="0" y="0" width="960" height="420" rx="14" fill="#f6f6f8"/>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#6b6f7a"/>
+    </marker>
+  </defs>
+
+  <!-- 이슈 트래커 -->
+  <rect x="24" y="48" width="180" height="236" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="114" y="78" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">이슈 트래커</text>
+  <text x="114" y="100" text-anchor="middle" font-size="13" fill="#6b6f7a">Plane · Linear · Jira</text>
+  <line x1="44" y1="114" x2="184" y2="114" stroke="#e1e2e6"/>
+  <text x="114" y="140" text-anchor="middle" font-size="13" fill="#4b4f59">티켓 설명</text>
+  <text x="114" y="166" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2228">마지막 코멘트</text>
+  <text x="114" y="192" text-anchor="middle" font-size="13" fill="#4b4f59">착수일 · 마감일</text>
+  <text x="114" y="218" text-anchor="middle" font-size="13" fill="#4b4f59">상태 · 우선순위</text>
+  <text x="114" y="244" text-anchor="middle" font-size="13" fill="#4b4f59">어제 활동</text>
+
+  <!-- 수집 스크립트 -->
+  <rect x="246" y="48" width="300" height="236" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="396" y="78" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">수집 스크립트</text>
+  <text x="396" y="100" text-anchor="middle" font-size="13" fill="#6b6f7a">매번 같은 답이 나와야 하는 일</text>
+  <line x1="266" y1="114" x2="526" y2="114" stroke="#e1e2e6"/>
+  <text x="396" y="140" text-anchor="middle" font-size="13" fill="#4b4f59">착수일 순 정렬 · D-day 계산</text>
+  <text x="396" y="166" text-anchor="middle" font-size="13" fill="#4b4f59">후보마다 마지막 코멘트 첨부</text>
+  <text x="396" y="192" text-anchor="middle" font-size="13" fill="#4b4f59">잘린 곳에 잘렸다는 표시</text>
+  <text x="396" y="218" text-anchor="middle" font-size="13" fill="#4b4f59">부딪히는 신호 미리 정리</text>
+  <text x="396" y="244" text-anchor="middle" font-size="13" fill="#4b4f59">어제까지 추천 횟수 집계</text>
+  <text x="396" y="270" text-anchor="middle" font-size="12" fill="#6b6f7a">넘길 것이 없으면 LLM을 부르지 않음</text>
+
+  <!-- claude -p -->
+  <rect x="588" y="48" width="210" height="236" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="693" y="78" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">claude -p</text>
+  <text x="693" y="100" text-anchor="middle" font-size="13" fill="#6b6f7a">도구·MCP 없이 입력만</text>
+  <line x1="608" y1="114" x2="778" y2="114" stroke="#e1e2e6"/>
+  <text x="693" y="140" text-anchor="middle" font-size="13" fill="#4b4f59">오늘 1순위</text>
+  <text x="693" y="166" text-anchor="middle" font-size="13" fill="#4b4f59">2·3순위 · 여력 되면</text>
+  <text x="693" y="192" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2228">오늘은 아님 + 이유</text>
+  <text x="693" y="218" text-anchor="middle" font-size="13" fill="#4b4f59">다가오는 시한 · 어제</text>
+  <text x="693" y="244" text-anchor="middle" font-size="13" fill="#4b4f59">문장으로 쓰기</text>
+
+  <!-- Discord -->
+  <rect x="838" y="118" width="100" height="96" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
+  <text x="888" y="156" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">Discord</text>
+  <text x="888" y="180" text-anchor="middle" font-size="13" fill="#4b4f59">아침 8시</text>
+
+  <!-- 흐름 화살표 -->
+  <line x1="206" y1="166" x2="242" y2="166" stroke="#6b6f7a" stroke-width="1.6" marker-end="url(#a)"/>
+  <text x="224" y="156" text-anchor="middle" font-size="11" fill="#6b6f7a">API</text>
+  <line x1="548" y1="166" x2="584" y2="166" stroke="#6b6f7a" stroke-width="1.6" marker-end="url(#a)"/>
+  <text x="566" y="156" text-anchor="middle" font-size="11" fill="#6b6f7a">stdin</text>
+  <line x1="800" y1="166" x2="834" y2="166" stroke="#6b6f7a" stroke-width="1.6" marker-end="url(#a)"/>
+
+  <!-- 추천 이력 되먹임 -->
+  <path d="M888,216 L888,350 L396,350 L396,290" fill="none" stroke="#6b6f7a" stroke-width="1.6" stroke-dasharray="6 5" marker-end="url(#a)"/>
+  <text x="642" y="376" text-anchor="middle" font-size="13" fill="#4b4f59">고른 1~3순위 티켓 번호를 발신이 성공한 뒤에만 기록 → 다음 날 아침 입력으로</text>
+</svg>
