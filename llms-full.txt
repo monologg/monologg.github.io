@@ -12,6 +12,161 @@ concatenated for easy consumption by LLMs. For the index-only version see /llms.
 
 ---
 
+# Claude Code 운영기 2편: 혼자 쓴다면 Slack보다 Discord가 나을까
+
+URL: https://monologg.kr/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/
+Published: 2026-10-19
+Category: tech
+Tags: claude-code, discord, slack, mcp, github-actions
+
+> 혼자 쓰는 에이전트 알림 창구로 Slack과 Discord 중 무엇을 고를지 정리했습니다. 돈을 낼 수 있으면 Slack, 무료로 쓰면서 작은 서버를 직접 돌릴 수 있으면 Discord입니다. 받고 싶은 알림별로 Discord에서 직접 만들어야 하는 것(GitHub·트래커 알림, 2000자 분할, MCP)과 지금 쓰는 코드를 담았습니다.
+
+> **Claude Code 운영기**
+>
+> 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
+> 2. **혼자 쓴다면 Slack보다 Discord가 나을까**
+
+> 2026년 10월 기준입니다. Slack 가격표와 각 서비스 공식 문서는 10월 19일에 확인했습니다. 글에 나오는 GitHub 알림 서버와 Plane 웹훅 서버는 제가 만들어 혼자 쓰는 것이고 지금은 공개하지 않습니다.
+
+Slack이 괜찮은 건 알지만 혼자 쓰기엔 요금이 아깝고, Discord는 안 써 봐서 망설여진다면 기준은 이렇습니다. **받는 알림이 GitHub Actions 결과나 짧은 메시지 정도라면 Discord는 웹훅 하나로 끝나지만, 여러 레포의 GitHub 알림·이슈 트래커 알림·LLM이 쓴 긴 글까지 받으려면 서버와 코드를 하나씩 직접 만들게 됩니다.** 그 품을 들이기 싫고 돈을 낼 수 있다면 Slack이 낫습니다. Discord가 무조건 나은 것은 아닙니다.
+
+받고 싶은 알림별로 무엇이 드는지는 아래 표에 먼저 정리했습니다.
+
+| 받고 싶은 것 | Discord에서 | Slack에서 |
+| --- | --- | --- |
+| 혼자 쓰는 알림 채널 | 무료 | 무료 플랜은 메시지 90일·앱 10개, Pro는 월 \$8.75 |
+| GitHub Actions 결과 | Actions 한 단계(`sarisia/actions-status-discord`) | Actions 한 단계(공식 [`slackapi/slack-github-action`](https://github.com/slackapi/slack-github-action)) |
+| GitHub 이슈·PR 알림 | 레포가 몇 개면 내장 `/github` 웹훅, 많거나 필터가 필요하면 서버를 직접 | GitHub 공식 앱 설치 |
+| 이슈 트래커(Plane) 알림 | 웹훅 서버를 직접 | Plane Pro면 공식 연동, 무료 플랜이면 Slack도 직접 |
+| LLM이 쓴 긴 브리핑 | 2000자까지라 넘으면 직접 나눠 보냄 | 4만 자까지 한 번에 |
+| Claude 앱에서 채널 읽기·쓰기 | MCP 서버를 직접 띄움(무인증이면 사설망 안 세션에서만) | Anthropic이 검증한 [공식 커넥터](https://claude.com/marketplace/connectors/slack) |
+
+Discord 칸은 제가 석 달 동안 실제로 쓰고 만든 것이고, Slack 칸은 써 본 것이 아니라 공식 문서로 확인한 내용입니다. [1편](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)에서 그린 구성은 Max 구독 하나, 집 서버, 서브모듈로 묶은 상위 레포 하나에서만 여는 세션, `claude -p`로 도는 예약 잡, 이슈 트래커 티켓, iPhone의 원격 제어이고, 예약 잡과 세션이 보내는 소식은 전부 Discord로 옵니다.
+
+## 혼자 쓰는 워크스페이스에 Slack 요금은 애매했습니다
+
+**[Slack 무료 플랜](https://slack.com/pricing)은 메시지를 90일까지만 보여 주고, 1년이 지난 데이터는 지웁니다.** 앱 연동도 10개까지라 이 제한이 없는 Pro로 올리면 사용자당 월 \$8.75(연 결제면 \$7.25)입니다.
+
+사용자가 저 하나뿐인 워크스페이스라 매달 나가는 요금이 더 아깝게 느껴졌습니다. Discord는 서버·채널·봇·웹훅을 돈 없이 씁니다. 지금 제 Discord 서버에는 어제의 티켓 변화나 밤새 쌓인 글을 정리한 아침 브리핑 일곱 개, 트래커 티켓 생성·완료 알림, GitHub 알림, 블로그 배포 알림, 실패 경고가 채널별로 들어옵니다.
+
+## Discord에는 GitHub 공식 앱이 없습니다
+
+Slack에는 GitHub이 직접 만들고 운영하는 앱이 있어서 `/github subscribe owner/repo` 한 줄로 채널을 구독하고, 브랜치·라벨로 거르고, 채팅에서 이슈를 닫습니다. Discord용 공식 앱은 없습니다.
+
+내장 기능은 있습니다. **채널 웹훅 URL 끝에 `/github`을 붙여 GitHub 레포의 webhook Payload URL로 넣으면, Discord가 GitHub payload를 메시지로 바꿔 줍니다**([문서](https://docs.discord.com/developers/resources/webhook#execute-githubcompatible-webhook)). 처음에는 이걸 썼는데 한계가 분명했습니다.
+
+- **레포마다 등록** GitHub에는 개인 계정 전체에 거는 webhook이 없습니다([GitHub 문서](https://docs.github.com/en/webhooks/types-of-webhooks)). 조직 webhook은 조직 레포 전체를 받지만 제 레포는 개인 계정에 있어서, 레포마다 하나씩 걸고 새 레포를 만들 때마다 또 걸어야 합니다. 레포가 수십 개여서 저는 이것 때문에 그만뒀습니다.
+- **이벤트 18종 고정** push·pull_request·issues·release 같은 18종만 메시지가 됩니다. `workflow_run` 같은 나머지는 204를 돌려주고 채널에는 아무것도 뜨지 않습니다. Discord는 2023년에 [당분간 이벤트를 늘리지 않겠다](https://github.com/discord/discord-api-docs/issues/6203)고 답했습니다.
+- **필터와 모양 고정** 브랜치·라벨 필터가 없고 메시지 모양도 못 바꿉니다. Discord에서 이슈를 닫는 것처럼 거꾸로 가는 일도 안 됩니다.
+
+찾아본 서드파티 봇은 관리가 멈춘 것들이라, 결국 GitHub App 기반 서버를 직접 만들어 집 서버에서 돌립니다. App을 계정에 한 번 설치하면 앞으로 만들 레포까지 적용되고, 어느 채널이 어느 레포를 받을지는 Discord 슬래시 커맨드로 정합니다. 명령은 Slack용 GitHub 앱의 `/github subscribe` 체계를 그대로 따랐습니다. Claude Code와 함께 며칠 만에 첫 버전을 올렸고, 애플리케이션 코드는 약 2,300줄입니다.
+
+GitHub Actions 결과는 서버 없이 받습니다. [`sarisia/actions-status-discord`](https://github.com/sarisia/actions-status-discord)를 workflow 마지막 단계에 넣으면 잡 상태를 embed로 보내 줍니다. 제 블로그 배포 workflow의 마지막 단계입니다.
+
+```yaml
+- name: Discord Notification
+  uses: sarisia/actions-status-discord@v1
+  if: always()
+  with:
+    webhook: ${{ secrets.DISCORD_WEBHOOK }}
+    title: 'Deploy to monologg.github.io'
+    description: 'monologg.kr 블로그 배포 (IndexNow: ${{ steps.indexnow.outcome }}, WebSub: ${{ steps.websub.outcome }})'
+    username: blog-deploy
+```
+
+`if: always()`라 배포가 실패해도 알림이 옵니다. 앞의 검색엔진 제출 단계는 `continue-on-error: true`라 실패해도 배포가 성공으로 끝납니다. 그래서 단계별 `outcome`을 본문에 넣어, 성공 알림 안에 「IndexNow: failure」가 보이게 했습니다.
+
+## 트래커 알림은 웹훅 서버 하나로 받습니다
+
+**이슈 트래커 [Plane의 Slack 연동](https://docs.plane.so/integrations/slack)은 Pro 플랜(좌석당 월 \$8, 연 결제면 \$6) 기능이고, Plane 문서의 연동 목록에 Discord는 없습니다.** 그래서 Plane 워크스페이스의 웹훅을 받아 Discord embed로 바꿔 보내는 작은 FastAPI 웹훅 서버를 집 서버에 뒀습니다. Plane Cloud가 이 서버에 닿아야 해서 Cloudflare Tunnel로 HTTPS 주소를 하나 열었습니다.
+
+Plane webhook은 받는 대로 넘기면 시끄럽고 빠진 정보도 있어서, 받은 뒤에 거르고 채웁니다.
+
+- **updated는 버리고 완료만 고른다** 상태나 필드를 바꿀 때마다 updated가 옵니다. 생성은 그대로 알리고, updated 가운데 상태 그룹이 completed로 바뀐 것만 골라 완료로 알립니다.
+- **같은 이벤트가 두 번 온다** 생성 이벤트가 중복으로 오고, 같은 상태 전환이 `state`·`state_id` 두 payload로 옵니다. 그래서 같은 embed는 15초 안에 한 번만 보냅니다.
+- **티켓 번호가 없다** payload에는 프로젝트 UUID만 와서, 알림 제목에 넣을 「WEB-12」 같은 티켓 번호는 Plane API로 프로젝트 식별자를 조회해 만듭니다.
+
+공인망에 연 주소라 서명 검증은 기본값을 거부로 뒀습니다. `x-plane-signature`를 HMAC-SHA256으로 검증하고, secret이 설정되지 않았으면 모든 POST 요청을 401로 돌려보냅니다. 이 서버는 처음 열흘 동안 다섯 번 고친 뒤로 기능을 손대지 않았습니다.
+
+## Discord 메시지가 2000자를 넘으면 한 줄 안에서도 나눠야 합니다
+
+**Discord 메시지 content는 [2000자](https://docs.discord.com/developers/resources/message#create-message)까지이고, 넘으면 메시지 전체가 거절됩니다.** Slack은 [4만 자가 넘어야](https://docs.slack.dev/reference/methods/chat.postMessage/) 메시지를 자르므로, 여기서부터는 Discord라서 생긴 일입니다. 제 아침 브리핑은 `claude -p`가 본문을 쓰고 Python 스크립트가 봇 REST API로 보냅니다. `claude -p`는 도구 없이 표준 입력을 받아 글만 내므로, 메시지를 자르고 보내는 일은 전부 코드 몫입니다.
+
+처음 짠 함수는 메시지를 1900자 안에서 줄 경계로만 나눴습니다. 브리핑의 티켓 번호마다 링크를 붙이려고 보니 링크 하나가 130자쯤(URL 119자 + 마크다운)이라, 티켓 16개만 늘어놓아도 한 줄이 혼자 2000자를 넘습니다. 옛 함수로 테스트를 돌려 보니 2127자 메시지가 그대로 만들어졌습니다. 그대로 배포했다면 그 메시지가 거절되고, 실패를 크게 알리게 해 둔 발신 코드가 그날 브리핑을 통째로 멈췄을 겁니다.
+
+그래서 줄 경계를 먼저 보되, 한 줄이 한도를 넘으면 줄 안에서도 자릅니다. 이때 `[텍스트](<URL>)` 꼴 링크 하나는 쪼개지 않습니다. 끊기면 남은 조각이 URL 원문으로 보이기 때문입니다.
+
+```python
+import json
+import re
+import urllib.request
+
+CHUNK = 1900  # Discord content 한도 2000자 밑
+LINK = re.compile(r"\[[^\[\]]*\]\(<[^>]*>\)")  # [텍스트](<URL>) 하나는 쪼개지 않는다
+
+
+def atoms(line: str):
+    """링크는 통째로, 링크 아닌 조각만 CHUNK 단위로 자른다."""
+    for part in re.split(f"({LINK.pattern})", line):
+        if LINK.fullmatch(part):
+            yield part
+        else:
+            yield from (part[i:i + CHUNK] for i in range(0, len(part), CHUNK))
+
+
+def chunks(text: str):
+    """줄 경계 우선, 한 줄이 한도를 넘으면 줄 안에서도 자른다."""
+    buf = ""
+    for line in text.splitlines(keepends=True):
+        for atom in ([line] if len(line) <= CHUNK else atoms(line)):
+            if len(buf) + len(atom) > CHUNK:
+                if buf.strip():  # 공백뿐인 조각은 보내지 않고 버린다
+                    yield buf
+                buf = ""
+            buf += atom
+    if buf.strip():
+        yield buf
+
+
+def send(channel_id: str, content: str, token: str) -> None:
+    req = urllib.request.Request(
+        f"https://discord.com/api/v10/channels/{channel_id}/messages",
+        data=json.dumps({"content": content}).encode(),
+        headers={
+            "Authorization": f"Bot {token}",
+            "Content-Type": "application/json",
+            "User-Agent": "my-briefing/1.0",  # 기본 UA(Python-urllib)는 403
+        },
+        method="POST",
+    )
+    urllib.request.urlopen(req, timeout=30)
+```
+
+실제 코드는 여기에 하나를 더 해서, 자른 자리가 섹션 제목 바로 뒤면 제목을 다음 메시지로 넘깁니다. 고친 뒤 전날 모은 재료로 돌려 보니 링크 48개가 든 7,504자 브리핑이 메시지 6통(가장 긴 것 1,726자)으로 나뉘었고, 중간에 잘린 링크는 없었습니다.
+
+보낼 때 챙길 것이 더 있습니다.
+
+- **기본 User-Agent는 403** Python `urllib` 기본 UA로 보내면 Discord 앞단에서 403으로 막힙니다. 위 코드처럼 UA를 직접 넣습니다.
+- **링크 텍스트 속 이모지** Discord는 `[텍스트](url)` 꼴 링크의 텍스트에 이모지가 있으면 링크로 표시하지 않고 원문 그대로 보여 줍니다([의도된 동작](https://github.com/discord/discord-api-docs/issues/6810)). 어느 날 아침 브리핑에서 영상 세 건이 대괄호와 URL이 드러난 원문 그대로 나갔는데, 모델이 그날 처음 링크 텍스트에 영상 이모지를 넣었습니다. 프롬프트에 적은 규칙은 매번 지켜진다는 보장이 없어서 보내기 직전에 코드가 이모지를 링크 앞으로 꺼냅니다.
+
+  ```text
+  [🎥 영상 제목](<https://youtu.be/...>)   링크가 안 되고 이 글자 그대로 보인다
+  🎥 [영상 제목](<https://youtu.be/...>)   보내기 직전에 이렇게 옮긴다
+  ```
+- **미리보기 끄기** 링크를 `<URL>`처럼 꺾쇠로 감싸면 미리보기 카드가 붙지 않습니다([Discord 도움말](https://support.discord.com/hc/en-us/articles/206342858--How-do-I-disable-auto-embed)). 제 브리핑·게시 스크립트는 전부 이렇게 씁니다.
+
+## Discord MCP는 사설망 안에서만 씁니다
+
+대화형 Claude Code 세션이 Discord 채널을 읽고 보낼 때는 오픈소스 [SaseQ/discord-mcp](https://github.com/SaseQ/discord-mcp)를 씁니다. 집 서버에 HTTP 모드로 하나만 띄우고 모든 기기의 Claude Code가 그 서버를 보게 해서, 봇 토큰은 서버에만 있습니다. 예약 잡의 `claude -p`는 도구를 한 번도 쓰지 않아 MCP를 아예 붙이지 않고, 발신은 위의 Python 함수가 합니다.
+
+**이 서버의 MCP 엔드포인트에는 자체 인증이 없어서, 공인망에 열지 않고 사설망 안에서만 닿는 주소에 둡니다.** 집 LAN에도 열지 않습니다. 대신 claude.ai 커스텀 커넥터로는 못 붙입니다. 커넥터는 Anthropic 클라우드에서 서버로 접속하므로 [공인 인터넷에서 닿아야](https://support.claude.com/en/articles/11175166-get-started-with-custom-connectors-using-remote-mcp) 하기 때문입니다.
+
+그래서 claude.ai 웹이나 앱의 일반 대화에는 Discord MCP가 보이지 않고, 사설망 안에 있는 기기의 Claude Code 세션에서만 씁니다. iPhone에서 Claude 앱의 원격 제어로 연 세션은 서버에서 도는 세션이라 그대로 보입니다. 1편의 트래커는 Plane이 내주는 인증 있는 원격 MCP라 커넥터로 붙여 iPhone 앱에서도 씁니다.
+
+Slack으로 가면 GitHub 알림 서버와 메시지를 자르는 함수는 걷어낼 수 있지만, 트래커 알림은 Plane도 Pro로 올려야 공식 연동이 생깁니다. 레포가 몇 개 안 되고 `workflow_run` 같은 이벤트가 필요 없다면, 내장 `/github` 웹훅과 Actions 알림 액션만으로도 시작할 수 있습니다.
+
+---
+
 # Claude Code 운영기 1편: Hermes Agent 대신 cron과 claude -p를 씁니다
 
 URL: https://monologg.kr/posts/2026/10/18/2026-10-18-claude-code-ops-overview/
@@ -25,6 +180,7 @@ Tags: claude-code, claude-p, hermes-agent, dagu, mcp, homelab
 > **Claude Code 운영기**
 >
 > 1. **Hermes Agent 대신 cron과 claude -p를 씁니다**
+> 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
 
 > 2026년 10월 기준입니다. Claude Code 2.1.300과 Dagu 2.18.2에서 확인했고, Hermes Agent는 7월에, 약관과 공식 문서는 10월에 확인했습니다.
 
@@ -41,7 +197,7 @@ Hermes Agent는 서버에 늘 떠 있으면서 크론으로 일을 돌리고 메
 이틀 뒤에 **「cron 말고 뭐가 다르냐」**는 생각이 들었고, 코드를 열어 보니 실제로 그랬습니다. 브리핑 스크립트가 티켓 조회부터 마크다운 조립까지 다 끝내서 stdout에 완성품을 내놓고, Hermes의 LLM은 그 결과를 문장 몇 줄로 다시 풀어 쓰는 일만 했습니다. Hermes가 해 주던 일은 넷인데, 셋은 이미 갖고 있던 것으로 되는 일이었습니다.
 
 - **정해진 시각에 잡 돌리기** cron이면 됩니다. 나중에 Dagu로 바꿨습니다.
-- **Discord로 보내기** 이미 있던 웹훅 릴레이가 합니다.
+- **Discord로 보내기** 이미 있던 웹훅 서버가 합니다.
 - **정리된 데이터를 문장으로 풀어 쓰기** `claude -p` 한 번이면 되고, 품질은 이쪽이 낫습니다.
 - **iPhone에서 말 걸면 답하기** 이것만 당시에 대신할 것이 없던, Hermes라서 되는 일이었습니다.
 
@@ -2610,7 +2766,7 @@ sync 클라이언트는 별도 벤치마크가 없지만 사실상 httpx와 동�
 
 SDK를 만드는 쪽에도 가장 알맞은 구조입니다. OpenAI, Anthropic SDK도 httpx를 씁니다. sync·async 클라이언트를 하나의 코드베이스로 만들 수 있고, transport 추상화로 HTTP 레이어를 갈아끼울 수 있습니다. `openai[aiohttp]`가 바로 그런 예입니다. API는 httpx 스타일을 유지하면서, 성능이 필요한 밑단만 aiohttp로 교체하는 것이죠.
 
-테스트 생태계에서도 표준입니다. `ASGITransport`로 FastAPI/Starlette 앱을 네트워크 없이 인프로세스로 호출할 수 있습니다. 그래서 Starlette TestClient가 httpx2 기반이고, respx 같은 mocking 도구도 붙어 있습니다. 기본값이 안전하다는 것도 장점입니다. 기본 timeout이 있고(requests처럼 무한히 기다리지 않습니다. 처음 발행 때 aiohttp도 무한 대기라고 썼는데 aiohttp 기본값은 300초라 2026-10-18에 고쳤습니다), redirect를 명시적으로 처리하며, 전체 타입 힌트와 HTTP/2 지원, trio 호환까지 갖추고 있습니다.
+테스트 생태계에서도 표준입니다. `ASGITransport`로 FastAPI/Starlette 앱을 네트워크 없이 인프로세스로 호출할 수 있습니다. 그래서 Starlette TestClient가 httpx2 기반이고, respx 같은 mocking 도구도 붙어 있습니다. 기본값이 안전하다는 것도 장점입니다. 기본 timeout이 있고(requests처럼 무한히 기다리지 않습니다), redirect를 명시적으로 처리하며, 전체 타입 힌트와 HTTP/2 지원, trio 호환까지 갖추고 있습니다.
 
 무엇보다 실제 API 호출에서는 시간 대부분이 네트워크 레이턴시입니다. 수십에서 수백 ms짜리 왕복에서 클라이언트 오버헤드 0.5ms vs 0.09ms는 측정조차 어렵습니다. 위 벤치마크는 로컬호스트 마이크로벤치마크라 격차가 극대화된 값입니다. aiohttp가 실제로 차이를 내는 것은 대량 크롤링이나 fan-out처럼 초당 수백에서 수천 건 요청을 쏟아내는 워크로드뿐입니다.
 

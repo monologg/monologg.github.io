@@ -10,6 +10,7 @@
 - https://huggingface.co/monologg
 
 ## Articles
+- [Claude Code 운영기 2편: 혼자 쓴다면 Slack보다 Discord가 나을까](https://monologg.kr/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/): 혼자 쓰는 에이전트 알림 창구로 Slack과 Discord 중 무엇을 고를지 정리했습니다. 돈을 낼 수 있으면 Slack, 무료로 쓰면서 작은 서버를 직접 돌릴 수 있으면 Discord입니다. 받고 싶은 알림별로 Discord에서 직접 만들어야 하는 것(GitHub·트래커 알림, 2000자 분할, MCP)과 지금 쓰는 코드를 담았습니다.
 - [Claude Code 운영기 1편: Hermes Agent 대신 cron과 claude -p를 씁니다](https://monologg.kr/posts/2026/10/18/2026-10-18-claude-code-ops-overview/): 집 서버에 Hermes Agent를 띄워 두고 쓰다가 열흘 만에 걷어냈습니다. 남은 것은 cron뿐이었고, 지금은 Max 구독 하나로 cron 자리의 Dagu가 claude -p를 돌리고 할 일은 이슈 트래커 티켓으로 적고 iPhone은 원격 제어로 서버 세션을 엽니다. 왜 걷어냈는지, cron이 왜 불편했고 Dagu로 무엇이 풀렸는지, 구독 로그인으로 예약 실행해도 약관상 괜찮은 조건까지 정리했습니다.
 - [개발자 채용 트렌드 3편: 코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다](https://monologg.kr/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/): 회사 50곳의 공식 채용 안내를 2024년부터 시점별로 열어 봤습니다. 코딩 테스트는 남아 있고, 해외는 규칙을 공개한 회사 대부분이 AI를 쓰는 라운드와 막는 라운드를 함께 두기 시작했습니다. 국내는 신입 공채 일부가 코딩 테스트를 AI 활용 평가로 바꿨습니다.
 - [개발자 채용 트렌드 2편: LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다](https://monologg.kr/posts/2026/10/14/2026-10-14-llm-skills-asked-in-job-postings/): LLM 개발 경험을 언급한 공고 3,500여 건을 LLM에게 다시 읽혀 어떤 LLM 지식을 묻는지 정리했습니다. 2024년에는 API 연동과 파인튜닝을 묻던 공고가 2026년에는 에이전트와 결과 평가를 묻고, MCP처럼 새 항목이 생겼습니다.
