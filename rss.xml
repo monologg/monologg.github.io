@@ -30,7 +30,7 @@
 &lt;li&gt;&lt;strong&gt;기록이 안 남음&lt;/strong&gt; 언제 얼마나 걸렸고 무슨 출력을 뱉었는지 남지 않아, 문제가 생기면 매번 SSH로 들어가 파일을 뒤졌습니다.&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;cron은 일주일 만에 Dagu로 바꿨습니다&lt;/h2&gt;
-&lt;p&gt;후보부터 걸렀습니다. Airflow가 잘하는 것은 잡 사이의 의존 관계, backfill, task 간 값 전달인데 제 잡 스무 개 중 서로 의존하는 것은 하나도 없었고, 가만히 있어도 2GB를 먹으면서 컨테이너로 떠서 &lt;code&gt;claude -p&lt;/code&gt;가 안 됩니다. Kestra, Windmill, Prefect, Dagster도 같은 이유로 접었습니다. 남은 것이 &lt;a href=&quot;https://dagu.sh/&quot;&gt;Dagu&lt;/a&gt;였습니다. &lt;strong&gt;Go로 짠 16MB 단일 바이너리를 호스트에 놓고 실행하면 끝이고, DB도 메시지 브로커도 없습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;후보부터 걸렀습니다. Airflow가 잘하는 것은 잡 사이의 의존 관계, backfill, task 간 값 전달인데 제 잡 스무 개 중 서로 의존하는 것은 하나도 없었고, 가만히 있어도 2GB를 먹으면서 컨테이너로 떠서 &lt;code&gt;claude -p&lt;/code&gt;가 안 됩니다. Kestra, Windmill, Prefect, Dagster도 접었습니다. 앞의 둘은 Docker로 띄우는 구성이 기본이고, Prefect·Dagster는 호스트에 깔리지만 스케줄러·웹 서버·DB가 따라오는 점이 Airflow와 같았습니다(2026-10-19 정정: 처음에는 넷 다 「같은 이유」로만 적었습니다). 남은 것이 &lt;a href=&quot;https://dagu.sh/&quot;&gt;Dagu&lt;/a&gt;였습니다. &lt;strong&gt;Go로 짠 16MB 단일 바이너리를 호스트에 놓고 실행하면 끝이고, DB도 메시지 브로커도 없습니다.&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;cron에서 걸리던 것은 이렇게 풀렸습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;큐&lt;/strong&gt; 같은 큐에 묶인 잡은 한 번에 하나만 돌고, 겹치면 실패도 건너뛰기도 아니라 기다립니다. 10분 시간차와 &lt;code&gt;flock&lt;/code&gt;을 한꺼번에 대신합니다.&lt;/li&gt;

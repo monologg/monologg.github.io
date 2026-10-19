@@ -16,6 +16,7 @@ concatenated for easy consumption by LLMs. For the index-only version see /llms.
 
 URL: https://monologg.kr/posts/2026/10/18/2026-10-18-claude-code-ops-overview/
 Published: 2026-10-18
+Updated: 2026-10-19
 Category: tech
 Tags: claude-code, claude-p, hermes-agent, dagu, mcp, homelab
 
@@ -60,7 +61,7 @@ cron으로 돌려 보니 세 가지가 걸렸습니다.
 
 ## cron은 일주일 만에 Dagu로 바꿨습니다
 
-후보부터 걸렀습니다. Airflow가 잘하는 것은 잡 사이의 의존 관계, backfill, task 간 값 전달인데 제 잡 스무 개 중 서로 의존하는 것은 하나도 없었고, 가만히 있어도 2GB를 먹으면서 컨테이너로 떠서 `claude -p`가 안 됩니다. Kestra, Windmill, Prefect, Dagster도 같은 이유로 접었습니다. 남은 것이 [Dagu](https://dagu.sh/)였습니다. **Go로 짠 16MB 단일 바이너리를 호스트에 놓고 실행하면 끝이고, DB도 메시지 브로커도 없습니다.**
+후보부터 걸렀습니다. Airflow가 잘하는 것은 잡 사이의 의존 관계, backfill, task 간 값 전달인데 제 잡 스무 개 중 서로 의존하는 것은 하나도 없었고, 가만히 있어도 2GB를 먹으면서 컨테이너로 떠서 `claude -p`가 안 됩니다. Kestra, Windmill, Prefect, Dagster도 접었습니다. 앞의 둘은 Docker로 띄우는 구성이 기본이고, Prefect·Dagster는 호스트에 깔리지만 스케줄러·웹 서버·DB가 따라오는 점이 Airflow와 같았습니다(2026-10-19 정정: 처음에는 넷 다 「같은 이유」로만 적었습니다). 남은 것이 [Dagu](https://dagu.sh/)였습니다. **Go로 짠 16MB 단일 바이너리를 호스트에 놓고 실행하면 끝이고, DB도 메시지 브로커도 없습니다.**
 
 cron에서 걸리던 것은 이렇게 풀렸습니다.
 
