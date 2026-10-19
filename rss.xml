@@ -131,7 +131,7 @@ space to show QR code · w to toggle spawn mode
 &lt;/ul&gt;
 &lt;h2&gt;요약&lt;/h2&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;strong&gt;국내 20곳 가운데 10곳이 지금도 알고리즘 코딩 테스트를 봅니다.&lt;/strong&gt; 2024년에 코딩 테스트를 적은 10곳 가운데 5곳은 지금도 그대로이고, 2곳은 AI 활용 평가로 바꿨습니다. 해외도 코딩 면접 자체는 남아 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;국내 20곳 가운데 10곳이 지금도 알고리즘 코딩 테스트를 봅니다.&lt;/strong&gt; 2024년에 코딩 테스트를 적은 10곳 가운데 5곳은 지금도 그대로이고, 2곳은 AI 활용 평가로 바꿨습니다. 경력 특별 채용 한 곳(CJ올리브영)은 라이브 코딩을 AI 과제로 바꿨습니다. 해외도 코딩 면접 자체는 남아 있습니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;해외는 라운드마다 AI 허용 여부를 따로 정하기 시작했습니다.&lt;/strong&gt; 지원자의 AI 사용 규칙을 공개한 회사가 크게 늘었고, 그 대부분이 AI를 쓰는 라운드와 막는 라운드를 함께 둡니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;평가 기준을 공개한 회사들은 AI를 쓰는 라운드에서 AI가 낸 결과를 검증하는지를 봅니다.&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;국내는 신입 공채와 인턴 일부가 코딩 테스트를 AI 활용 평가로 바꿨습니다.&lt;/strong&gt; 대형 IT 기업과 경력 상시 채용은 대부분 그대로입니다.&lt;/li&gt;
@@ -248,8 +248,8 @@ space to show QR code · w to toggle spawn mode
 &lt;/table&gt;
 &lt;p&gt;주: 최근은 2026년의 안내입니다. 20곳 가운데 19곳은 2026년 7월 이후의 안내가 있고, 카카오는 2026년 안내가 없어 뺐습니다. 코딩 테스트는 그 사이에 바꾼 회사가 있어 신입·경력·인턴 채용마다 가장 늦은 안내로 셌습니다.
 :::&lt;/p&gt;
-&lt;p&gt;최근 10곳 가운데 4곳(우아한형제들과 개발 공고가 많은 회사 3곳)은 2024년 안내가 남아 있지 않아, 10곳과 10곳을 바로 비교할 수는 없습니다. 같은 회사끼리 보면, &lt;strong&gt;2024년에 코딩 테스트를 적은 10곳 가운데 5곳(네이버·쿠팡·토스·엔씨소프트·삼성전자)은 지금도 그대로입니다.&lt;/strong&gt; 2곳(넥슨·LG CNS)은 AI 활용 평가로 바꿨고, 라인과 CJ올리브영은 최근 안내에서 코딩 테스트가 보이지 않습니다. 카카오는 2025년 9월 그룹 신입 공채에서 코딩 테스트를 1차·2차 두 번 봤지만, 그 뒤 2026년 안내가 없어 최근 칸에는 넣지 않았습니다. 대형 IT 기업 7곳 가운데 AI 활용 평가를 둔 곳은 없습니다.&lt;/p&gt;
-&lt;h3&gt;코딩 테스트를 바꾼 곳은 신입 공채와 인턴, 경력 특별 채용입니다&lt;/h3&gt;
+&lt;p&gt;최근 10곳 가운데 4곳(우아한형제들과 개발 공고가 많은 회사 3곳)은 2024년 안내가 남아 있지 않아, 10곳과 10곳을 바로 비교할 수는 없습니다. 같은 회사끼리 보면, &lt;strong&gt;2024년에 코딩 테스트를 적은 10곳 가운데 5곳(네이버·쿠팡·토스·엔씨소프트·삼성전자)은 지금도 그대로입니다.&lt;/strong&gt; 2곳(넥슨·LG CNS)은 AI 활용 평가로 바꿨고, 라인과 CJ올리브영은 최근 안내에서 코딩 테스트가 보이지 않습니다. 나머지 하나인 카카오는 2025년 9월 그룹 신입 공채에서 코딩 테스트를 1차·2차 두 번 봤지만, 그 뒤 2026년 안내가 없어 최근 칸에는 넣지 않았습니다. 대형 IT 기업 7곳 가운데 AI 활용 평가를 둔 곳은 없습니다.&lt;/p&gt;
+&lt;h3&gt;코딩 테스트나 라이브 코딩을 바꾼 곳은 신입 공채와 인턴, 경력 특별 채용입니다&lt;/h3&gt;
 &lt;p&gt;AI 활용 평가를 둔 6곳 가운데 4곳은 코딩 테스트를, CJ올리브영은 라이브 코딩을 AI 활용 평가로 바꿨습니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;SK C&amp;amp;C(현 SK AX)는 2024년 9월 신입 공채에서 「지난해까지 진행해 왔던 코딩 테스트를 폐지」하고 AI를 써서 문제를 푸는 필기 평가를 넣었습니다. 국내 20곳 가운데 가장 이른 사례입니다.&lt;/li&gt;
@@ -419,7 +419,7 @@ LLM 개발 경험을 언급한 해외 공고 가운데 늘어난 항목을 묻�
 &lt;/table&gt;
 &lt;p&gt;주: Hacker News와 채용 페이지 공고를 합쳐 반기별로 묶었습니다. 분모는 LLM 개발 경험을 언급한 공고입니다.
 :::&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;그 밖의 팀 공고만 따로 봐도 에이전트는 2026년 하반기에 56%로 전체(57%)와 거의 같습니다.&lt;/strong&gt; 2024년에는 그 밖의 팀 공고 가운데 에이전트를 묻는 것이 거의 없었습니다. 평가는 팀에 따라 다릅니다. AI 제품을 만드는 팀의 공고에서는 절반 가까이까지 늘었습니다. 그 밖의 팀도 2025년 하반기부터 늘고 있지만 18%로, AI 제품을 만드는 팀(47%)보다 한참 낮습니다. 이전 글의 5%는 모든 공고를 분모로 계산한 값이라 여기와 다릅니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;그 밖의 팀 공고만 따로 봐도 에이전트는 2026년 하반기에 56%로 전체(57%)와 거의 같습니다.&lt;/strong&gt; 2024년에는 그 밖의 팀 공고 가운데 에이전트를 묻는 것이 거의 없었습니다. 평가는 팀에 따라 다릅니다. AI 제품을 만드는 팀의 공고에서는 절반 가까이까지 늘었습니다. 그 밖의 팀도 2025년 하반기부터 늘고 있지만 18%로, AI 제품을 만드는 팀(47%)보다 한참 낮습니다. 이전 글의 5%(그 밖의 팀이 LLM 결과 평가를 묻는 비율)는 모든 공고를 분모로 계산한 값이라 여기와 다릅니다.&lt;/p&gt;
 &lt;p&gt;:::table-figure
 2026년 하반기 해외 공고에서 각 항목을 묻는 비율, 팀 종류별&lt;/p&gt;
 &lt;table&gt;
@@ -810,6 +810,12 @@ LLM 개발 경험을 언급한 해외 공고가 얼마나 구체적으로 묻는
 &lt;td&gt;2%&lt;/td&gt;
 &lt;td&gt;5%&lt;/td&gt;
 &lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Codex&lt;/td&gt;
+&lt;td&gt;0%&lt;/td&gt;
+&lt;td&gt;—&lt;/td&gt;
+&lt;td&gt;5%&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;주: 요구 여부와 상관없이 공고에 이름이 나오는 비율입니다. 분모는 LLM 개발 경험을 언급한 공고입니다.
@@ -819,7 +825,7 @@ LLM 개발 경험을 언급한 해외 공고가 얼마나 구체적으로 묻는
 &lt;p&gt;국내는 지난 공고가 적어서 2026년 10월 공고를 해외 2026년 공고와 나란히 놓았습니다. 국내 공고는 이전 글과 같이 스타트업·중견기업 공고와 대형 IT 기업 공고를 합친 것입니다. 해외는 회사 30곳의 채용 페이지 공고입니다. 이전 글은 일반 소프트웨어 기업 17곳만 대상으로 했지만, 이번에는 AI 제품을 만드는 팀도 보려고 30곳을 모두 씁니다. Hacker News 글은 짧아서 공고 하나가 묻는 항목이 적어 뺐습니다. 해외 쪽은 그 밖의 팀 공고가 대부분 일반 소프트웨어 기업에서, AI 제품을 만드는 팀 공고가 대부분 AI 전문 기업에서 나왔습니다.&lt;/p&gt;
 &lt;p&gt;국내 공고는 공고당 항목을 해외보다 조금 더 많이 적어서, 두 배 가까이 차이 나는 항목만 다르다고 봤습니다.&lt;/p&gt;
 &lt;p&gt;그 밖의 팀부터 보면, &lt;strong&gt;가장 많이 묻는 항목은 양쪽 모두 에이전트이고 비율도 절반 남짓으로 비슷합니다(국내 51%, 해외 58%).&lt;/strong&gt; 공고가 어디까지 요구하는지도 비슷합니다. 가장 높은 요구가 API를 쓰는 일인 공고가 35% 안팎, LLM 시스템을 만드는 일인 공고가 절반이고, 모델을 학습시키는 일은 거의 묻지 않습니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;국내 그 밖의 팀 공고는 34%가 RAG를 묻는데, 해외는 17%입니다.&lt;/strong&gt; 「검색 / RAG API 서버 개발」, 「RAG·임베딩·벡터 검색 pgvector/faiss」처럼 구체적으로 적습니다. LLM API 연동도 국내가 더 묻지만(46%, 해외 31%) 차이는 그보다 작습니다. 추론 서빙은 두 배가 넘고(6%, 2%) 비용·지연 최적화도 국내가 더 묻지만(8%, 4%), 공고 수가 적어 표에만 적었습니다. 반대로 가드레일과 안전은 국내가 훨씬 덜 묻습니다. 해외 공고는 21%가 「프롬프트 주입, 탈옥 같은 LLM 특유의 공격 경로에 익숙할 것」(Replit)처럼 적는데, 국내는 7%입니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;국내 그 밖의 팀 공고는 34%가 RAG를 묻는데, 해외는 17%입니다.&lt;/strong&gt; 「검색 / RAG API 서버 개발」, 「RAG·임베딩·벡터 검색 pgvector/faiss」처럼 구체적으로 적습니다. LLM API 연동도 국내가 더 묻지만(46%, 해외 31%) 차이는 그보다 작습니다. 추론 서빙은 두 배가 넘고(6%, 2%) 비용·지연 최적화도 국내가 더 묻지만(8%, 4%), 공고 수가 적어 차이로 세지는 않았습니다. 반대로 가드레일과 안전은 국내가 훨씬 덜 묻습니다. 해외 공고는 21%가 「프롬프트 주입, 탈옥 같은 LLM 특유의 공격 경로에 익숙할 것」(Replit)처럼 적는데, 국내는 7%입니다.&lt;/p&gt;
 &lt;p&gt;:::table-figure{fold}
 그 밖의 팀 공고에서 각 항목을 묻는 비율, 국내와 해외&lt;/p&gt;
 &lt;p&gt;&amp;lt;div class=&quot;jpt-chart&quot; data-chart=&quot;sk_kr&quot; style=&quot;width:100%;height:420px&quot;&amp;gt;&amp;lt;/div&amp;gt;&lt;/p&gt;
@@ -1048,13 +1054,13 @@ AI 제품을 만드는 팀 공고에서 각 항목을 묻는 비율, 국내와 �
 &lt;li&gt;&lt;strong&gt;AI 코딩 도구 경험은 필수 요건으로 적히기 시작했습니다.&lt;/strong&gt; AI 전문 기업보다 일반 소프트웨어 기업이 더 많이 묻습니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;AI 코딩 도구가 만든 결과를 사람이 검토하라는 요구가 2026년에 나타나기 시작했습니다.&lt;/strong&gt; 테스트를 요구하는 공고는 늘지 않았고, 코드를 읽고 디버깅하는 일을 묻는 공고는 늘었습니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;주니어 공고 비중은 조금씩 늘었습니다.&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;국내 공고가 AI 경험을 묻는 비율은 해외와 거의 같습니다.&lt;/strong&gt; LLM 개발 경험, 요건에 적은 AI 코딩 도구, AI 결과물 검토 모두 그렇습니다. 대형 IT 기업의 지난 공고를 보면 바뀐 속도도 해외와 비슷합니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;국내 공고가 AI 경험을 묻는 비율은 해외와 거의 같습니다.&lt;/strong&gt; LLM 개발 경험, 요건에 적은 AI 코딩 도구, AI 결과물 검토 모두 그렇습니다. 대형 IT 기업 네 곳의 지난 공고를 보면 바뀐 속도도 해외와 비슷합니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;국내는 AI 코딩 도구를 풀스택·모바일·프론트엔드 공고에서 해외보다 더 묻고, 인프라 공고에서는 덜 묻습니다.&lt;/strong&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;h2&gt;해외 공고 3년치&lt;/h2&gt;
 &lt;h3&gt;전체로는 1년째 그대로지만 그 밖의 팀은 점점 더 묻습니다&lt;/h3&gt;
 &lt;p&gt;Hacker News 공고에서 LLM 개발 경험을 언급한 비율은 2024년 초 13%에서 &lt;strong&gt;2025년 3분기 35% 안팎까지 늘었고, 그 뒤 1년 동안 그대로입니다.&lt;/strong&gt;&lt;/p&gt;
-&lt;p&gt;AI 제품을 만드는 팀의 공고는 2025년 3분기부터 더 늘지 않았지만, &lt;strong&gt;그 밖의 팀 공고는 2024년 초 1%에서 2026년 16%까지 꾸준히 늘었습니다.&lt;/strong&gt; 2025년 4분기부터는 AI 제품을 만드는 팀의 공고 비중이 줄었습니다(표의 마지막 열). 이 팀이 LLM 개발 경험을 가장 많이 묻기 때문에, 그 밖의 팀에서 늘어난 만큼이 전체 평균에 드러나지 않았습니다.&lt;/p&gt;
+&lt;p&gt;AI 제품을 만드는 팀의 공고는 2025년 3분기부터 더 늘지 않았지만, &lt;strong&gt;그 밖의 팀 공고는 2024년 초 1%에서 2026년 16%까지 꾸준히 늘었습니다.&lt;/strong&gt; 2025년 4분기를 고점으로 AI 제품을 만드는 팀의 공고 비중이 줄었습니다(2026-10-19 정정)(표의 마지막 열). 이 팀이 LLM 개발 경험을 가장 많이 묻기 때문에, 그 밖의 팀에서 늘어난 만큼이 전체 평균에 드러나지 않았습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;일반 소프트웨어 기업의 채용 페이지에서도 그 밖의 팀 공고는 LLM 개발 경험을 점점 더 묻습니다.&lt;/strong&gt; 언급 비율이 2024년에는 분기마다 2~3%였고, 2026년 2분기부터는 24%입니다.&lt;/p&gt;
 &lt;p&gt;:::table-figure{fold}
 Hacker News 공고에서 LLM 개발 경험을 언급한 비율&lt;/p&gt;
@@ -1907,7 +1913,7 @@ AI 전문 기업 13곳의 공고에서 각 역할이 차지하는 비중&lt;/p&g
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;h2&gt;끝으로&lt;/h2&gt;
-&lt;p&gt;대부분의 역할에서 공고는 LLM 개발 경험과 AI 코딩 도구 경험을 새로 묻기 시작했습니다. 국내 공고도 비슷한 비율로 묻고, &lt;strong&gt;대형 IT 기업의 공고는 지난 3년 동안 해외와 같은 속도로 바뀌었습니다.&lt;/strong&gt; 다른 점은 국내의 풀스택·모바일·프론트엔드 공고가 AI 코딩 도구 경험을 해외보다 더 많이 묻는다는 것입니다.&lt;/p&gt;
+&lt;p&gt;대부분의 역할에서 공고는 LLM 개발 경험과 AI 코딩 도구 경험을 새로 묻기 시작했습니다. 국내 공고도 비슷한 비율로 묻고, &lt;strong&gt;대형 IT 기업 네 곳의 공고는 지난 3년 동안 해외와 같은 속도로 바뀌었습니다.&lt;/strong&gt; 다른 점은 국내의 풀스택·모바일·프론트엔드 공고가 AI 코딩 도구 경험을 해외보다 더 많이 묻는다는 것입니다.&lt;/p&gt;
 &lt;p&gt;&amp;lt;script src=&quot;/js/vendor/echarts-6.0.0.min.js&quot;&amp;gt;&amp;lt;/script&amp;gt;
 &amp;lt;script src=&quot;/js/job-postings-2024-2026.js?v=20261014g&quot;&amp;gt;&amp;lt;/script&amp;gt;&lt;/p&gt;
 </content:encoded></item><item><title>서명 키가 만료돼도 apt update는 정상 종료됩니다</title><link>https://monologg.kr/posts/2026/10/12/2026-10-12-apt-update-stale-index-check/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/12/2026-10-12-apt-update-stale-index-check/</guid><description>GitHub CLI의 APT 저장소 서명 키가 만료되자 apt update는 경고만 남기고 종료 코드 0으로 끝났고, 서버의 gh 저장소는 23일 동안 멈춰 있었습니다. 컨테이너로 재현한 과정과, 일반 계정으로 서명 키 만료·검증 실패·뒤처진 인덱스를 찾는 점검 스크립트를 정리합니다.</description><pubDate>Mon, 12 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
@@ -2039,7 +2045,7 @@ exit=1
 &lt;p&gt;systemd timer나 cron으로 매일 돌리고, 종료 코드가 0이 아닐 때 쓰고 있는 알림 수단으로 보내면 됩니다. systemd 서비스로 돌린다면 &lt;code&gt;User=&lt;/code&gt;로 일반 계정을 지정합니다. 제 서버에서는 이 세 가지를 보는 점검이 매일 돌고 있고, 위 스크립트는 그 점검을 따로 떼어 다시 쓴 것입니다.&lt;/p&gt;
 &lt;p&gt;이 스크립트는 업스트림에 닿지 못한 것도 문제로 셉니다. 점검까지 조용히 실패하면 업데이트가 멈춘 것을 또 모르고 지나가기 때문입니다. 대신 업스트림이 잠깐 내려가는 경우가 있어서, 저는 검증 실패는 이틀 연속일 때만 알림을 보냅니다.&lt;/p&gt;
 </content:encoded></item><item><title>리눅스 서버는 Tailscale 주소에만 포트를 열어도 같은 LAN에서 닿습니다</title><link>https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/09/27/2026-09-27-tailscale-bind-lan-bypass-nftables/</guid><description>인증 없는 홈랩 서비스를 Tailscale 주소에만 바인딩했는데도, 리눅스의 weak host model 때문에 같은 LAN 기기에서 닿는 상태였습니다. nftables 규칙으로 막고 매시간 노출을 검사하는 방법을 정리했습니다.</description><pubDate>Sun, 27 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;집 서버에는 로그인 화면이 없는 서비스가 여럿 있습니다. 관리용 웹 UI나 대시보드 같은 것들이죠. &lt;a href=&quot;https://tailscale.com/&quot;&gt;Tailscale&lt;/a&gt; 네트워크(tailnet) 안에서만 쓴다는 전제로 인증을 따로 두지 않았습니다.&lt;/p&gt;
-&lt;p&gt;그래서 포트를 전부 서버의 Tailscale 주소(100.x)에만 열도록 고쳤고, LAN 주소로 TCP 전 포트를 스캔해도 일부러 열어 둔 포트 한두 개만 보였습니다. 그런데 &lt;strong&gt;LAN에서 목적지를 Tailscale 주소로 적은 패킷을 서버로 보내자 포트 9개가 그대로 응답했습니다.&lt;/strong&gt; 리눅스는 어느 랜카드로 들어온 패킷이든 목적지가 자기 주소면 받습니다. nftables 규칙을 걸고 나서야 막혔습니다. LAN 랜카드로 들어온 패킷 중 목적지가 Tailscale 대역인 것을 버리는 규칙입니다.&lt;/p&gt;
+&lt;p&gt;그래서 포트를 전부 서버의 Tailscale 주소(100.x)에만 열도록 고쳤고, LAN 주소로 TCP 전 포트를 스캔해도 일부러 열어 둔 포트 한두 개만 보였습니다. 그런데 &lt;strong&gt;LAN에서 목적지를 Tailscale 주소로 적은 패킷을 서버 세 대로 보내자 포트 9개가 그대로 응답했습니다.&lt;/strong&gt; 리눅스는 어느 랜카드로 들어온 패킷이든 목적지가 자기 주소면 받습니다. nftables 규칙을 걸고 나서야 막혔습니다. LAN 랜카드로 들어온 패킷 중 목적지가 Tailscale 대역인 것을 버리는 규칙입니다.&lt;/p&gt;
 &lt;h2&gt;0.0.0.0에 연 포트는 LAN 전체에 열린 포트입니다&lt;/h2&gt;
 &lt;p&gt;처음에는 서비스들이 docker compose의 &lt;code&gt;&quot;8080:8080&quot;&lt;/code&gt;처럼 호스트 주소를 생략한 문법으로 열려 있었습니다. 호스트 주소를 적지 않으면 Docker는 &lt;code&gt;0.0.0.0&lt;/code&gt;, 즉 모든 인터페이스에 포트를 엽니다. Tailscale로만 쓴다고 생각했지만 실제로는 같은 공유기에 붙은 기기라면 인증 없이 들어올 수 있는 상태였습니다.&lt;/p&gt;
 &lt;p&gt;reverse proxy도 마찬가지였습니다. 프록시가 443을 &lt;code&gt;0.0.0.0&lt;/code&gt;에 열고 있어서, LAN에서 프록시의 LAN IP로 요청하면서 &lt;code&gt;Host&lt;/code&gt; 헤더만 바꾸면 그 뒤에 물린 서비스에 닿았습니다. 이 프록시는 자체 Tailscale 사이드카로 tailnet에 붙어 있어서 호스트 포트 publish를 아예 걷어 냈습니다.&lt;/p&gt;
@@ -2631,14 +2637,14 @@ doc.save_to_path(&quot;form-with-photo.hwpx&quot;)
 &amp;lt;hp:pos treatAsChar=&quot;1&quot; .../&amp;gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;한컴에서 열리는지는 한컴독스로 확인합니다&lt;/h2&gt;
-&lt;p&gt;한컴독스는 브라우저에서 hwp와 hwpx를 열어 주는 한컴의 웹 서비스입니다. 파일을 올리면 현행 한컴 엔진이 그린 결과를 바로 볼 수 있어서, 한컴 없이 맥이나 리눅스에서 hwp를 만드는 사람에게는 이것이 사실상 유일한 확인 방법입니다. 이 글의 결과도 전부 여기서 열어 본 것이고, 실패 사례는 한글 for macOS에서도 같았습니다.&lt;/p&gt;
+&lt;p&gt;한컴독스는 브라우저에서 hwp와 hwpx를 열어 주는 한컴의 웹 서비스입니다. 파일을 올리면 현행 한컴 엔진이 그린 결과를 바로 볼 수 있어서, 한컴 없이 리눅스에서 hwp를 만드는 사람에게는 이것이 사실상 유일한 확인 방법입니다. 이 글의 결과도 전부 여기서 열어 본 것이고, 실패 사례는 한글 for macOS에서도 같았습니다.&lt;/p&gt;
 &lt;p&gt;맥이라면 한컴독스에서 내려받는 한글 for macOS도 있습니다. 구독 없이는 읽기 전용이라 편집은 안 되지만, hwp와 hwpx를 여는 데는 충분해서 파일을 만들 때마다 브라우저에 올리지 않아도 됩니다.&lt;/p&gt;
 &lt;p&gt;재현은 위 소방서 서식과 아무 JPEG 두 장이면 됩니다. 다음에는 같은 방식으로 표 칸의 긴 문장 줄바꿈이 한컴에서 어떻게 다시 계산되는지를 정리해 볼 생각입니다.&lt;/p&gt;
 </content:encoded></item><item><title>zvec-grep 실측기: 시맨틱 검색은 에이전트의 grep을 이기지 못했다</title><link>https://monologg.kr/posts/2026/09/04/2026-09-04-zvec-grep-vs-agent-grep-eval/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/09/04/2026-09-04-zvec-grep-vs-agent-grep-eval/</guid><description>Qwen 팀의 로컬 시맨틱 검색 도구 zg(zvec-grep)를 개인 monorepo에 붙일지 반나절 동안 실측했습니다. 임베딩 모델 세 단계와 30쿼리 확장 평가를 거쳐 에이전트 네이티브 검색 30/30 vs zg 최고 19/30으로 미채택 결론에 도달한 과정과, 그럼에도 zg가 유리한 환경이 어디인지까지 정리했습니다.</description><pubDate>Fri, 04 Sep 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;a href=&quot;https://news.hada.io/topic?id=33183&quot;&gt;GeekNews에서 zg(zvec-grep)&lt;/a&gt;를 봤습니다. Alibaba Qwen 팀이 공개한 로컬 우선 검색 레이어로, ripgrep + BM25 + 벡터 검색을 하나로 묶고 MCP로 코딩 에이전트에 붙습니다. 제 환경에는 한국어 마크다운 수백 개짜리 개인 monorepo가 있고 에이전트가 이 문서를 검색하는 일이 잦아서, &quot;정확한 키워드를 모르는 질문&quot;에서 grep이 헛도는 문제를 풀어줄 후보로 보였습니다.&lt;/p&gt;
 &lt;p&gt;반나절 실측한 결론은 &lt;strong&gt;미채택&lt;/strong&gt;입니다. 같은 30문제에서 zg의 최고 성적은 19/30이었고, &lt;strong&gt;에이전트가 원래 하던 검색(grep을 쓰는 LLM)은 30/30&lt;/strong&gt;이었습니다. 이 글은 그 격차가 어디서 오는지, 그리고 소규모 파일럿에서 나온 만점이 어떻게 사람을 속이는지 적은 기록입니다.&lt;/p&gt;
 &lt;h2&gt;zg(zvec-grep)는 무엇인가&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/zvec-ai/zvec-grep&quot;&gt;zg&lt;/a&gt;는 로컬 검색 레이어입니다. &quot;의미로 넓게 찾고 → 관련도로 좁히고 → 정확히 검증&quot;하는 흐름을 도구 하나가 맡습니다. &lt;code&gt;zg index&lt;/code&gt;로 인덱싱하면 마크다운은 헤딩 구조를 보존한 조각으로, 코드는 심볼 단위로 임베딩되고, 검색 시 BM25 어휘 랭킹과 벡터 유사도를 &lt;a href=&quot;https://github.com/zvec-ai/zvec-grep/blob/main/docs/05-architecture.md&quot;&gt;RRF로 융합&lt;/a&gt;합니다. 에이전트에는 &lt;code&gt;zvec_grep_search&lt;/code&gt;라는 MCP 툴 하나로 노출되고, 파일·인덱스·모델이 전부 로컬에 남습니다.&lt;/p&gt;
-&lt;p&gt;공식 벤치마크(SWE-QA-Bench)에서는 툴 호출과 입력 토큰을 절반으로 줄이면서 judge 점수가 올랐다고 합니다. 다만 &lt;strong&gt;그 수치는 전부 원격 임베딩(자사 클라우드 API) 기준&lt;/strong&gt;이고, 제 문서는 개인 데이터라 로컬 모델만 쓸 수 있습니다. 로컬 소형 모델의 한국어 검색 품질은 어디에도 실측이 없어서 직접 재야 했습니다.&lt;/p&gt;
+&lt;p&gt;공식 벤치마크(SWE-QA-Bench)에서는 툴 호출과 입력 토큰을 40~50% 줄였다고 합니다(2026-10-19 정정: 처음에는 「judge 점수가 올랐다」고 썼는데 공식 자료에 그 수치가 없습니다). 다만 &lt;strong&gt;그 수치는 전부 원격 임베딩(자사 클라우드 API) 기준&lt;/strong&gt;이고, 제 문서는 개인 데이터라 로컬 모델만 쓸 수 있습니다. 로컬 소형 모델의 한국어 검색 품질은 어디에도 실측이 없어서 직접 재야 했습니다.&lt;/p&gt;
 &lt;h2&gt;임베딩 모델을 한 단계씩 올려가며 본 91파일 파일럿&lt;/h2&gt;
 &lt;p&gt;임베딩 모델 선택 가이드(&lt;a href=&quot;https://github.com/zvec-ai/zvec-grep/blob/main/docs/07-embedding.md&quot;&gt;docs/07&lt;/a&gt;)는 &quot;필요한 언어를 커버하는 가장 작은 모델로 시작해 한 단계씩 올리라&quot;고 권합니다. 그대로 모델 세 개를 작은 것부터 평가했습니다. 시작 전에 인덱싱 범위부터 좁혔습니다. zg는 텍스트/마크다운을 기본 256MiB까지 통째로 받아들여서 자막 덤프 같은 대용량 텍스트는 glob으로 제외하지 않으면 인덱싱 시간이 몇 배로 뜁니다.&lt;/p&gt;
 &lt;p&gt;파일럿은 문서 모듈 2개(91파일)만 인덱싱하고, &quot;질문의 표현과 문서의 표현이 다른&quot; 시맨틱 갭 쿼리 6개로 zg 하이브리드 검색과 단순 키워드 grep을 비교했습니다. 예를 들어 &quot;후보 중 주말에 예약이 안 되는 식당&quot;의 답은 문서에 &quot;전화 전용&quot;이라고 적혀 있어서 질문 어휘로 grep하면 걸리지 않습니다. 정답 문서를 미리 정해두고 상위 5개 안에 들면 적중으로 채점했습니다.&lt;/p&gt;
@@ -2810,7 +2816,7 @@ doc.save_to_path(&quot;form-with-photo.hwpx&quot;)
 &lt;p&gt;다만 프로젝트 설정(&lt;code&gt;.claude/settings.json&lt;/code&gt;, &lt;code&gt;.claude/settings.local.json&lt;/code&gt;)에서는 &lt;code&gt;false&lt;/code&gt;만 반영되고 &lt;code&gt;true&lt;/code&gt;는 무시됩니다. 레포에 체크인된 파일이 그 레포를 여는 모든 사람의 Remote Control을 대신 켜버리는 일을 막기 위해서입니다. 반대로 특정 레포에서만 자동 연결을 끄고 싶을 때는 프로젝트 설정의 &lt;code&gt;false&lt;/code&gt;가 그대로 적용됩니다.&lt;/p&gt;
 &lt;p&gt;자동 연결도 어디까지나 본인 claude.ai 계정으로 로그인한 상태에서 붙는 것이라, 이렇게 만들어진 세션은 내 계정의 Claude 앱에만 나타납니다.&lt;/p&gt;
 &lt;h2&gt;켜기 전에 확인할 것들&lt;/h2&gt;
-&lt;p&gt;제 환경에서는 토글만 켜면 바로 붙었지만, 문서의 &lt;a href=&quot;https://code.claude.com/docs/en/remote-control#requirements&quot;&gt;Requirements&lt;/a&gt;를 보면 환경에 따라 아예 활성화되지 않는 조건이 몇 가지 있습니다. 그중 걸리기 쉬워 보이는 것들입니다. &lt;a href=&quot;https://code.claude.com/docs/ko/remote-control&quot;&gt;한국어 문서&lt;/a&gt;는 번역 반영이 조금 늦어서 아래 항목 일부가 아직 빠져 있으니 영문 쪽을 보는 편이 낫습니다.&lt;/p&gt;
+&lt;p&gt;제 환경에서는 토글만 켜면 바로 붙었지만, 문서의 &lt;a href=&quot;https://code.claude.com/docs/en/remote-control#requirements&quot;&gt;Requirements&lt;/a&gt;를 보면 환경에 따라 아예 활성화되지 않는 조건이 몇 가지 있습니다. 그중 걸리기 쉬워 보이는 것들입니다.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;인증&lt;/strong&gt;: Pro, Max, Team, Enterprise 구독에서 동작하고 &lt;strong&gt;API key 인증은 지원하지 않습니다.&lt;/strong&gt; claude.ai OAuth 로그인이 필요합니다.&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;&lt;code&gt;ANTHROPIC_BASE_URL&lt;/code&gt;&lt;/strong&gt;: &lt;code&gt;api.anthropic.com&lt;/code&gt; 외의 호스트(LLM gateway나 proxy)를 가리키면 v2.1.196부터 Remote Control이 비활성화됩니다. 쓰려면 변수를 해제해야 합니다. Bedrock, Google Cloud Agent Platform, Microsoft Foundry도 대상이 아닙니다.&lt;/li&gt;
@@ -2851,7 +2857,7 @@ doc.save_to_path(&quot;form-with-photo.hwpx&quot;)
 &lt;p&gt;스무 개 남짓한 Job 중에 &lt;strong&gt;서로 의존하는 Job은 하나도 없었습니다.&lt;/strong&gt; 전부 각자 정해진 시각에 따로 도는 Job들입니다.&lt;/p&gt;
 &lt;h2&gt;후보를 훑고 대부분 접었습니다&lt;/h2&gt;
 &lt;p&gt;&lt;a href=&quot;https://airflow.apache.org/&quot;&gt;Airflow&lt;/a&gt;를 먼저 봤습니다. 이전 회사에서 써본 적이 있어 익숙했습니다. 그런데 Airflow가 잘하는 건 Job 사이의 의존 관계, backfill, task 재시도, task 간 값 전달입니다. 앞에서 말했듯 의존 관계가 없으니 이 중 쓸 게 없습니다. 스케줄러에 웹서버에 워커에 DB까지 띄워서 가만히 있어도 2GB를 먹고, 얻는 건 사실상 UI 하나였습니다.&lt;/p&gt;
-&lt;p&gt;거기다 결정적인 문제가 있었습니다. Airflow는 컨테이너로 띄우는데, 컨테이너 안에서는 &lt;code&gt;claude -p&lt;/code&gt;가 안 돕니다. Kestra, Windmill, Prefect, Dagster도 같은 이유로 접었습니다.&lt;/p&gt;
+&lt;p&gt;거기다 결정적인 문제가 있었습니다. Airflow는 컨테이너로 띄우는데, 컨테이너 안에서는 &lt;code&gt;claude -p&lt;/code&gt;가 안 돕니다. Kestra, Windmill, Prefect, Dagster도 접었습니다. 앞의 둘은 Docker로 띄우는 구성이 기본이고, Prefect·Dagster는 호스트에 깔리지만 스케줄러·웹 서버·DB가 따라오는 점이 Airflow와 같았습니다(2026-10-19 정정: 처음에는 넷 다 「같은 이유」로만 적었습니다).&lt;/p&gt;
 &lt;p&gt;몇 개 더 봤습니다. 분산 환경을 겨냥한 스케줄러들은 서버 몇 대짜리 홈랩엔 과합니다. 오래된 후보 하나는 저자가 후속작으로 넘어가면서 &quot;앞으로는 버그와 보안 패치만&quot;이라고 공지를 걸어둔 상태였고요.&lt;/p&gt;
 &lt;p&gt;남은 게 &lt;strong&gt;Dagu&lt;/strong&gt;였습니다. 가볍고 호스트에서 도는, 조건에 맞는 게 사실상 이것뿐이었습니다.&lt;/p&gt;
 &lt;h2&gt;Dagu로 좋아진 것&lt;/h2&gt;
@@ -3227,7 +3233,7 @@ codex exec \
 &lt;/ol&gt;
 &lt;p&gt;2차는 이 두 구멍을 메우는 쪽으로 설계했습니다.&lt;/p&gt;
 &lt;h2&gt;50쿼리를 블라인드로 judge 3명에게 채점시킨 2차 실험&lt;/h2&gt;
-&lt;p&gt;&lt;strong&gt;쿼리는 10개 카테고리에 5개씩 50개.&lt;/strong&gt; 마이너한 도구의 한국어 기술 문서, 정부·공식 소스 찾기, 한국어/영어 뉴스, 금융 일정, 에러 메시지 트러블슈팅, 모호·롱테일 질의, 24~48시간 속보가 기본이고, 두 가지를 의도적으로 더 넣었습니다. &lt;strong&gt;실제 cron 브리핑 쿼리의 재현&lt;/strong&gt;과, 오해를 부르는 제목이 걸리기 쉬운 쿼리(&quot;Fed rate cut July 2026&quot;)나 존재하지 않는 대상(&quot;GPT-5.7 출시일&quot;)을 넣은 &lt;strong&gt;적대적 함정 카테고리&lt;/strong&gt;입니다. 1차의 10개 쿼리는 연속성 확인을 위해 전부 포함했습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;쿼리는 10개 카테고리에 5개씩 50개.&lt;/strong&gt; 마이너한 도구의 한국어 기술 문서, 정부·공식 소스 찾기, 한국어 뉴스, 영어 뉴스, 금융 일정, 에러 메시지 트러블슈팅, 모호·롱테일 질의, 24~48시간 속보가 기본이고, 두 가지를 의도적으로 더 넣었습니다. &lt;strong&gt;실제 cron 브리핑 쿼리의 재현&lt;/strong&gt;과, 오해를 부르는 제목이 걸리기 쉬운 쿼리(&quot;Fed rate cut July 2026&quot;)나 존재하지 않는 대상(&quot;GPT-5.7 출시일&quot;)을 넣은 &lt;strong&gt;적대적 함정 카테고리&lt;/strong&gt;입니다. 1차의 10개 쿼리는 연속성 확인을 위해 전부 포함했습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;수집은 같은 시간대에 한 번에 했습니다.&lt;/strong&gt; 최신성을 비교하면서 백엔드마다 수집 시점이 다르면 그 자체가 편향입니다. 3개 백엔드(Parallel turbo, Perplexity Search, Tavily) × 50쿼리 = 150콜을 한 번에 돌렸고, latency도 직접 호출로 실측해 P50/P95를 뽑았습니다.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;채점은 블라인드로.&lt;/strong&gt; 채점하는 LLM이 &quot;이건 Perplexity 결과&quot;라는 걸 알면 브랜드 선입견이 점수에 들어갑니다. 쿼리마다 백엔드 라벨을 A/B/C로 익명화하고, 쿼리 ID 해시를 기준으로 순서를 결정론적으로 섞었습니다. 여기서 &lt;strong&gt;백엔드마다 날짜 포맷이 달라서 날짜만 봐도 라벨이 드러납니다.&lt;/strong&gt; ISO 타임스탬프를 주는 곳과 날짜가 아예 없는 곳을 judge가 알아채면 블라인드가 깨지므로, 날짜를 &lt;code&gt;YYYY-MM-DD&lt;/code&gt;로 통일하고 없으면 null로 정규화했습니다.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;def norm_date(s):
@@ -3406,14 +3412,14 @@ except httpx.TimeoutException as exc:
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;직렬 요청에서는 httpx와 httpx2가 거의 같지만, 병렬 + 커넥션 풀링 조합에서는 격차가 크게 벌어집니다. httpx2가 httpx보다 5.7배 빠릅니다.&lt;/p&gt;
-&lt;p&gt;원본 httpx는 커넥션 풀링을 켜고 동시 요청을 쏘면 오히려 성능이 급격히 떨어지는 병목이 있었습니다. median이 704ms까지 치솟아서 풀링을 끈 것보다 6배 이상 느려지는, 납득하기 어려운 상황이었죠. encode 저장소에 &quot;not production ready under load&quot;라는 제목으로 보고됐던 바로 그 문제입니다. httpx2는 락 경합의 원인을 anyio &lt;code&gt;fast_acquire&lt;/code&gt;와 RLock 전환으로 고쳐서 이 병목을 제거했습니다.&lt;/p&gt;
+&lt;p&gt;원본 httpx는 커넥션 풀링을 켜고 동시 요청을 쏘면 오히려 성능이 급격히 떨어지는 병목이 있었습니다. 원문의 median이 704ms까지 치솟아서 풀링을 끈 것보다 6배 이상 느려지는, 납득하기 어려운 상황이었죠. encode 저장소에 &quot;not production ready under load&quot;라는 제목으로 보고됐던 바로 그 문제입니다. httpx2는 락 경합의 원인을 anyio &lt;code&gt;fast_acquire&lt;/code&gt;와 RLock 전환으로 고쳐서 이 병목을 제거했습니다.&lt;/p&gt;
 &lt;p&gt;sync 클라이언트는 별도 벤치마크가 없지만 사실상 httpx와 동일하다고 보면 됩니다. &lt;code&gt;fast_acquire&lt;/code&gt;는 async 경로 전용 개선이고, sync에 해당하는 변경은 memoryview(소폭)와 RLock(속도가 아닌 멀티스레드 안전성) 정도이기 때문입니다.&lt;/p&gt;
 &lt;h2&gt;aiohttp가 더 빠른데도 생태계 기본값은 httpx인 이유&lt;/h2&gt;
-&lt;p&gt;표를 다시 보면 aiohttp가 httpx2보다도 직렬 5배, 병렬 18배 빠릅니다. httpx2가 고친 것은 httpx 풀링이 극단적으로 느려지는 병목이지, aiohttp를 따라잡은 것이 아닙니다. 격차는 구조에서 나옵니다. aiohttp는 asyncio 전용으로 설계된 단일 목적 클라이언트에 C 확장 가속까지 얹었고, httpx 계열은 sync/async 겸용 추상화 레이어(transport 계층, anyio, 순수 파이썬 sans-IO 파서)를 거치기 때문입니다.&lt;/p&gt;
+&lt;p&gt;표를 다시 보면 aiohttp가 httpx2보다도 직렬(풀링 있음) 5배, 병렬 18배 빠릅니다. httpx2가 고친 것은 httpx 풀링이 극단적으로 느려지는 병목이지, aiohttp를 따라잡은 것이 아닙니다. 격차는 구조에서 나옵니다. aiohttp는 asyncio 전용으로 설계된 단일 목적 클라이언트에 C 확장 가속까지 얹었고, httpx 계열은 sync/async 겸용 추상화 레이어(transport 계층, anyio, 순수 파이썬 sans-IO 파서)를 거치기 때문입니다.&lt;/p&gt;
 &lt;p&gt;그런데도 생태계의 기본값은 httpx입니다. 가장 큰 이유는 &lt;strong&gt;requests와 같은 API를 sync/async 양쪽에서 제공&lt;/strong&gt;하기 때문입니다. aiohttp는 async 전용에 API 스타일도 완전히 다릅니다. requests를 알면 바로 쓸 수 있고, async가 필요해져도 라이브러리를 바꿀 필요가 없습니다.&lt;/p&gt;
 &lt;p&gt;SDK를 만드는 쪽에도 가장 알맞은 구조입니다. OpenAI, Anthropic SDK도 httpx를 씁니다. sync·async 클라이언트를 하나의 코드베이스로 만들 수 있고, transport 추상화로 HTTP 레이어를 갈아끼울 수 있습니다. &lt;code&gt;openai[aiohttp]&lt;/code&gt;가 바로 그런 예입니다. API는 httpx 스타일을 유지하면서, 성능이 필요한 밑단만 aiohttp로 교체하는 것이죠.&lt;/p&gt;
 &lt;p&gt;테스트 생태계에서도 표준입니다. &lt;code&gt;ASGITransport&lt;/code&gt;로 FastAPI/Starlette 앱을 네트워크 없이 인프로세스로 호출할 수 있습니다. 그래서 Starlette TestClient가 httpx2 기반이고, respx 같은 mocking 도구도 붙어 있습니다. 기본값이 안전하다는 것도 장점입니다. 기본 timeout이 있고(requests처럼 무한히 기다리지 않습니다. 처음 발행 때 aiohttp도 무한 대기라고 썼는데 aiohttp 기본값은 300초라 2026-10-18에 고쳤습니다), redirect를 명시적으로 처리하며, 전체 타입 힌트와 HTTP/2 지원, trio 호환까지 갖추고 있습니다.&lt;/p&gt;
-&lt;p&gt;무엇보다 실제 API 호출에서는 시간 대부분이 네트워크 레이턴시입니다. 수십에서 수백 ms짜리 왕복에서 클라이언트 오버헤드 0.4ms vs 0.09ms는 측정조차 어렵습니다. 위 벤치마크는 로컬호스트 마이크로벤치마크라 격차가 극대화된 값입니다. aiohttp가 실제로 차이를 내는 것은 대량 크롤링이나 fan-out처럼 초당 수백에서 수천 건 요청을 쏟아내는 워크로드뿐입니다.&lt;/p&gt;
+&lt;p&gt;무엇보다 실제 API 호출에서는 시간 대부분이 네트워크 레이턴시입니다. 수십에서 수백 ms짜리 왕복에서 클라이언트 오버헤드 0.5ms vs 0.09ms는 측정조차 어렵습니다. 위 벤치마크는 로컬호스트 마이크로벤치마크라 격차가 극대화된 값입니다. aiohttp가 실제로 차이를 내는 것은 대량 크롤링이나 fan-out처럼 초당 수백에서 수천 건 요청을 쏟아내는 워크로드뿐입니다.&lt;/p&gt;
 &lt;h2&gt;그래서 이렇게 정리했습니다&lt;/h2&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;strong&gt;기본값은 httpx2&lt;/strong&gt; — 테스트, 저빈도 API 호출, SDK 연동. DX와 생태계가 이유입니다&lt;/li&gt;
@@ -3425,12 +3431,12 @@ except httpx.TimeoutException as exc:
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/pydantic/httpx2&quot;&gt;pydantic/httpx2&lt;/a&gt; / &lt;a href=&quot;https://github.com/pydantic/httpx2/releases&quot;&gt;Releases&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/fastapi/fastapi/discussions/15742&quot;&gt;httpx deprecated for starlette TestClient — fastapi/fastapi#15742&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;https://zenn.dev/tkithrta/articles/dbfd258f43250e&quot;&gt;HTTP Client Benchmark: httpx vs aiohttp vs httpx2 — Zenn&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://zenn.dev/tkithrta/articles/dbfd258f43250e&quot;&gt;「HTTPX やめ方」(httpx vs aiohttp vs httpx2 벤치마크) — Zenn&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://tildeweb.nl/~michiel/httpx2.html&quot;&gt;httpx2! — tildeweb.nl (httpxyz 메인테이너의 평가)&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/encode/httpcore/pull/953&quot;&gt;anyio fast_acquire 최적화 원본 PR — encode/httpcore#953&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;https://github.com/encode/httpx/discussions/3100&quot;&gt;Httpx not production ready under load — encode/httpx#3100&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-</content:encoded></item><item><title>MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교</title><link>https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</guid><description>Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했습니다.</description><pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;MCP 서버를 여러 개 연결하다 보면 도구 수가 순식간에 불어납니다. Atlassian MCP 하나만 연결해도 72개 도구가 딸려오거든요. 여기에 Perplexity, Slack, Plane 같은 MCP를 추가하면 금세 100개를 넘깁니다. Antigravity처럼 100개 tool 제한이 있는 환경에서는 Atlassian 하나를 켜는 순간 다른 MCP를 붙일 수조차 없게 됩니다.&lt;/p&gt;
+</content:encoded></item><item><title>MCP 도구가 너무 많을 때: tool-filter-mcp와 Claude Code 빌트인 필터링 비교</title><link>https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/03/16/2026-03-16-mcp-tool-overload-filtering-strategies/</guid><description>Atlassian MCP 하나에 72개 도구, 100개 제한에 걸리는 문제를 tool-filter-mcp와 Claude Code 빌트인 기능으로 해결하는 방법을 정리했습니다.</description><pubDate>Mon, 16 Mar 2026 00:00:00 GMT</pubDate><content:encoded>&lt;p&gt;MCP 서버를 여러 개 연결하다 보면 도구 수가 순식간에 불어납니다. Atlassian MCP 하나만 연결해도 72개 도구가 딸려오거든요. 여기에 Perplexity, Slack, Plane 같은 MCP를 추가하면 금세 100개를 넘깁니다. Antigravity처럼 100개 tool 제한이 있는 환경에서는 Atlassian을 켜면 다른 MCP를 두엇만 더 붙여도 바로 막힙니다.&lt;/p&gt;
 &lt;p&gt;이 문제를 푸는 방법으로는 Claude Code에 내장된 기능 두 가지와, 서버 앞에 proxy를 두는 tool-filter-mcp가 있습니다. 이 글에서는 각각의 동작 방식과 언제 어떤 방법이 맞는지를 정리합니다.&lt;/p&gt;
 &lt;h2&gt;Claude Code에 내장된 MCP Tool Search&lt;/h2&gt;
 &lt;p&gt;Claude Code에는 이미 &lt;strong&gt;MCP Tool Search&lt;/strong&gt;라는 기능이 내장되어 있습니다. MCP 도구 설명이 context window의 일정 비율을 넘으면 자동으로 활성화되는데, 모든 도구를 미리 로드하지 않고 필요할 때만 검색해서 불러오는 방식입니다.&lt;/p&gt;
@@ -3556,8 +3562,8 @@ ENABLE_TOOL_SEARCH=true claude
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;Windsurf&lt;/td&gt;
-&lt;td&gt;없음&lt;/td&gt;
-&lt;td&gt;필요&lt;/td&gt;
+&lt;td&gt;&lt;code&gt;disabledTools&lt;/code&gt;로 도구별 끄기(도구 100개 상한, 2026-10-19 정정)&lt;/td&gt;
+&lt;td&gt;선택&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr&gt;
 &lt;td&gt;Claude Desktop&lt;/td&gt;
@@ -3636,7 +3642,7 @@ def total_pages(count, per_page=10):
 &lt;p&gt;다만 Codex가 예로 든 page=-1은 실제로 넣어 보니 빈 리스트가 나왔고, 항목이 나오는 것은 page=-2부터였습니다. 지적이 맞더라도 예시는 한 번 돌려 보고 받아들이는 편이 안전합니다.&lt;/p&gt;
 &lt;h2&gt;/codex:rescue로 작업 넘기기&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;/codex:rescue&lt;/code&gt;는 조사나 수정을 Codex에게 맡기는 명령입니다. 기본으로 파일 수정 권한을 주고 실행해서 Codex가 파일을 바로 고칩니다. 요청에 &quot;고치지 마&quot;라고 적으면 읽기 전용으로 돕니다. &quot;테스트가 통과하도록 고치고, page가 1보다 작으면 ValueError를 내게 하고 그 테스트도 추가해줘&quot;라고 넘기자 약 2분 뒤 두 버그가 고쳐졌고, 새 테스트를 포함한 pytest 4개가 모두 통과했습니다.&lt;/p&gt;
-&lt;p&gt;rescue는 대화 전체를 넘기지 않고, Claude가 요청을 Codex용 프롬프트로 다시 써서 넘깁니다. 대화 전체를 넘기려면 뒤에 나오는 &lt;code&gt;/codex:transfer&lt;/code&gt;를 씁니다. 맥락은 Codex가 저장소를 읽어서 파악합니다.&lt;/p&gt;
+&lt;p&gt;rescue는 대화 전체를 넘기지 않고, Claude가 요청을 Codex용 프롬프트로 다시 써서 넘깁니다. 맥락은 Codex가 저장소를 읽어서 파악합니다. 대화 전체를 넘기려면 뒤에 나오는 &lt;code&gt;/codex:transfer&lt;/code&gt;를 씁니다.&lt;/p&gt;
 &lt;p&gt;Claude는 이 프롬프트를 셸 명령으로 조립해 넘기는데, 두 번 실행해 보니 두 번 다 따옴표 처리에서 문제가 생겼습니다. 한 번은 Claude가 다시 시도해서 넘어갔지만, 다른 한 번은 백틱으로 감싼 &lt;code&gt;total_pages&lt;/code&gt;와 &lt;code&gt;count&lt;/code&gt;가 빠진 채 Codex에 전달됐습니다. 결과가 이상하면 &lt;code&gt;codex resume&lt;/code&gt;으로 Codex가 실제로 받은 요청부터 확인해 볼 만합니다.&lt;/p&gt;
 &lt;h2&gt;긴 작업은 백그라운드로 돌립니다&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;/codex:review&lt;/code&gt;나 &lt;code&gt;/codex:rescue&lt;/code&gt;에 &lt;code&gt;--background&lt;/code&gt;를 붙이면 Codex가 뒤에서 돌고, 그동안 Claude Code 대화를 이어갈 수 있습니다. &lt;code&gt;/codex:review --background&lt;/code&gt;를 걸고 &lt;code&gt;/codex:status&lt;/code&gt;를 입력하자 실행 중인 작업이 경과 시간과 함께 표로 나왔고, 리뷰가 끝나자 결과가 대화에 자동으로 올라왔습니다.&lt;/p&gt;
@@ -3662,7 +3668,7 @@ allowed-tools: Bash(codex exec:*)
 &lt;pre&gt;&lt;code&gt;claude mcp add codex-cli -e CODEX_DEFAULT_MODEL=gpt-5.6-sol -- npx -y codex-mcp-server
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;등록하면 &lt;code&gt;codex&lt;/code&gt;, &lt;code&gt;review&lt;/code&gt;, &lt;code&gt;websearch&lt;/code&gt; 등 도구 6개가 생깁니다. 이 래퍼는 &lt;code&gt;~/.codex/config.toml&lt;/code&gt;의 모델 설정을 쓰지 않고, 따로 정하지 않으면 &lt;code&gt;gpt-5.3-codex&lt;/code&gt;로 Codex를 실행합니다. 이 모델은 &lt;a href=&quot;https://learn.chatgpt.com/docs/changelog&quot;&gt;ChatGPT 로그인에서는 더 이상 고를 수 없어서&lt;/a&gt; 호출이 400 오류로 실패했습니다.&lt;/p&gt;
-&lt;p&gt;그래서 &lt;code&gt;CODEX_DEFAULT_MODEL&lt;/code&gt;에 Codex의 &lt;code&gt;/model&lt;/code&gt;에서 고를 수 있는 모델을 넣어야 합니다. GPT-5.5는 &lt;a href=&quot;https://learn.chatgpt.com/docs/changelog&quot;&gt;10월 14일 ChatGPT 로그인에서 빠진다고 예고&lt;/a&gt;되어 있어 &lt;code&gt;gpt-5.6-sol&lt;/code&gt;을 넣었습니다.&lt;/p&gt;
+&lt;p&gt;그래서 &lt;code&gt;CODEX_DEFAULT_MODEL&lt;/code&gt;에 Codex의 &lt;code&gt;/model&lt;/code&gt;에서 고를 수 있는 모델을 넣어야 합니다. GPT-5.5는 &lt;a href=&quot;https://learn.chatgpt.com/docs/changelog&quot;&gt;10월 14일에 ChatGPT 로그인에서 빠져&lt;/a&gt; &lt;code&gt;gpt-5.6-sol&lt;/code&gt;을 넣었습니다(2026-10-19 정정: 처음에는 예고 단계였습니다).&lt;/p&gt;
 &lt;p&gt;세 방법 모두 로컬에 설치된 Codex CLI를 실행합니다. 그래서 어떤 방법을 고르든 Codex CLI를 설치하고 &lt;code&gt;codex login&lt;/code&gt;으로 로그인하는 것이 첫 단계입니다.&lt;/p&gt;
 </content:encoded></item><item><title>2주 간의 KoELECTRA 개발기 - 2부</title><link>https://monologg.kr/posts/2020/05/02/koelectra-part2/</link><guid isPermaLink="true">https://monologg.kr/posts/2020/05/02/koelectra-part2/</guid><description>KoELECTRA 개발 과정 2부. TPU v3-8에서의 Pretraining 결과, 7개 한국어 NLP 태스크 벤치마크(NSMC, Naver NER, PAWS 등)에서의 성능 비교, 그리고 모델 배포 과정을 다룹니다.</description><pubDate>Sat, 02 May 2020 03:00:00 GMT</pubDate><content:encoded>&lt;p&gt;&lt;strong&gt;2주 간의 KoELECTRA 개발&lt;/strong&gt;을 마치고, 그 과정을 글로 남기려고 한다. 결론부터 적으면 &lt;strong&gt;TPU v3-8에서 Base 약 7일, Small 약 3일&lt;/strong&gt;을 학습해 7개 한국어 NLP 태스크로 평가했고, &lt;strong&gt;KoBERT보다 전반적으로 좋았으며 HanBERT와 비슷하거나 오히려 더 좋은 케이스도 있었다.&lt;/strong&gt; 모델은 &lt;code&gt;transformers&lt;/code&gt;에서 tokenization 파일 없이 바로 쓸 수 있다.&lt;/p&gt;
 &lt;p&gt;이 글을 읽으신 분들은 내가 했던 **삽질(?)**을 최대한 덜 하길 바라는 마음이다:)&lt;/p&gt;
