@@ -12,7 +12,7 @@ concatenated for easy consumption by LLMs. For the index-only version see /llms.
 
 ---
 
-# Claude Code 운영기 3편: 아침 브리핑이 끝낸 일을 또 추천하는 건 모델보다 입력 탓이다
+# Claude Code 운영기 3편: 아침 브리핑이 이미 끝낸 일을 자꾸 추천한다
 
 URL: https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/
 Published: 2026-10-20
@@ -25,13 +25,13 @@ Tags: claude-code, claude-p, llm, issue-tracker, discord
 >
 > 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
 > 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
-> 3. **아침 브리핑이 끝낸 일을 또 추천하는 건 모델보다 입력 탓이다**
+> 3. **아침 브리핑이 이미 끝낸 일을 자꾸 추천한다**
 
 > 2026년 10월 기준입니다. Claude Code 2.1.301에서 확인했고, 남들이 만든 브리핑 사례는 10월에 찾아봤습니다.
 
-AI로 아침 브리핑을 만든 사람은 많습니다. 제 브리핑은 이슈 트래커의 티켓을 읽어 그날 할 일의 순서를 정해 줍니다. 직접 만든 사람의 후기와 제품 문서를 40건 남짓 찾아보니 가장 많이 나온 불만은 「끝냈거나 일부러 넘긴 일을 또 올린다」였고, 제 브리핑도 똑같이 그랬습니다.
+제 아침 브리핑은 이슈 트래커의 티켓을 읽어 그날 할 일의 순서를 정해 줍니다. 3개월 동안 자꾸 틀린 것은 이미 끝낸 일을 또 추천하는 것이었습니다. **고쳐 보니 원인은 모델보다 입력이었습니다.** 결정이 적힌 코멘트가 빠졌거나, 잘렸거나, 날짜를 셀 기준이 없었습니다.
 
-**3개월 동안 고쳐 보니 브리핑이 틀린 아침의 원인은 대개 모델보다 입력에 있었습니다.** 결정이 적힌 코멘트가 빠졌거나, 잘렸거나, 날짜를 셀 기준이 없었습니다. 자주 생기는 문제와 그 문제를 겪고 넣은 것을 짝지으면 이렇습니다.
+AI로 아침 브리핑을 만든 사람은 많습니다. 직접 만든 사람의 후기와 제품 문서를 40건 남짓 찾아보니 가장 많이 나온 불만도 「끝냈거나 일부러 넘긴 일을 또 올린다」였습니다. 자주 생기는 문제와 그 문제를 겪고 넣은 것을 짝지으면 이렇습니다.
 
 | 자주 생기는 문제 | 처음부터 넣을 것 |
 | --- | :--- |
@@ -220,7 +220,7 @@ Tags: claude-code, discord, slack, mcp, github-actions
 >
 > 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
 > 2. **혼자 쓴다면 Slack보다 Discord가 나을까**
-> 3. [아침 브리핑이 끝낸 일을 또 추천하는 건 모델보다 입력 탓이다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
+> 3. [아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
 
 > 2026년 10월 기준입니다. Slack 가격표와 각 서비스 공식 문서는 10월 19일에 확인했습니다.
 
@@ -377,7 +377,7 @@ Tags: claude-code, claude-p, hermes-agent, dagu, mcp, homelab
 >
 > 1. **Hermes Agent 대신 cron과 claude -p를 씁니다**
 > 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
-> 3. [아침 브리핑이 끝낸 일을 또 추천하는 건 모델보다 입력 탓이다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
+> 3. [아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
 
 > 2026년 10월 기준입니다. Claude Code 2.1.300과 Dagu 2.18.2에서 확인했고, Hermes Agent는 7월에, 약관과 공식 문서는 10월에 확인했습니다.
 

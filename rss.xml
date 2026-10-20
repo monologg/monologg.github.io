@@ -1,16 +1,16 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>Claude Code 운영기 3편: 아침 브리핑이 끝낸 일을 또 추천하는 건 모델보다 입력 탓이다</title><link>https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/</guid><description>이슈 트래커 티켓을 읽어 매일 아침 오늘 할 일을 추천하는 claude -p 브리핑을 3개월 운영하며 고친 것을 정리했습니다. 남들이 만든 AI 아침 브리핑 후기에서 가장 많이 나온 불만인 「끝낸 일을 또 올린다」를 마지막 코멘트, 추천 이력, 「오늘은 아님」 칸, 시작일로 푼 방법을 실제 사고와 함께 담았습니다.</description><pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>Claude Code 운영기 3편: 아침 브리핑이 이미 끝낸 일을 자꾸 추천한다</title><link>https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/</guid><description>이슈 트래커 티켓을 읽어 매일 아침 오늘 할 일을 추천하는 claude -p 브리핑을 3개월 운영하며 고친 것을 정리했습니다. 남들이 만든 AI 아침 브리핑 후기에서 가장 많이 나온 불만인 「끝낸 일을 또 올린다」를 마지막 코멘트, 추천 이력, 「오늘은 아님」 칸, 시작일로 푼 방법을 실제 사고와 함께 담았습니다.</description><pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Claude Code 운영기&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/18/2026-10-18-claude-code-ops-overview/&quot;&gt;Hermes Agent 대신 cron과 claude -p를 씁니다&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/&quot;&gt;혼자 쓴다면 Slack보다 Discord가 나을까&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;strong&gt;아침 브리핑이 끝낸 일을 또 추천하는 건 모델보다 입력 탓이다&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;아침 브리핑이 이미 끝낸 일을 자꾸 추천한다&lt;/strong&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
 &lt;p&gt;2026년 10월 기준입니다. Claude Code 2.1.301에서 확인했고, 남들이 만든 브리핑 사례는 10월에 찾아봤습니다.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;p&gt;AI로 아침 브리핑을 만든 사람은 많습니다. 제 브리핑은 이슈 트래커의 티켓을 읽어 그날 할 일의 순서를 정해 줍니다. 직접 만든 사람의 후기와 제품 문서를 40건 남짓 찾아보니 가장 많이 나온 불만은 「끝냈거나 일부러 넘긴 일을 또 올린다」였고, 제 브리핑도 똑같이 그랬습니다.&lt;/p&gt;
-&lt;p&gt;&lt;strong&gt;3개월 동안 고쳐 보니 브리핑이 틀린 아침의 원인은 대개 모델보다 입력에 있었습니다.&lt;/strong&gt; 결정이 적힌 코멘트가 빠졌거나, 잘렸거나, 날짜를 셀 기준이 없었습니다. 자주 생기는 문제와 그 문제를 겪고 넣은 것을 짝지으면 이렇습니다.&lt;/p&gt;
+&lt;p&gt;제 아침 브리핑은 이슈 트래커의 티켓을 읽어 그날 할 일의 순서를 정해 줍니다. 3개월 동안 자꾸 틀린 것은 이미 끝낸 일을 또 추천하는 것이었습니다. &lt;strong&gt;고쳐 보니 원인은 모델보다 입력이었습니다.&lt;/strong&gt; 결정이 적힌 코멘트가 빠졌거나, 잘렸거나, 날짜를 셀 기준이 없었습니다.&lt;/p&gt;
+&lt;p&gt;AI로 아침 브리핑을 만든 사람은 많습니다. 직접 만든 사람의 후기와 제품 문서를 40건 남짓 찾아보니 가장 많이 나온 불만도 「끝냈거나 일부러 넘긴 일을 또 올린다」였습니다. 자주 생기는 문제와 그 문제를 겪고 넣은 것을 짝지으면 이렇습니다.&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr&gt;
@@ -206,7 +206,7 @@
 &lt;ol&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/18/2026-10-18-claude-code-ops-overview/&quot;&gt;Hermes Agent 대신 cron과 claude -p를 씁니다&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;혼자 쓴다면 Slack보다 Discord가 나을까&lt;/strong&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/&quot;&gt;아침 브리핑이 끝낸 일을 또 추천하는 건 모델보다 입력 탓이다&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/&quot;&gt;아침 브리핑이 이미 끝낸 일을 자꾸 추천한다&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
@@ -362,7 +362,7 @@ def send(channel_id: str, content: str, token: str) -&amp;gt; None:
 &lt;ol&gt;
 &lt;li&gt;&lt;strong&gt;Hermes Agent 대신 cron과 claude -p를 씁니다&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/&quot;&gt;혼자 쓴다면 Slack보다 Discord가 나을까&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&quot;/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/&quot;&gt;아침 브리핑이 끝낸 일을 또 추천하는 건 모델보다 입력 탓이다&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/&quot;&gt;아침 브리핑이 이미 끝낸 일을 자꾸 추천한다&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
