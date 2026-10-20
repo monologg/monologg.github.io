@@ -14,7 +14,7 @@
   <line x1="44" y1="114" x2="184" y2="114" stroke="#e1e2e6"/>
   <text x="114" y="140" text-anchor="middle" font-size="13" fill="#4b4f59">티켓 설명</text>
   <text x="114" y="166" text-anchor="middle" font-size="13" font-weight="700" fill="#1f2228">마지막 코멘트</text>
-  <text x="114" y="192" text-anchor="middle" font-size="13" fill="#4b4f59">착수일 · 마감일</text>
+  <text x="114" y="192" text-anchor="middle" font-size="13" fill="#4b4f59">시작일 · 마감일</text>
   <text x="114" y="218" text-anchor="middle" font-size="13" fill="#4b4f59">상태 · 우선순위</text>
   <text x="114" y="244" text-anchor="middle" font-size="13" fill="#4b4f59">어제 활동</text>
 
@@ -23,12 +23,11 @@
   <text x="396" y="78" text-anchor="middle" font-size="16" font-weight="700" fill="#1f2228">수집 스크립트</text>
   <text x="396" y="100" text-anchor="middle" font-size="13" fill="#6b6f7a">매번 같은 답이 나와야 하는 일</text>
   <line x1="266" y1="114" x2="526" y2="114" stroke="#e1e2e6"/>
-  <text x="396" y="140" text-anchor="middle" font-size="13" fill="#4b4f59">착수일 순 정렬 · D-day 계산</text>
+  <text x="396" y="140" text-anchor="middle" font-size="13" fill="#4b4f59">시작일 순 정렬 · D-day 계산</text>
   <text x="396" y="166" text-anchor="middle" font-size="13" fill="#4b4f59">후보마다 마지막 코멘트 첨부</text>
-  <text x="396" y="192" text-anchor="middle" font-size="13" fill="#4b4f59">잘린 곳에 잘렸다는 표시</text>
-  <text x="396" y="218" text-anchor="middle" font-size="13" fill="#4b4f59">부딪히는 신호 미리 정리</text>
+  <text x="396" y="192" text-anchor="middle" font-size="13" fill="#4b4f59">잘린 코멘트 끝에 원래 길이 표시</text>
+  <text x="396" y="218" text-anchor="middle" font-size="13" fill="#4b4f59">미뤄 둔 티켓은 방치 표시에서 빼기</text>
   <text x="396" y="244" text-anchor="middle" font-size="13" fill="#4b4f59">어제까지 추천 횟수 집계</text>
-  <text x="396" y="270" text-anchor="middle" font-size="12" fill="#6b6f7a">넘길 것이 없으면 LLM을 부르지 않음</text>
 
   <!-- claude -p -->
   <rect x="588" y="48" width="210" height="236" rx="10" fill="#ffffff" stroke="#3b3f4a" stroke-width="1.5"/>
