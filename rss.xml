@@ -1,9 +1,73 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>Claude Code 운영기 3편: 아침 브리핑이 이미 끝낸 일을 자꾸 추천한다</title><link>https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/</guid><description>이슈 트래커 티켓을 읽어 매일 아침 오늘 할 일을 추천하는 claude -p 브리핑을 3개월 운영하며 고친 것을 정리했습니다. 남들이 만든 AI 아침 브리핑 후기에서 가장 많이 나온 불만인 「끝낸 일을 또 올린다」를 마지막 코멘트, 추천 이력, 「오늘은 아님」 칸, 시작일로 푼 방법을 실제 사고와 함께 담았습니다.</description><pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>Claude Code 운영기 4편: 뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB</title><link>https://monologg.kr/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/</guid><description>끝난 Claude Code 세션이 남긴 MCP 서버 프로세스 148개가 메모리 3GB를 쥐고 있었습니다. 남는 이유와 찾아서 끄는 스크립트, 예약 작업에서 MCP 서버를 띄우지 않는 플래그를 적었습니다.</description><pubDate>Wed, 21 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Claude Code 운영기&lt;/strong&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2026/10/18/2026-10-18-claude-code-ops-overview/&quot;&gt;Hermes Agent 대신 cron과 claude -p를 씁니다&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/&quot;&gt;혼자 쓴다면 Slack보다 Discord가 나을까&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/&quot;&gt;아침 브리핑이 이미 끝낸 일을 자꾸 추천한다&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB&lt;/strong&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;2026년 10월 기준입니다. Claude Code 2.1.302에서 재현했고, 공식 문서는 10월 21일에 확인했습니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;&lt;a href=&quot;/posts/2026/10/18/2026-10-18-claude-code-ops-overview/&quot;&gt;1편&lt;/a&gt;에서 소개한 대로 저는 Max 구독 하나로 집 서버에서 Claude Code를 대화형으로 쓰고, 예약 작업은 Claude Code를 사람 없이 한 번 돌리는 &lt;code&gt;claude -p&lt;/code&gt;로 돌립니다. 집 서버 메모리가 27GB 중 13GB까지 차 있어서 보니, 끝난 Claude Code 세션들이 남긴 MCP 서버 프로세스 148개가 떠 있었습니다. 가장 오래된 것은 3일 15시간째였고, 모두 끄자 메모리 3GB가 돌아왔습니다.&lt;/p&gt;
+&lt;h2&gt;남은 MCP 서버는 매시간 정리하고, claude -p에서는 띄우지 않습니다&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;대화형 세션이 남긴 MCP 서버는 매시간 찾아서 끕니다.&lt;/strong&gt; 대화형 세션에는 MCP 서버가 있어야 하니 띄우지 않을 수 없어서, 아래 스크립트를 cron에 겁니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;cron으로 도는 &lt;code&gt;claude -p&lt;/code&gt;에는 MCP 서버를 하나도 띄우지 않습니다.&lt;/strong&gt; &lt;code&gt;--mcp-config &apos;{&quot;mcpServers&quot;:{}}&apos; --strict-mcp-config&lt;/code&gt;를 붙이면 MCP 서버 0개로 시작하고, 입력 토큰도 줄어듭니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;MCP 서버가 꼭 필요한 &lt;code&gt;claude -p&lt;/code&gt;라면 필요한 MCP 서버 하나만 띄웁니다.&lt;/strong&gt; 처음 한 번은 Claude Code가 끝난 뒤에도 그 서버가 떠 있는지 확인합니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;Claude Code를 꺼도 MCP 서버가 남는 이유&lt;/h2&gt;
+&lt;p&gt;Claude Code 저장소의 &lt;a href=&quot;https://github.com/anthropics/claude-code/issues/1935&quot;&gt;이슈 #1935&lt;/a&gt;에 올라온 분석으로는 Claude Code가 꺼질 때 MCP 서버와 이어진 표준 입력(stdin)만 닫고 종료 시그널은 보내지 않는다고 합니다. 그래서 stdin이 닫히면 스스로 종료되게 만든 MCP 서버는 같이 끝나지만, 자식 프로세스나 타이머를 붙들고 있는 MCP 서버는 계속 돕니다.&lt;/p&gt;
+&lt;p&gt;이렇게 남은 MCP 서버는 부모 프로세스를 잃고 PID 1 밑으로 옮겨집니다. 운영체제 교재에서 고아 프로세스(orphan process)라고 부르는 상태로, 이미 죽었는데 회수되지 않은 좀비 프로세스와 달리 메모리를 그대로 차지합니다.&lt;/p&gt;
+&lt;p&gt;이슈 #1935는 2025년 6월부터 열려 있고, macOS·Linux·Windows에서 같은 보고가 계속 올라옵니다. 몇 주 만에 75개가 쌓였다는 macOS 보고와 &lt;code&gt;claude -p&lt;/code&gt;에서 다섯 번 모두 재현했다는 Linux 보고가 있고, MCP 프로세스 59개를 남겨 하드 리부트까지 갔다는 보고(&lt;a href=&quot;https://github.com/anthropics/claude-code/issues/68933&quot;&gt;#68933&lt;/a&gt;)는 그 중복으로 닫혔습니다. &lt;a href=&quot;https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md&quot;&gt;변경 내역&lt;/a&gt;을 보면 2.1.296에서 Windows만 「stdin을 닫고 300ms 뒤에도 살아 있으면 프로세스 트리를 끈다」로 고쳐졌고, 2.1.306까지 Linux·macOS 쪽 수정은 없습니다.&lt;/p&gt;
+&lt;p&gt;Claude Code 2.1.302에서 &lt;code&gt;--mcp-config&lt;/code&gt; 없이 &lt;code&gt;claude -p&lt;/code&gt;를 돌려 보니, 집 서버의 MCP 서버 두 개 가운데 npx로 바로 띄운 쪽은 같이 종료됐습니다. 다른 하나인 Perplexity MCP 서버는 도구 가운데 일부만 Claude Code에 보이게 하려고 중간 프로그램(래퍼)을 거쳐 띄우고 있었는데, 이 래퍼가 안쪽 Perplexity MCP 서버를 자식 프로세스로 둔 채 남았습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;PPID 1  node  중간에 끼운 래퍼                        85MB
+ └ npm exec @perplexity-ai/mcp-server                 97MB
+    └ sh -c perplexity-mcp                             2MB
+       └ node perplexity-mcp                          89MB
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;래퍼를 끼운 Perplexity MCP 서버는 &lt;code&gt;claude -p&lt;/code&gt;를 한 번 돌릴 때마다 프로세스 4개(RSS 합계 273MB)를 남겼습니다.&lt;/strong&gt; RSS는 프로세스끼리 같이 쓰는 메모리를 겹쳐 세서 실제로 돌아오는 양보다 큽니다. 집 서버에 쌓였던 148개도 RSS로 더하면 8.5GB였지만, 끄고 돌아온 것은 3GB였습니다.&lt;/p&gt;
+&lt;h2&gt;대화형 세션이 남긴 MCP 서버를 찾아서 끄는 스크립트&lt;/h2&gt;
+&lt;p&gt;리눅스에서는 Claude Code가 띄운 프로세스에 환경 변수 &lt;code&gt;CLAUDE_CODE_SESSION_ID&lt;/code&gt;가 붙어 있어서, 부모가 PID 1이면서 이 변수가 있는 프로세스를 고르면 남은 MCP 서버를 찾을 수 있습니다. 집 서버에서는 이 방법으로 매시간 찾아서 끕니다. 아래 &lt;code&gt;mcp-orphans.sh&lt;/code&gt;는 그냥 돌리면 대상만 보여 주고, &lt;code&gt;KILL=1&lt;/code&gt;을 붙이면 끕니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# mcp-orphans.sh
+kill_tree() {
+  for c in $(ps -o pid= --ppid &quot;$1&quot;); do kill_tree &quot;$c&quot;; done
+  [ &quot;${KILL:-0}&quot; = 1 ] &amp;amp;&amp;amp; kill -TERM &quot;$1&quot; 2&amp;gt;/dev/null
+}
+for p in /proc/[0-9]*; do
+  pid=${p#/proc/}
+  [ &quot;$(awk &apos;/^PPid:/ {print $2}&apos; &quot;$p/status&quot; 2&amp;gt;/dev/null)&quot; = 1 ] || continue
+  tr &apos;\0&apos; &apos;\n&apos; 2&amp;gt;/dev/null &amp;lt; &quot;$p/environ&quot; | grep -q &apos;^CLAUDE_CODE_SESSION_ID=&apos; || continue
+  [ &quot;$(ps -o etimes= -p &quot;$pid&quot; | tr -d &apos; &apos;)&quot; -ge &quot;${MIN_AGE:-600}&quot; ] || continue  # 기본은 뜬 지 10분 넘은 것만
+  tr &apos;\0&apos; &apos; &apos; 2&amp;gt;/dev/null &amp;lt; &quot;$p/cmdline&quot; | grep -qiE &apos;mcp|_npx/|npm exec|uvx&apos; || continue
+  ps -o pid=,etime=,rss=,args= -p &quot;$pid&quot;
+  kill_tree &quot;$pid&quot;
+done
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;방금 뜬 프로세스를 잘못 끄지 않도록 기본으로는 뜬 지 10분이 지난 것만 고르고, 이 기준은 &lt;code&gt;MIN_AGE&lt;/code&gt;(초)로 바꿀 수 있습니다. 명령줄에 &lt;code&gt;mcp&lt;/code&gt;, npx, &lt;code&gt;uvx&lt;/code&gt;가 든 것만 고르므로 Claude Code의 Bash 도구로 띄워 둔 백그라운드 작업은 걸리지 않습니다. 맥에는 &lt;code&gt;/proc&lt;/code&gt;가 없어서 리눅스에서만 됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;남은 MCP 서버는 자식 프로세스부터 끕니다.&lt;/strong&gt; 부모를 먼저 끄면 자식이 다시 PID 1 밑으로 옮겨져 이번 목록에서 빠지고, 다음 실행까지 한 시간을 더 삽니다. 집 서버에서 &lt;code&gt;KILL=1&lt;/code&gt;로 돌려 보니 10분 넘게 떠 있던 MCP 서버 9개와 그 자식 프로세스가 모두 꺼졌고, Bash 도구로 띄운 백그라운드 작업은 그대로였습니다.&lt;/p&gt;
+&lt;p&gt;cron에는 한 줄로 겁니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;17 * * * * KILL=1 /bin/sh &quot;$HOME/bin/mcp-orphans.sh&quot;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h2&gt;예약 작업의 claude -p는 빈 MCP 설정으로 시작합니다&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;claude -p&lt;/code&gt;도 플래그를 주지 않으면 대화형 세션처럼 MCP 서버를 전부 띄웁니다. 집 서버에서는 Plugin, &lt;code&gt;~/.claude.json&lt;/code&gt;, claude.ai 커넥터를 합쳐 13개였습니다. 제 예약 작업은 대부분 MCP 도구가 필요 없어서 MCP 서버를 하나도 띄우지 않고 시작합니다. &lt;a href=&quot;https://code.claude.com/docs/en/cli-reference&quot;&gt;CLI 문서&lt;/a&gt;대로 &lt;code&gt;--strict-mcp-config&lt;/code&gt;를 주면 &lt;code&gt;--mcp-config&lt;/code&gt;로 넘긴 설정 말고 다른 MCP 설정은 모두 무시합니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;claude -p &quot;$(cat prompt.md)&quot; --mcp-config &apos;{&quot;mcpServers&quot;:{}}&apos; --strict-mcp-config
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;빈 설정에 &lt;code&gt;--strict-mcp-config&lt;/code&gt;를 붙이자 MCP 서버 0개로 시작했고, 끝난 뒤 남은 프로세스도 없었습니다.&lt;/strong&gt; 「OK」라고만 답하게 한 호출의 입력도 33,166토큰에서 27,602토큰으로 줄었습니다.&lt;/p&gt;
+&lt;p&gt;MCP 서버가 꼭 필요한 작업은 &lt;code&gt;{&quot;mcpServers&quot;:{&quot;perplexity&quot;:{&quot;command&quot;:&quot;npx&quot;,&quot;args&quot;:[&quot;-y&quot;,&quot;@perplexity-ai/mcp-server&quot;]}}}&lt;/code&gt;처럼 필요한 MCP 서버 하나만 적어 &lt;code&gt;--mcp-config&lt;/code&gt;에 넘깁니다. 처음 한 번은 Claude Code가 끝난 직후 &lt;code&gt;MIN_AGE=0&lt;/code&gt;으로 &lt;code&gt;mcp-orphans.sh&lt;/code&gt;를 돌려 그 서버가 남는지 봅니다. 몇 개가 떴는지는 &lt;code&gt;stream-json&lt;/code&gt; 출력의 첫 init 이벤트에 나옵니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;claude -p &quot;Reply with OK&quot; --mcp-config &apos;{&quot;mcpServers&quot;:{}}&apos; --strict-mcp-config \
+  --output-format stream-json --verbose \
+  | jq &apos;select(.subtype == &quot;init&quot;) | {mcp: (.mcp_servers | length)}&apos;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이슈 #1935가 고쳐지면 cron 한 줄은 지워도 되지만, 예약 작업에 MCP 서버를 띄우지 않는 플래그는 입력 토큰을 줄이려고라도 남겨 둡니다.&lt;/p&gt;
+</content:encoded></item><item><title>Claude Code 운영기 3편: 아침 브리핑이 이미 끝낸 일을 자꾸 추천한다</title><link>https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/</guid><description>이슈 트래커 티켓을 읽어 매일 아침 오늘 할 일을 추천하는 claude -p 브리핑을 3개월 운영하며 고친 것을 정리했습니다. 남들이 만든 AI 아침 브리핑 후기에서 가장 많이 나온 불만인 「끝낸 일을 또 올린다」를 마지막 코멘트, 추천 이력, 「오늘은 아님」 칸, 시작일로 푼 방법을 실제 사고와 함께 담았습니다.</description><pubDate>Tue, 20 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Claude Code 운영기&lt;/strong&gt;&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/18/2026-10-18-claude-code-ops-overview/&quot;&gt;Hermes Agent 대신 cron과 claude -p를 씁니다&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/&quot;&gt;혼자 쓴다면 Slack보다 Discord가 나을까&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;아침 브리핑이 이미 끝낸 일을 자꾸 추천한다&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/&quot;&gt;뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
@@ -207,6 +271,7 @@
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/18/2026-10-18-claude-code-ops-overview/&quot;&gt;Hermes Agent 대신 cron과 claude -p를 씁니다&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;strong&gt;혼자 쓴다면 Slack보다 Discord가 나을까&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/&quot;&gt;아침 브리핑이 이미 끝낸 일을 자꾸 추천한다&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/&quot;&gt;뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;
@@ -363,6 +428,7 @@ def send(channel_id: str, content: str, token: str) -&amp;gt; None:
 &lt;li&gt;&lt;strong&gt;Hermes Agent 대신 cron과 claude -p를 씁니다&lt;/strong&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/&quot;&gt;혼자 쓴다면 Slack보다 Discord가 나을까&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&quot;/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/&quot;&gt;아침 브리핑이 이미 끝낸 일을 자꾸 추천한다&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/&quot;&gt;뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB&lt;/a&gt;&lt;/li&gt;
 &lt;/ol&gt;
 &lt;/blockquote&gt;
 &lt;blockquote&gt;

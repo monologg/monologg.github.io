@@ -12,6 +12,104 @@ concatenated for easy consumption by LLMs. For the index-only version see /llms.
 
 ---
 
+# Claude Code 운영기 4편: 뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB
+
+URL: https://monologg.kr/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/
+Published: 2026-10-21
+Category: tech
+Tags: claude-code, mcp, claude-p, linux
+
+> 끝난 Claude Code 세션이 남긴 MCP 서버 프로세스 148개가 메모리 3GB를 쥐고 있었습니다. 남는 이유와 찾아서 끄는 스크립트, 예약 작업에서 MCP 서버를 띄우지 않는 플래그를 적었습니다.
+
+> **Claude Code 운영기**
+>
+> 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
+> 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
+> 3. [아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
+> 4. **뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB**
+
+> 2026년 10월 기준입니다. Claude Code 2.1.302에서 재현했고, 공식 문서는 10월 21일에 확인했습니다.
+
+[1편](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)에서 소개한 대로 저는 Max 구독 하나로 집 서버에서 Claude Code를 대화형으로 쓰고, 예약 작업은 Claude Code를 사람 없이 한 번 돌리는 `claude -p`로 돌립니다. 집 서버 메모리가 27GB 중 13GB까지 차 있어서 보니, 끝난 Claude Code 세션들이 남긴 MCP 서버 프로세스 148개가 떠 있었습니다. 가장 오래된 것은 3일 15시간째였고, 모두 끄자 메모리 3GB가 돌아왔습니다.
+
+## 남은 MCP 서버는 매시간 정리하고, claude -p에서는 띄우지 않습니다
+
+- **대화형 세션이 남긴 MCP 서버는 매시간 찾아서 끕니다.** 대화형 세션에는 MCP 서버가 있어야 하니 띄우지 않을 수 없어서, 아래 스크립트를 cron에 겁니다.
+- **cron으로 도는 `claude -p`에는 MCP 서버를 하나도 띄우지 않습니다.** `--mcp-config '{"mcpServers":{}}' --strict-mcp-config`를 붙이면 MCP 서버 0개로 시작하고, 입력 토큰도 줄어듭니다.
+- **MCP 서버가 꼭 필요한 `claude -p`라면 필요한 MCP 서버 하나만 띄웁니다.** 처음 한 번은 Claude Code가 끝난 뒤에도 그 서버가 떠 있는지 확인합니다.
+
+## Claude Code를 꺼도 MCP 서버가 남는 이유
+
+Claude Code 저장소의 [이슈 #1935](https://github.com/anthropics/claude-code/issues/1935)에 올라온 분석으로는 Claude Code가 꺼질 때 MCP 서버와 이어진 표준 입력(stdin)만 닫고 종료 시그널은 보내지 않는다고 합니다. 그래서 stdin이 닫히면 스스로 종료되게 만든 MCP 서버는 같이 끝나지만, 자식 프로세스나 타이머를 붙들고 있는 MCP 서버는 계속 돕니다.
+
+이렇게 남은 MCP 서버는 부모 프로세스를 잃고 PID 1 밑으로 옮겨집니다. 운영체제 교재에서 고아 프로세스(orphan process)라고 부르는 상태로, 이미 죽었는데 회수되지 않은 좀비 프로세스와 달리 메모리를 그대로 차지합니다.
+
+이슈 #1935는 2025년 6월부터 열려 있고, macOS·Linux·Windows에서 같은 보고가 계속 올라옵니다. 몇 주 만에 75개가 쌓였다는 macOS 보고와 `claude -p`에서 다섯 번 모두 재현했다는 Linux 보고가 있고, MCP 프로세스 59개를 남겨 하드 리부트까지 갔다는 보고([#68933](https://github.com/anthropics/claude-code/issues/68933))는 그 중복으로 닫혔습니다. [변경 내역](https://github.com/anthropics/claude-code/blob/main/CHANGELOG.md)을 보면 2.1.296에서 Windows만 「stdin을 닫고 300ms 뒤에도 살아 있으면 프로세스 트리를 끈다」로 고쳐졌고, 2.1.306까지 Linux·macOS 쪽 수정은 없습니다.
+
+Claude Code 2.1.302에서 `--mcp-config` 없이 `claude -p`를 돌려 보니, 집 서버의 MCP 서버 두 개 가운데 npx로 바로 띄운 쪽은 같이 종료됐습니다. 다른 하나인 Perplexity MCP 서버는 도구 가운데 일부만 Claude Code에 보이게 하려고 중간 프로그램(래퍼)을 거쳐 띄우고 있었는데, 이 래퍼가 안쪽 Perplexity MCP 서버를 자식 프로세스로 둔 채 남았습니다.
+
+```text
+PPID 1  node  중간에 끼운 래퍼                        85MB
+ └ npm exec @perplexity-ai/mcp-server                 97MB
+    └ sh -c perplexity-mcp                             2MB
+       └ node perplexity-mcp                          89MB
+```
+
+**래퍼를 끼운 Perplexity MCP 서버는 `claude -p`를 한 번 돌릴 때마다 프로세스 4개(RSS 합계 273MB)를 남겼습니다.** RSS는 프로세스끼리 같이 쓰는 메모리를 겹쳐 세서 실제로 돌아오는 양보다 큽니다. 집 서버에 쌓였던 148개도 RSS로 더하면 8.5GB였지만, 끄고 돌아온 것은 3GB였습니다.
+
+## 대화형 세션이 남긴 MCP 서버를 찾아서 끄는 스크립트
+
+리눅스에서는 Claude Code가 띄운 프로세스에 환경 변수 `CLAUDE_CODE_SESSION_ID`가 붙어 있어서, 부모가 PID 1이면서 이 변수가 있는 프로세스를 고르면 남은 MCP 서버를 찾을 수 있습니다. 집 서버에서는 이 방법으로 매시간 찾아서 끕니다. 아래 `mcp-orphans.sh`는 그냥 돌리면 대상만 보여 주고, `KILL=1`을 붙이면 끕니다.
+
+```bash
+# mcp-orphans.sh
+kill_tree() {
+  for c in $(ps -o pid= --ppid "$1"); do kill_tree "$c"; done
+  [ "${KILL:-0}" = 1 ] && kill -TERM "$1" 2>/dev/null
+}
+for p in /proc/[0-9]*; do
+  pid=${p#/proc/}
+  [ "$(awk '/^PPid:/ {print $2}' "$p/status" 2>/dev/null)" = 1 ] || continue
+  tr '\0' '\n' 2>/dev/null < "$p/environ" | grep -q '^CLAUDE_CODE_SESSION_ID=' || continue
+  [ "$(ps -o etimes= -p "$pid" | tr -d ' ')" -ge "${MIN_AGE:-600}" ] || continue  # 기본은 뜬 지 10분 넘은 것만
+  tr '\0' ' ' 2>/dev/null < "$p/cmdline" | grep -qiE 'mcp|_npx/|npm exec|uvx' || continue
+  ps -o pid=,etime=,rss=,args= -p "$pid"
+  kill_tree "$pid"
+done
+```
+
+방금 뜬 프로세스를 잘못 끄지 않도록 기본으로는 뜬 지 10분이 지난 것만 고르고, 이 기준은 `MIN_AGE`(초)로 바꿀 수 있습니다. 명령줄에 `mcp`, npx, `uvx`가 든 것만 고르므로 Claude Code의 Bash 도구로 띄워 둔 백그라운드 작업은 걸리지 않습니다. 맥에는 `/proc`가 없어서 리눅스에서만 됩니다.
+
+**남은 MCP 서버는 자식 프로세스부터 끕니다.** 부모를 먼저 끄면 자식이 다시 PID 1 밑으로 옮겨져 이번 목록에서 빠지고, 다음 실행까지 한 시간을 더 삽니다. 집 서버에서 `KILL=1`로 돌려 보니 10분 넘게 떠 있던 MCP 서버 9개와 그 자식 프로세스가 모두 꺼졌고, Bash 도구로 띄운 백그라운드 작업은 그대로였습니다.
+
+cron에는 한 줄로 겁니다.
+
+```bash
+17 * * * * KILL=1 /bin/sh "$HOME/bin/mcp-orphans.sh"
+```
+
+## 예약 작업의 claude -p는 빈 MCP 설정으로 시작합니다
+
+`claude -p`도 플래그를 주지 않으면 대화형 세션처럼 MCP 서버를 전부 띄웁니다. 집 서버에서는 Plugin, `~/.claude.json`, claude.ai 커넥터를 합쳐 13개였습니다. 제 예약 작업은 대부분 MCP 도구가 필요 없어서 MCP 서버를 하나도 띄우지 않고 시작합니다. [CLI 문서](https://code.claude.com/docs/en/cli-reference)대로 `--strict-mcp-config`를 주면 `--mcp-config`로 넘긴 설정 말고 다른 MCP 설정은 모두 무시합니다.
+
+```bash
+claude -p "$(cat prompt.md)" --mcp-config '{"mcpServers":{}}' --strict-mcp-config
+```
+
+**빈 설정에 `--strict-mcp-config`를 붙이자 MCP 서버 0개로 시작했고, 끝난 뒤 남은 프로세스도 없었습니다.** 「OK」라고만 답하게 한 호출의 입력도 33,166토큰에서 27,602토큰으로 줄었습니다.
+
+MCP 서버가 꼭 필요한 작업은 `{"mcpServers":{"perplexity":{"command":"npx","args":["-y","@perplexity-ai/mcp-server"]}}}`처럼 필요한 MCP 서버 하나만 적어 `--mcp-config`에 넘깁니다. 처음 한 번은 Claude Code가 끝난 직후 `MIN_AGE=0`으로 `mcp-orphans.sh`를 돌려 그 서버가 남는지 봅니다. 몇 개가 떴는지는 `stream-json` 출력의 첫 init 이벤트에 나옵니다.
+
+```bash
+claude -p "Reply with OK" --mcp-config '{"mcpServers":{}}' --strict-mcp-config \
+  --output-format stream-json --verbose \
+  | jq 'select(.subtype == "init") | {mcp: (.mcp_servers | length)}'
+```
+
+이슈 #1935가 고쳐지면 cron 한 줄은 지워도 되지만, 예약 작업에 MCP 서버를 띄우지 않는 플래그는 입력 토큰을 줄이려고라도 남겨 둡니다.
+
+---
+
 # Claude Code 운영기 3편: 아침 브리핑이 이미 끝낸 일을 자꾸 추천한다
 
 URL: https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/
@@ -26,6 +124,7 @@ Tags: claude-code, claude-p, llm, issue-tracker, discord
 > 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
 > 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
 > 3. **아침 브리핑이 이미 끝낸 일을 자꾸 추천한다**
+> 4. [뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB](/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/)
 
 > 2026년 10월 기준입니다. Claude Code 2.1.301에서 확인했고, 남들이 만든 브리핑 사례는 10월에 찾아봤습니다.
 
@@ -221,6 +320,7 @@ Tags: claude-code, discord, slack, mcp, github-actions
 > 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
 > 2. **혼자 쓴다면 Slack보다 Discord가 나을까**
 > 3. [아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
+> 4. [뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB](/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/)
 
 > 2026년 10월 기준입니다. Slack 가격표와 각 서비스 공식 문서는 10월 19일에 확인했습니다.
 
@@ -378,6 +478,7 @@ Tags: claude-code, claude-p, hermes-agent, dagu, mcp, homelab
 > 1. **Hermes Agent 대신 cron과 claude -p를 씁니다**
 > 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
 > 3. [아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
+> 4. [뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB](/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/)
 
 > 2026년 10월 기준입니다. Claude Code 2.1.300과 Dagu 2.18.2에서 확인했고, Hermes Agent는 7월에, 약관과 공식 문서는 10월에 확인했습니다.
 
