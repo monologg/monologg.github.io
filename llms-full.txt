@@ -1662,6 +1662,11 @@ Tags: perplexity, web-search, llm-as-judge, codex, claude-code
 
 > Perplexity MCP, Claude Code 내장 검색, Codex 내장 검색을 실사용 쿼리 58개로 블라인드 평가했습니다. 채점을 Claude와 GPT 두 모델에 맡겼는데 결론이 같았고, Codex 검색의 순위만 채점 모델에 따라 뒤집혔습니다.
 
+> **에이전트 웹 검색**
+>
+> 1. [검색 API 셋을 50개 쿼리로 블라인드 평가하니 결론은 Perplexity였습니다](/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/)
+> 2. **어느 모델이 채점해도 Perplexity MCP가 Claude Code 내장 검색보다 나았습니다**
+
 > **2026-09-23 기준** — 답은 Claude Code(Opus 5.5)와 Codex CLI(GPT-6 Sol)로 만들었고, 채점도 같은 두 모델이 했습니다. 모델명과 설정 이름은 이 날짜 기준입니다.
 
 두 달 전 [검색 API 블라인드 평가](/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/)에서 에이전트의 검색 백엔드를 Perplexity로 정했습니다. 그때는 Claude Code 내장 검색이 약하다고 보고 외부 API끼리만 비교했는데, 정작 내장 검색은 같은 조건에서 비교해 본 적이 없었습니다. 그래서 Codex 내장 검색까지 넣어 세 가지를 같은 쿼리로 다시 비교했습니다.
@@ -2746,6 +2751,11 @@ Category: tech
 Tags: search-api, llm-as-judge, perplexity, ab-testing, agent
 
 > 홈랩 에이전트에 붙일 웹 검색 API 세 개를 실사용 쿼리로 직접 비교했습니다. 10쿼리 1차 평가의 결론이 50쿼리 블라인드 2차 평가에서 뒤집혀 Perplexity로 일원화하기까지의 과정과, LLM judge 3명을 쓴 평가 하네스 설계, 검색 결과에 실려 온 실전 prompt injection 사례까지 정리했습니다.
+
+> **에이전트 웹 검색**
+>
+> 1. **검색 API 셋을 50개 쿼리로 블라인드 평가하니 결론은 Perplexity였습니다**
+> 2. [어느 모델이 채점해도 Perplexity MCP가 Claude Code 내장 검색보다 나았습니다](/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/)
 
 홈랩에서 상시 구동하는 개인 에이전트에 붙일 웹 검색 백엔드를 골라야 했습니다. 에이전트가 대화 중에 쓰는 실시간 검색과, 매일 아침 뉴스 브리핑 cron이 미리 긁어오는 검색 두 갈래입니다. 목표는 비용이 아니라 **가장 좋은 결과를 반환하는 검색**이었습니다. 실쿼리 A/B 평가를 두 번 돌렸고, 10쿼리 1차에서 나온 "Perplexity와 Parallel의 역할 분담"이 50쿼리 블라인드 2차에서 뒤집혀 **Perplexity 일원화**로 끝났습니다.
 
