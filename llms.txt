@@ -10,6 +10,7 @@
 - https://huggingface.co/monologg
 
 ## Articles
+- [Claude Code 운영기 5편: Claude야, 영어로 쓰라니까 왜 한국어로 답한다고 해](https://monologg.kr/posts/2026/10/25/2026-10-25-claude-code-ops-claude-p-settings/): cron에 걸어 둔 Claude Code가 영어로 써야 할 답 8건 중 4건을 한국어로 냈습니다. 사용자 설정이 claude -p에 실리는 것을 재현하고, 구독 로그인에서 쓰는 --restricted로 막는 법을 적었습니다.
 - [Claude Code 운영기 4편: 뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB](https://monologg.kr/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/): 끝난 Claude Code 세션이 남긴 MCP 서버 프로세스 148개가 메모리 3GB를 쥐고 있었습니다. 남는 이유와 찾아서 끄는 스크립트, 예약 작업에서 MCP 서버를 띄우지 않는 플래그를 적었습니다.
 - [Claude Code 운영기 3편: 아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](https://monologg.kr/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/): 이슈 트래커 티켓을 읽어 매일 아침 오늘 할 일을 추천하는 claude -p 브리핑을 3개월 운영하며 고친 것을 정리했습니다. 남들이 만든 AI 아침 브리핑 후기에서 가장 많이 나온 불만인 「끝낸 일을 또 올린다」를 마지막 코멘트, 추천 이력, 「오늘은 아님」 칸, 시작일로 푼 방법을 실제 사고와 함께 담았습니다.
 - [Claude Code 운영기 2편: 혼자 쓴다면 Slack보다 Discord가 나을까](https://monologg.kr/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/): 혼자 쓰는 에이전트 알림 창구로 Slack과 Discord 중 무엇을 고를지 정리했습니다. 돈을 낼 수 있으면 Slack, 무료로 쓰면서 작은 서버를 직접 돌릴 수 있으면 Discord입니다. 받고 싶은 알림별로 Discord에서 직접 만들어야 하는 것(GitHub·트래커 알림, 2000자 분할, MCP)과 지금 쓰는 코드를 담았습니다.
