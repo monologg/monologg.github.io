@@ -21,14 +21,6 @@ Tags: claude-code, claude-p, cron, permissions
 
 > cron에 걸어 둔 Claude Code가 영어로 써야 할 답 8건 중 4건을 한국어로 냈습니다. 사용자 설정이 claude -p에 실리는 것을 재현하고, 구독 로그인에서 쓰는 --restricted로 막는 법을 적었습니다.
 
-> **Claude Code 운영기**
->
-> 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
-> 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
-> 3. [아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
-> 4. [뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB](/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/)
-> 5. **Claude야, 영어로 쓰라니까 왜 한국어로 답한다고 해**
-
 > 2026년 10월 기준입니다. Claude Code 2.1.302에서 재현했고, 공식 문서는 10월 25일에 확인했습니다.
 
 집 서버에서 쓰는 프로그램의 새 버전이 나오면, cron으로 도는 Claude Code가 릴리스 노트를 읽고 올려도 괜찮은지를 영어로 답하게 해 두었습니다. 기존 설정이 깨지는 변경은 없는지, 보안 문제는 없는지 같은 질문에 예·아니오와 근거 문장을 다는 식입니다. 그런데 답 8건 중 4건이 한국어로 나왔습니다.
@@ -184,17 +176,9 @@ Tags: claude-code, mcp, claude-p, linux
 
 > 끝난 Claude Code 세션이 남긴 MCP 서버 프로세스 148개가 메모리 3GB를 쥐고 있었습니다. 남는 이유와 찾아서 끄는 스크립트, 예약 작업에서 MCP 서버를 띄우지 않는 플래그를 적었습니다.
 
-> **Claude Code 운영기**
->
-> 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
-> 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
-> 3. [아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
-> 4. **뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB**
-> 5. [Claude야, 영어로 쓰라니까 왜 한국어로 답한다고 해](/posts/2026/10/25/2026-10-25-claude-code-ops-claude-p-settings/)
-
 > 2026년 10월 기준입니다. Claude Code 2.1.302에서 재현했고, 공식 문서는 10월 21일에 확인했습니다.
 
-[1편](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)에서 소개한 대로 저는 Max 구독 하나로 집 서버에서 Claude Code를 대화형으로 쓰고, 예약 작업은 Claude Code를 사람 없이 한 번 돌리는 `claude -p`로 돌립니다. 집 서버 메모리가 27GB 중 13GB까지 차 있어서 보니, 끝난 Claude Code 세션들이 남긴 MCP 서버 프로세스 148개가 떠 있었습니다. 가장 오래된 것은 3일 15시간째였고, 모두 끄자 메모리 3GB가 돌아왔습니다.
+집 서버 메모리가 27GB 중 13GB까지 차 있어서 보니, 끝난 Claude Code 세션들이 남긴 MCP 서버 프로세스 148개가 떠 있었습니다. 가장 오래된 것은 3일 15시간째였고, 모두 끄자 메모리 3GB가 돌아왔습니다. 저는 Max 구독 하나로 집 서버에서 Claude Code를 대화형으로 쓰고, 예약 작업은 Claude Code를 사람 없이 한 번 돌리는 `claude -p`로 돌립니다([1편](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)에서 소개한 구성입니다).
 
 ## 남은 MCP 서버는 매시간 정리하고, claude -p에서는 띄우지 않습니다
 
@@ -282,14 +266,6 @@ Category: tech
 Tags: claude-code, claude-p, llm, issue-tracker, discord
 
 > 이슈 트래커 티켓을 읽어 매일 아침 오늘 할 일을 추천하는 claude -p 브리핑을 3개월 운영하며 고친 것을 정리했습니다. 남들이 만든 AI 아침 브리핑 후기에서 가장 많이 나온 불만인 「끝낸 일을 또 올린다」를 마지막 코멘트, 추천 이력, 「오늘은 아님」 칸, 시작일로 푼 방법을 실제 사고와 함께 담았습니다.
-
-> **Claude Code 운영기**
->
-> 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
-> 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
-> 3. **아침 브리핑이 이미 끝낸 일을 자꾸 추천한다**
-> 4. [뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB](/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/)
-> 5. [Claude야, 영어로 쓰라니까 왜 한국어로 답한다고 해](/posts/2026/10/25/2026-10-25-claude-code-ops-claude-p-settings/)
 
 > 2026년 10월 기준입니다. Claude Code 2.1.301에서 확인했고, 남들이 만든 브리핑 사례는 10월에 찾아봤습니다.
 
@@ -480,14 +456,6 @@ Tags: claude-code, discord, slack, mcp, github-actions
 
 > 혼자 쓰는 에이전트 알림 창구로 Slack과 Discord 중 무엇을 고를지 정리했습니다. 돈을 낼 수 있으면 Slack, 무료로 쓰면서 작은 서버를 직접 돌릴 수 있으면 Discord입니다. 받고 싶은 알림별로 Discord에서 직접 만들어야 하는 것(GitHub·트래커 알림, 2000자 분할, MCP)과 지금 쓰는 코드를 담았습니다.
 
-> **Claude Code 운영기**
->
-> 1. [Hermes Agent 대신 cron과 claude -p를 씁니다](/posts/2026/10/18/2026-10-18-claude-code-ops-overview/)
-> 2. **혼자 쓴다면 Slack보다 Discord가 나을까**
-> 3. [아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
-> 4. [뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB](/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/)
-> 5. [Claude야, 영어로 쓰라니까 왜 한국어로 답한다고 해](/posts/2026/10/25/2026-10-25-claude-code-ops-claude-p-settings/)
-
 > 2026년 10월 기준입니다. Slack 가격표와 각 서비스 공식 문서는 10월 19일에 확인했습니다.
 
 Slack이 괜찮은 건 알지만 혼자 쓰기엔 요금이 아깝고, Discord는 안 써 봐서 망설여진다면 기준은 이렇습니다. **받는 알림이 GitHub Actions 결과나 짧은 메시지 정도라면 Discord는 웹훅 하나로 끝나지만, 여러 레포의 GitHub 알림·이슈 트래커 알림·LLM이 쓴 긴 글까지 받으려면 서버와 코드를 하나씩 직접 만들게 됩니다.** 그 품을 들이기 싫고 돈을 낼 수 있다면 Slack이 낫습니다. Discord가 무조건 나은 것은 아닙니다.
@@ -638,14 +606,6 @@ Category: tech
 Tags: claude-code, claude-p, hermes-agent, dagu, mcp, homelab
 
 > 집 서버에 Hermes Agent를 띄워 두고 쓰다가 열흘 만에 걷어냈습니다. 남은 것은 cron뿐이었고, 지금은 Max 구독 하나로 cron 자리의 Dagu가 claude -p를 돌리고 할 일은 이슈 트래커 티켓으로 적고 iPhone은 원격 제어로 서버 세션을 엽니다. 왜 걷어냈는지, cron이 왜 불편했고 Dagu로 무엇이 풀렸는지, 구독 로그인으로 예약 실행해도 약관상 괜찮은 조건까지 정리했습니다.
-
-> **Claude Code 운영기**
->
-> 1. **Hermes Agent 대신 cron과 claude -p를 씁니다**
-> 2. [혼자 쓴다면 Slack보다 Discord가 나을까](/posts/2026/10/19/2026-10-19-claude-code-ops-discord-instead-of-slack/)
-> 3. [아침 브리핑이 이미 끝낸 일을 자꾸 추천한다](/posts/2026/10/20/2026-10-20-claude-code-ops-morning-briefing/)
-> 4. [뒷정리 안 하고 간 Claude, 프로세스 148개에 메모리 3GB](/posts/2026/10/21/2026-10-21-claude-code-ops-scheduled-claude-p/)
-> 5. [Claude야, 영어로 쓰라니까 왜 한국어로 답한다고 해](/posts/2026/10/25/2026-10-25-claude-code-ops-claude-p-settings/)
 
 > 2026년 10월 기준입니다. Claude Code 2.1.300과 Dagu 2.18.2에서 확인했고, Hermes Agent는 7월에, 약관과 공식 문서는 10월에 확인했습니다.
 
@@ -798,12 +758,6 @@ Tags: hiring, coding-test, ai-engineering, career
 
 > 회사 50곳의 공식 채용 안내를 2024년부터 시점별로 열어 봤습니다. 코딩 테스트는 남아 있고, 해외는 규칙을 공개한 회사 대부분이 AI를 쓰는 라운드와 막는 라운드를 함께 두기 시작했습니다. 국내는 신입 공채 일부가 코딩 테스트를 AI 활용 평가로 바꿨습니다.
 
-> **개발자 채용 트렌드**
->
-> 1. [AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다](/posts/2026/10/13/2026-10-13-ai-asks-in-dev-job-postings/)
-> 2. [LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다](/posts/2026/10/14/2026-10-14-llm-skills-asked-in-job-postings/)
-> 3. **코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다**
->
 > 2026년 10월에 회사 50곳의 공식 채용 안내를 2024년부터 시점별로 열어 봤습니다. 1·2편이 채용 공고를 봤다면, 이 글은 주로 공고 밖의 채용 절차를 보고 국내는 공고의 전형 칸도 함께 봅니다.
 
 AI가 개발자 채용 절차를 어떻게 바꾸는지 알려면, 회사들이 여전히 코딩 테스트를 보는지와 면접에서 지원자의 AI 사용을 어떻게 다루는지를 봐야 했습니다. 이전 글에서 공고를 분석하면서 이것도 보려 했지만, 해외 공고로는 답하기 어려웠습니다. 해외 채용 페이지 공고(개발 외 직무 포함) 가운데 코딩 테스트나 과제를 적은 것은 해마다 1% 안팎이었습니다. 국내 공고 일부에는 전형을 적는 칸이 따로 있지만, 해외 공고는 전형을 거의 적지 않습니다.
@@ -960,12 +914,6 @@ Tags: hiring, ai-engineering, llm, agents, data-analysis, career
 
 > LLM 개발 경험을 언급한 공고 3,500여 건을 LLM에게 다시 읽혀 어떤 LLM 지식을 묻는지 정리했습니다. 2024년에는 API 연동과 파인튜닝을 묻던 공고가 2026년에는 에이전트와 결과 평가를 묻고, MCP처럼 새 항목이 생겼습니다.
 
-> **개발자 채용 트렌드**
->
-> 1. [AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다](/posts/2026/10/13/2026-10-13-ai-asks-in-dev-job-postings/)
-> 2. **LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다**
-> 3. [코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다](/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/)
->
 > 1편에서 본 공고 가운데 LLM 개발 경험을 언급한 공고만 골라, 어떤 지식을 묻는지 항목 단위로 뽑았습니다. 분류는 LLM에게 맡겼습니다.
 
 이전 글에서는 LLM 개발 경험을 묻는 공고가 AI 제품을 만드는 팀 밖에서도 늘고 있다는 것을 확인했습니다. 이번에는 「LLM 개발 경험」이라는 말이 2024년과 2026년에 같은 뜻인지 봤습니다. 뜻이 바뀌었다면 지금 해 볼 일도 달라지기 때문입니다.
@@ -1242,12 +1190,6 @@ Tags: hiring, ai-engineering, llm, data-analysis, career
 
 > 해외 개발자 공고 1만 8천 건과 국내 개발 공고 2,700여 건을 LLM에게 분류하게 했습니다. LLM 개발 경험은 AI 제품을 안 만드는 팀도 묻기 시작했고, AI 코딩 도구는 필수 요건이 되고 있습니다. 대형 IT 기업을 포함한 국내 공고도 비슷합니다.
 
-> **개발자 채용 트렌드**
->
-> 1. **AI 제품을 안 만드는 팀도 LLM 개발 경험을 묻습니다**
-> 2. [LLM 경험을 묻는 공고는 이제 에이전트와 평가를 묻습니다](/posts/2026/10/14/2026-10-14-llm-skills-asked-in-job-postings/)
-> 3. [코딩 테스트는 남았고, AI를 쓰는 면접이 새로 생겼습니다](/posts/2026/10/14/2026-10-14-coding-tests-and-ai-rounds/)
->
 > 2026년 10월에 모은 공고로 분석했습니다. 공고 분류는 LLM에게 맡겼습니다.
 
 채용에 관여하면서 어떤 역량을 봐야 할지 정하기가 가장 어려웠습니다. AI가 코드를 짜 주는 일이 흔해지면서 개발자에게 물어야 할 것도 해마다 바뀌었고, 이런 변화는 다른 회사의 채용 공고에 가장 먼저 드러났습니다. 그래서 공고를 제대로 분석해 보기로 했습니다.
@@ -1929,11 +1871,6 @@ Category: tech
 Tags: perplexity, web-search, llm-as-judge, codex, claude-code
 
 > Perplexity MCP, Claude Code 내장 검색, Codex 내장 검색을 실사용 쿼리 58개로 블라인드 평가했습니다. 채점을 Claude와 GPT 두 모델에 맡겼는데 결론이 같았고, Codex 검색의 순위만 채점 모델에 따라 뒤집혔습니다.
-
-> **에이전트 웹 검색**
->
-> 1. [검색 API 셋을 50개 쿼리로 블라인드 평가하니 결론은 Perplexity였습니다](/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/)
-> 2. **어느 모델이 채점해도 Perplexity MCP가 Claude Code 내장 검색보다 나았습니다**
 
 > **2026-09-23 기준** — 답은 Claude Code(Opus 5.5)와 Codex CLI(GPT-6 Sol)로 만들었고, 채점도 같은 두 모델이 했습니다. 모델명과 설정 이름은 이 날짜 기준입니다.
 
@@ -3019,11 +2956,6 @@ Category: tech
 Tags: search-api, llm-as-judge, perplexity, ab-testing, agent
 
 > 홈랩 에이전트에 붙일 웹 검색 API 세 개를 실사용 쿼리로 직접 비교했습니다. 10쿼리 1차 평가의 결론이 50쿼리 블라인드 2차 평가에서 뒤집혀 Perplexity로 일원화하기까지의 과정과, LLM judge 3명을 쓴 평가 하네스 설계, 검색 결과에 실려 온 실전 prompt injection 사례까지 정리했습니다.
-
-> **에이전트 웹 검색**
->
-> 1. **검색 API 셋을 50개 쿼리로 블라인드 평가하니 결론은 Perplexity였습니다**
-> 2. [어느 모델이 채점해도 Perplexity MCP가 Claude Code 내장 검색보다 나았습니다](/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/)
 
 홈랩에서 상시 구동하는 개인 에이전트에 붙일 웹 검색 백엔드를 골라야 했습니다. 에이전트가 대화 중에 쓰는 실시간 검색과, 매일 아침 뉴스 브리핑 cron이 미리 긁어오는 검색 두 갈래입니다. 목표는 비용이 아니라 **가장 좋은 결과를 반환하는 검색**이었습니다. 실쿼리 A/B 평가를 두 번 돌렸고, 10쿼리 1차에서 나온 "Perplexity와 Parallel의 역할 분담"이 50쿼리 블라인드 2차에서 뒤집혀 **Perplexity 일원화**로 끝났습니다.
 
