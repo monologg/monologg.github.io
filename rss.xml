@@ -1,4 +1,266 @@
-<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>Claude Code 운영기 5편: Claude야, 영어로 쓰라니까 왜 한국어로 답한다고 해</title><link>https://monologg.kr/posts/2026/10/25/2026-10-25-claude-code-ops-claude-p-settings/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/25/2026-10-25-claude-code-ops-claude-p-settings/</guid><description>cron에 걸어 둔 Claude Code가 영어로 써야 할 답 8건 중 4건을 한국어로 냈습니다. 사용자 설정이 claude -p에 실리는 것을 재현하고, 구독 로그인에서 쓰는 --restricted로 막는 법을 적었습니다.</description><pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+<?xml version="1.0" encoding="UTF-8"?><rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom"><channel><title>Monologg Blog</title><description>박장원 (Jangwon Park)의 AI 엔지니어링 블로그</description><link>https://monologg.kr/</link><language>ko</language><atom:link rel="self" type="application/rss+xml" href="https://monologg.kr/rss.xml"/><atom:link rel="hub" href="https://pubsubhubbub.appspot.com/"/><item><title>Claude Code 운영기 6편: Perplexity MCP 붙였더니 리서치 답 88개 중 74개가 나아졌습니다</title><link>https://monologg.kr/posts/2026/11/18/2026-11-18-claude-code-ops-search-mcp/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/11/18/2026-11-18-claude-code-ops-search-mcp/</guid><description>Claude Code에 리서치를 시키면 좋은 문서를 두고 옛 이슈나 쇼핑몰 스펙표만 보고 답할 때가 있습니다. 기본 웹 검색이 쓰는 것으로 보이는 Brave가 한국어를 공식 지원하지 않고, 결과로 제목·URL만 주기 때문입니다. Perplexity MCP로 검색만 바꿔 질문 88개를 비교하니 74승 13패였고, 검색 비용은 질문당 50원쯤입니다. 답까지 대신 써 주는 Perplexity 도구 3개를 permissions.deny 세 줄로 막는 설정도 적었습니다.</description><pubDate>Wed, 18 Nov 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
+&lt;p&gt;2026년 10월에 측정했고, 가격과 공식 문서는 11월 18일에 다시 확인했습니다. 측정에 쓴 버전은 글 끝에 적었습니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Claude Code에 리서치를 시켰는데 답의 출처에 믿음이 가지 않았던 적이 있을 겁니다. 좋은 공식 문서가 있는데 남이 정리한 글을 인용하거나, 한국어 글이 많은 주제인데 영어 글 몇 개로 끝내거나, 「찾지 못했다」로 마무리하는 경우입니다. 저도 답답해서 Claude Code는 그대로 두고 검색 도구만 바꿔 질문 88개의 답을 비교했습니다.&lt;/p&gt;
+&lt;h2&gt;기본 웹 검색보다 검색 MCP가 낫고, 검색 비용은 질문 하나에 50원쯤 듭니다&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;Claude Code의 기본 웹 검색(WebSearch 도구) 대신 Perplexity MCP를 붙이면 리서치 답이 나아집니다.&lt;/strong&gt; 질문 88개에서 Perplexity 쪽 답이 Claude 채점으로 74승 13패, GPT 채점으로 60승 25패였습니다. 생활 질문과 개발 질문 어느 쪽에서도 같았고, Exa도 비슷하게 이겼습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;답에 쓸 만한 정보가 더 많이 담깁니다.&lt;/strong&gt; 처음 알게 되는 내용과 결정에 도움이 되는 내용이 늘었습니다. 가격·사양 같은 사실이 얼마나 맞는지는 두 검색 사이에 큰 차이가 없었습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;기본 웹 검색은 한국어를 공식 지원하지 않는 Brave를 쓰는 것으로 보이고, 결과로 제목·URL만 줍니다.&lt;/strong&gt; 그래서 좋은 문서를 두고 옛 자료나 쇼핑몰 스펙표로 답할 때가 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;검색 비용은 질문 하나에 50원쯤(4센트)입니다.&lt;/strong&gt; 질문 하나에 검색을 8번쯤 합니다. Claude 구독 한도는 조금 더 빨리 찹니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;붙이는 것은 명령 한 줄입니다.&lt;/strong&gt; &lt;code&gt;claude mcp add -s user --transport http perplexity https://api.perplexity.ai/mcp&lt;/code&gt;를 실행하고 Perplexity 계정으로 로그인하거나 API 키를 헤더로 넘깁니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;붙인 뒤에는 답까지 대신 써 주는 도구 3개(ask·research·reason)를 막고 검색만 남깁니다.&lt;/strong&gt; &lt;code&gt;permissions.deny&lt;/code&gt; 세 줄이면 되고, 그러면 검색 비용만 듭니다(아래 「검색만 남기고 3개는 막습니다」 절).&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;저는 Claude Max 구독 하나로 집 서버에서 Claude Code에 코드 작업뿐 아니라 「알뜰폰으로 옮기면 결합 할인은 어떻게 되나」 같은 생활 질문까지 시킵니다(&lt;a href=&quot;/posts/2026/10/18/2026-10-18-claude-code-ops-overview/&quot;&gt;1편&lt;/a&gt;). 비교한 질문도 대부분 그렇게 제가 실제로 물었던 것입니다.&lt;/p&gt;
+&lt;h2&gt;기본 웹 검색은 제목·URL만 돌려주고, 검색 엔진은 바꿀 수 없습니다&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://code.claude.com/docs/en/tools&quot;&gt;Claude Code 문서&lt;/a&gt;에 따르면 기본 웹 검색은 Anthropic의 검색 백엔드에 요청해 결과의 제목과 URL만 돌려줍니다. 페이지 본문은 WebFetch라는 다른 도구로 따로 읽어야 합니다. 한 번 호출하면 검색어를 고쳐 가며 최대 8번까지 검색합니다. &lt;strong&gt;검색 백엔드는 바꿀 수 없고, 다른 검색을 쓰려면 검색 도구를 제공하는 MCP 서버를 연결하라고 나와 있습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;MCP는 Claude Code에 외부 도구를 연결하는 표준 규격입니다. Perplexity·Exa·Tavily·Brave 같은 검색 서비스가 MCP 서버를 제공하고, 이 글에서는 이것을 검색 MCP라고 부릅니다. Perplexity는 보통 답을 써 주는 AI로 알려져 있지만, 답 없이 검색 결과만 돌려주는 Search API도 제공합니다. Claude Code에는 이 Search API를 연결합니다.&lt;/p&gt;
+&lt;p&gt;「Perplexity Search API 가격이 최근 한 달 사이 바뀌었나」를 기본 웹 검색으로 물었을 때 화면은 이렇습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;❯ 최근 한 달 사이 Perplexity Search API 가격이 바뀌었는지 웹에서 찾아서 두 문장으로 답해 줘.
+
+● Web Search(&quot;Perplexity Search API pricing change October 2026&quot;)
+  ⎿  Did 1 search in 13s
+
+● Search API의 기본 가격(1,000회 요청당 $5)이 최근 한 달 사이 바뀌었다는 보고는 찾지 못했습니다.
+  (중략) 이 내용은 모두 Perplexity 공식 가격 페이지가 아니라 서드파티 가격 추적 사이트에서
+  가져온 것이라 직접 확인이 필요합니다.
+  Sources:
+  - UsagePricing: Search API Fast Search (2026-09-28)
+  - cloro: Perplexity API alternatives
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Perplexity MCP를 등록한 세션에서는 같은 자리에 &lt;code&gt;Called perplexity&lt;/code&gt;가 찍힙니다. Perplexity의 검색 도구는 결과에 본문 발췌와 게시일을 함께 돌려주고, 답은 여전히 Claude가 씁니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;❯ (같은 질문)
+
+  Called perplexity
+
+● Search API 자체의 가격은 최근 한 달 사이에 바뀌지 않은 것으로 보입니다. 공식 문서(2026-10-27)에는
+  일반 검색이 1,000건당 $5, Fast Search가 1,000건당 $1로 나와 있고, (중략)
+  출처: docs.perplexity.ai/docs/search/overview, serpex.dev/blog/search-api-cost-at-high-volume, …
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;이 두 화면은 한 번씩만 물어본 것이라 비교 근거로 쓸 수는 없습니다. 그래서 아래처럼 질문 88개로 비교했습니다.&lt;/p&gt;
+&lt;h2&gt;기본 웹 검색이 약한 이유&lt;/h2&gt;
+&lt;p&gt;GitHub에는 &lt;a href=&quot;https://github.com/anthropics/claude-code/issues/37566&quot;&gt;문서가 있는데도 지어낸다&lt;/a&gt;는 이슈가, Reddit에는 &lt;a href=&quot;https://www.reddit.com/r/ClaudeCode/comments/1xf9xr8/web_search_on_claudecode_being_underused/&quot;&gt;검색 기능을 믿기 어려워 다른 도구를 붙였다&lt;/a&gt;는 글이 올라옵니다.&lt;/p&gt;
+&lt;p&gt;Claude의 기본 웹 검색이 어느 엔진을 쓰는지 Anthropic이 발표한 적은 없습니다. 다만 &lt;a href=&quot;https://trust.anthropic.com/subprocessors&quot;&gt;Anthropic Trust Center의 외부 위탁 업체(subprocessor) 목록&lt;/a&gt;에 Brave Search가 「웹 검색」 용도로 2025년 3월부터 올라 있고(&lt;a href=&quot;https://techcrunch.com/2025/03/21/anthropic-appears-to-be-using-brave-to-power-web-searches-for-its-claude-chatbot/&quot;&gt;TechCrunch&lt;/a&gt;), &lt;a href=&quot;https://docs.cloud.google.com/gemini-enterprise-agent-platform/models/partner-models/claude/web-search&quot;&gt;Google Cloud의 Claude 문서&lt;/a&gt;에도 「Anthropic 웹 검색이 부를 수 있는 제3자 검색 서비스 목록: Brave Search」라고 나와 있습니다.&lt;/p&gt;
+&lt;p&gt;Anthropic 바깥의 조사 결과도 Brave를 가리킵니다. AI 검색 노출을 분석하는 Profound가 6월에 질문 400개로 조사했더니 Claude가 답에 인용한 페이지의 79.2%가 Brave 검색 결과 상위 10개 안에 있었고(&lt;a href=&quot;https://searchengineland.com/ai-search-shifts-you-cant-ignore-480381&quot;&gt;Search Engine Land&lt;/a&gt;), 같은 분야의 &lt;a href=&quot;https://peec.ai/blog/how-to-optimize-content-for-claude-search&quot;&gt;Peec AI&lt;/a&gt;가 10월에 질문 1,000개로 조사했을 때는 89.1%가 상위 20개 안에 있었습니다.&lt;/p&gt;
+&lt;p&gt;같은 위탁 업체 목록에 2026년 5월 TurboPuffer(검색 데이터베이스)가 「웹 검색」 용도로 추가됐는데 역할은 공개되지 않았습니다. 이 글에서는 기본 웹 검색이 주로 Brave를 쓴다고 보고 이야기합니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;기본 웹 검색이 쓰는 것으로 보이는 Brave는 &lt;a href=&quot;https://brave.com/ko/search/&quot;&gt;공식 지원 언어&lt;/a&gt;가 미국 영어·영국 영어·프랑스어·독일어·일본어이고, 한국어는 없습니다.&lt;/strong&gt; 아래 88개 측정에서도 기본 웹 검색 답은 답 하나에 한국어 사이트를 3.1개 인용해 Perplexity 답의 3.8개보다 적었고, 커뮤니티 글은 0.9개 대 1.5개였습니다.&lt;/p&gt;
+&lt;p&gt;결과 형식도 다릅니다. 기본 웹 검색은 제목과 URL만 주므로 Claude는 어느 페이지가 쓸 만한지 모른 채 WebFetch로 열어 봐야 합니다. WebFetch는 페이지 원문 대신 다른 모델이 요약한 내용을 Claude에게 넘깁니다. Claude Code 문서도 이 요약에서 내용이 빠질 수 있다(lossy by design)고 설명합니다. Perplexity 검색은 결과마다 본문 발췌와 날짜가 같이 와서 열기 전에 고를 수 있습니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./search-flow-brave-vs-perplexity.png&quot; alt=&quot;기본 웹 검색은 Claude Code가 Brave 검색을 불러 제목·URL만 받고, Perplexity MCP는 Perplexity Search API를 불러 본문 발췌와 날짜까지 받는 흐름 비교&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;아래 측정에서 답을 채점한 모델이 답마다 남긴 짧은 평가에서도 같은 경향이 보입니다. 기본 웹 검색 답에는 「빠졌다·누락」이라는 평가가 98개로 Perplexity 답의 20개보다 5배 가까이 많았고, 「근거가 얇다」 24개 대 4개, 「오래됐다」 15개 대 2개였습니다. 틀렸다는 평가는 26개 대 29개로 비슷했습니다. 기본 웹 검색 답은 틀려서보다 빠뜨려서 진 경우가 많았습니다.&lt;/p&gt;
+&lt;h2&gt;기본 웹 검색은 다시 물어도 옛 자료나 쇼핑몰 스펙표로 답했습니다&lt;/h2&gt;
+&lt;p&gt;측정에서 기본 웹 검색 답만 틀린 질문을 다시 살펴봤습니다. 개발 질문은 같은 질문을 두 번 더 물었고, 생활 질문은 9월 답과 10월 답을 비교했습니다. Codex 질문은 세 번 모두 같은 옛 자료로 답했고, LG와 삼성 질문은 두 달 연속 맞는 문서를 찾지 못했습니다. &lt;strong&gt;세 질문 모두 더 좋은 문서가 있는데도 기본 웹 검색은 찾지 못했습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;h3&gt;Codex CLI 원격 제어(개발 질문)&lt;/h3&gt;
+&lt;p&gt;「npm으로 설치한 헤드리스 우분투의 Codex CLI를 폰 ChatGPT 앱과 페어링해 원격 제어할 수 있나」를 물었습니다. 기본 웹 검색 답은 10월에 세 번 물었는데 세 번 모두 이렇게 적었습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;standalone 설치가 필요합니다. npm, Homebrew, tarball로 설치하면
+`managed standalone Codex install not found at ~/.codex/packages/standalone/current/codex`로 실패합니다.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;5~8월에 올라온 GitHub 이슈 3개만 보고 쓴 답입니다. Codex 저장소를 보면 데몬이 설치돼 있지 않을 때 로컬 CLI 패키지에서 설치하게 한 변경(&lt;a href=&quot;https://github.com/openai/codex/pull/45558&quot;&gt;PR #45558&lt;/a&gt;)이 9월 22일 0.156.0에, 원격 제어가 그 데몬을 쓰게 한 변경(&lt;a href=&quot;https://github.com/openai/codex/pull/50803&quot;&gt;PR #50803&lt;/a&gt;)이 10월 8일 0.162.0에 들어갔습니다. &lt;a href=&quot;https://github.com/openai/codex/blob/main/codex-rs/app-server-daemon/README.md&quot;&gt;데몬 README&lt;/a&gt;에도 「데몬 패키지가 없으면 호출한 패키지를 복사한다」고 나와 있습니다. 질문했을 때는 두 변경이 모두 배포된 뒤였습니다.&lt;/p&gt;
+&lt;p&gt;Perplexity 답과 Exa 답은 각각 세 번 중 두 번 이 README와 &lt;a href=&quot;https://blog.nekonium.com/codex-remote-control-for-ubuntu-server/&quot;&gt;10월 26일의 npm 설치 성공기&lt;/a&gt;를 찾아 「지금은 풀린 것으로 보인다」고 적었습니다. 기본 웹 검색은 검색 8~9회에 페이지 13~17개를 열고도 그 문서를 찾지 못했습니다.&lt;/p&gt;
+&lt;h3&gt;LG 광파오븐 신·구모델 차이(생활 질문)&lt;/h3&gt;
+&lt;p&gt;LG 광파오븐 신모델과 구모델의 차이를 물었습니다. 기본 웹 검색 답은 9월과 10월 두 번 모두 「소비전력: 2,200W → 2,800W」를 두 모델의 차이로 꼽았고, 10월에는 「멀티탭을 다른 고출력 가전과 같이 쓰는 것은 피하라」는 조언까지 덧붙였습니다. 출처는 두 번 다 다나와 스펙표였습니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./lg-oven-spec-danawa-vs-official.png&quot; alt=&quot;다나와 스펙표와 LG 공식 페이지의 소비전력 칸 비교. 다나와는 구모델 2200W·신모델 2800W, LG 공식은 두 모델 모두 2,800W&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;LG 공식 페이지에는 두 모델 모두 소비전력 2,800W, 오븐 2,200W로 같습니다. 다나와가 구모델 칸에는 오븐 값을, 신모델 칸에는 전체 값을 적어 두었는데, 기본 웹 검색 답은 이것을 두 모델의 차이로 읽었습니다. Perplexity의 10월 답은 「같은 점: 오븐 2,200W」로 적었습니다.&lt;/p&gt;
+&lt;h3&gt;삼성 전자레인지 오븐의 찜 용기(생활 질문)&lt;/h3&gt;
+&lt;p&gt;「32L 모델에 딸린 찜 용기로 무엇을 만들 수 있나」에 기본 웹 검색은 9월엔 다른 모델(35L 직화오븐)의 2020년 안내 페이지를 가져와 「자동조리 40종」이라 답했고, 10월엔 「메뉴 목록은 찾지 못했다」고 했습니다. Perplexity 답은 두 번 다 32L 설명서(한 번은 블로그에 옮겨 실은 것, 한 번은 Scribd 원본)에서 찜 메뉴 15종을 가져왔습니다.&lt;/p&gt;
+&lt;h2&gt;검색 도구만 바꿔 질문 88개의 답을 비교했습니다&lt;/h2&gt;
+&lt;p&gt;검색만 기본 웹 검색·Perplexity MCP·Exa MCP로 바꾸고 나머지는 전부 같게 두었습니다. 모델은 Claude Opus 5.5이고 프롬프트는 「결론·근거·출처로 정리하고 직접 겪은 사람의 기록을 우선하라」 하나입니다. 대화 없이 명령 한 번으로 실행하고 끝나는 &lt;code&gt;claude -p&lt;/code&gt;로 실행했고, 실행마다 해당 검색 도구와 WebFetch만 쓸 수 있게 지정했습니다.&lt;/p&gt;
+&lt;p&gt;9월에는 생활 질문 위주 58개로 먼저 비교했고, 생활 쪽으로 치우친 것 같아 한 달치 Claude Code 대화 기록에서 개발 질문 30개를 추가해 10월에 88개로 다시 비교했습니다.&lt;/p&gt;
+&lt;p&gt;채점은 Claude Opus 5.5와 GPT-6.1 두 모델에 맡겼고(9월은 GPT-6 Sol), 답은 가·나·다로만 표시해 어느 검색을 썼는지 모르게 했습니다. 채점 모델마다 관점을 바꿔 세 번 채점했습니다(근거가 탄탄한지, 바로 실행할 수 있는지, 새 정보가 있는지). 채점할 때마다 관점과 상관없이 같은 세 항목에 5점 만점 점수를 매기고 세 답의 순위도 정했습니다. 세 항목은 「새 정보가 얼마나 있나」「판단을 바꿀 만한 내용이 있나」「근거를 출처까지 따라갈 수 있나」입니다.&lt;/p&gt;
+&lt;p&gt;질문당 승패는 세 번 채점의 평균 순위로 정했습니다. 아래 표는 검색 MCP 답이 기본 웹 검색 답을 상대로 거둔 승·패·무입니다.&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;검색 MCP · 질문 묶음&lt;/th&gt;
+&lt;th&gt;Claude 채점&lt;/th&gt;
+&lt;th&gt;GPT 채점&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;Perplexity · 88개 전체 (10월)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;74승 13패 1무&lt;/strong&gt;&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;60승 25패 3무&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Perplexity · 개발 30개만 (10월)&lt;/td&gt;
+&lt;td&gt;25승 4패 1무&lt;/td&gt;
+&lt;td&gt;22승 8패&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Perplexity · 생활 위주 58개 (9월 첫 측정)&lt;/td&gt;
+&lt;td&gt;50승 8패&lt;/td&gt;
+&lt;td&gt;39승 19패&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;Exa · 88개 전체 (10월)&lt;/td&gt;
+&lt;td&gt;74승 14패&lt;/td&gt;
+&lt;td&gt;63승 22패 3무&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;9월과 10월 두 번 측정했고 채점 모델도 Claude와 GPT를 함께 썼는데, &lt;strong&gt;매번 검색 MCP가 이겼습니다.&lt;/strong&gt; 개발 질문만 따로 봐도 같았습니다. Perplexity와 Exa의 성적은 서로 비슷했습니다.&lt;/p&gt;
+&lt;h2&gt;검색 MCP를 붙이면 쓸 만한 정보가 늘고, 정확도는 큰 차이가 없습니다&lt;/h2&gt;
+&lt;p&gt;생활 질문 58개를 10월에 다시 측정한 Claude 채점 점수(5점 만점)를 보면 무엇이 좋아졌는지 알 수 있습니다. 새 정보 점수는 기본 웹 검색 3.19, Perplexity 4.02였고, 판단을 바꿀 만한 내용 점수는 2.93과 3.74였습니다. 근거 추적 점수는 3.78과 3.93으로 비슷했습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;사실 정확도는 차이가 없었습니다.&lt;/strong&gt; 9월 측정에는 OpenAI Codex가 검색해서 쓴 답도 있어 답이 세 가지였습니다. 그때 제품 질문 12개의 답 36개에서 가격·판매 상태·사양 같은 주장 142개를 뽑아 그날 웹에서 맞는지 확인했습니다. Perplexity 답은 48개 중 46개, 기본 웹 검색 답은 48개 중 40개가 맞았고 차이는 통계적으로 유의하지 않았습니다(p=0.15). 가격처럼 확인하기 쉬운 사실은 세 답 모두 거의 맞았습니다(76개 중 74개).&lt;/p&gt;
+&lt;h2&gt;기본 웹 검색 답과 Perplexity 답은 이렇게 달랐습니다&lt;/h2&gt;
+&lt;p&gt;9월과 10월 두 번, 두 채점 모델 모두에서 승자가 같았던 질문 가운데 5개를 골랐습니다. 아래는 10월 답입니다.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;SKT에서 알뜰폰으로 옮길 때 인터넷·TV 결합까지 따진 선택지 비교&lt;/strong&gt;: 두 답이 든 선택지와 할인액은 거의 같았습니다. Perplexity 답은 SK브로드밴드 공식 안내에서 「인터넷 약정이 남아 있으면 만료된 뒤에야 알뜰폰과 결합된다」는 조건을, 뉴스 기사에서 SKT 온가족할인의 신규 가입이 8월부터 막혔다는 내용을 찾았습니다. 기본 웹 검색 답은 약정 도중 결합은 출처마다 말이 달라서, 신규 가입 중단은 커뮤니티 글 하나뿐이어서 둘 다 「확인 못 함」으로 남겼습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;창틀·문고리에 실리콘 스프레이 뿌리는 순서&lt;/strong&gt;: 두 답의 순서는 같았지만, Perplexity 답은 유리를 신문지로 가리라는 사용기와 WD-40을 뿌렸다가 더 나빠진 실패담을 찾았고 영상 링크도 2개 달았습니다. 기본 웹 검색 답은 「보여 드릴 영상은 찾지 못했다」로 끝났습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;아이폰 건강 데이터를 MCP나 API로 자동으로 가져오는 방법&lt;/strong&gt;: Perplexity 답은 Anthropic의 Apple Health 연동 발표를 찾아 Claude 앱의 내장 연동이 미국 한정 베타라는 것까지 말했고, 유료 앱으로 건강 데이터를 내 서버에 보낸 뒤 MCP로 읽는 사례를 여럿 들었습니다. 기본 웹 검색 답은 Apple 보안 문서로 「폰이 잠기고 10분이 지나면 못 읽는다」는 한계를 짚었지만, Claude 앱에 연동이 있다는 것은 찾지 못했습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;로컬 의미 검색 도구 zvec-grep이 ripgrep 대신 쓸 만한가&lt;/strong&gt;: 두 답 모두 지금은 도입할 이유가 약하다는 결론이었지만 근거가 달랐고, 채점에서는 Perplexity 답이 앞섰습니다. Perplexity 답은 한국어 문서 862개로 직접 측정한 글(공교롭게 제 블로그 글이었습니다)의 수치와 GitHub 이슈를 들었고, 기본 웹 검색 답은 영어 사용기와 이슈로 같은 결론을 냈습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;hwp·hwpx를 파이썬에서 읽고 쓰는 오픈소스 비교(반례)&lt;/strong&gt;: 이 질문은 두 번 다 기본 웹 검색 답이 이겼습니다. 기본 웹 검색 답은 PyPI 메타데이터를 직접 읽어 라이브러리 9개의 최신 배포일과 지원 파이썬 버전을 표로 만들었고, 실제 운영에서 라이브러리를 교체한 PR 기록까지 찾았습니다. Perplexity 답은 8개를 다뤘고 한 라이브러리의 라이선스를 「기억, 확인 못 함」으로 남겼습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;아이폰 건강 데이터 질문의 두 답 첫머리를 그대로 옮기면 이렇습니다. 먼저 Perplexity 답입니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;애플은 HealthKit 데이터를 외부에서 가져가는 공식 웹 API나 MCP를 제공하지 않습니다. HealthKit은 아이폰에서 돌아가는 네이티브 앱 안에서만 읽힙니다. (중략) 그래서 실제로 쓰이는 방법은 모두 아이폰에 있는 무언가가 데이터를 읽어 밖으로 보내는 구조입니다.
+
+1. Health Auto Export(유료 앱) → REST 전송 → 내 서버 → MCP: 1차 기록이 가장 많은 경로입니다.
+2. 단축어 + 웹훅(Cloudflare Worker·Vercel): 무료이고 따로 앱을 설치하지 않아도 됩니다.
+3. 수동 export.xml → 로컬 MCP(DuckDB·SQLite): 정확하지만 자동이 아닙니다.
+4. 직접 HealthKit 앱 개발: HKAnchoredObjectQuery로 새 샘플만 서버에 POST합니다.
+5. Claude·ChatGPT iOS 앱의 내장 Apple Health 연동: 둘 다 미국 한정입니다. Claude는 Pro·Max 베타이고 읽기만 됩니다.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;기본 웹 검색 답입니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;공식 원격 API(REST·OAuth·웹)는 없습니다. HealthKit 데이터는 아이폰 안에서만 읽을 수 있어서, 폰에서 도는 앱이나 단축어가 읽어서 밖으로 보내야 합니다. Apple 보안 문서에 따르면 iCloud 동기화는 종단 간 암호화돼 있어 우회 경로도 못 됩니다. (중략)
+
+실제로 쓰이는 경로는 세 가지입니다.
+1. 단축어 → 내 서버: 무료지만 직접 만들어야 합니다.
+2. Health Auto Export 같은 유료 앱 → REST·MQTT·Home Assistant: 받는 쪽에서 DB에 쌓은 뒤 MCP로 조회합니다.
+3. 수동 XML·CSV 내보내기 → 파일을 읽는 MCP 서버: 자동화는 안 됩니다.
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Perplexity 답에만 있는 것은 4번과 5번이고, 그중 판단을 바꾸는 것은 5번, Claude 앱 자체의 Apple Health 연동입니다. 나머지 경로는 두 답이 같습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;질문 하나의 승패는 실행마다 흔들립니다.&lt;/strong&gt; 88개 가운데 개인 사정이 섞이지 않아 공개해도 되는 질문은 16개입니다(모두 9월부터 쓴 58개 안에 있습니다). 이 16개에서 두 달 모두 승자가 같았던 것은 7개뿐이었습니다. 위 5개는 그 7개에서 골랐습니다. 나머지 9개는 달마다 승자가 바뀌거나 채점 모델끼리 갈렸습니다. 그래도 질문 전체로 보면 9월과 10월 모두 검색 MCP가 앞섰습니다.&lt;/p&gt;
+&lt;h2&gt;검색 MCP 가운데 Perplexity를 고른 이유&lt;/h2&gt;
+&lt;p&gt;Perplexity는 7월에 검색 API 3개를 비교한 결과로 골랐습니다(&lt;a href=&quot;/posts/2026/07/22/2026-07-22-search-api-blind-ab-eval/&quot;&gt;7월 글&lt;/a&gt;). 제가 실제로 묻던 질문 50개를 Perplexity·Parallel·Tavily의 검색 API에 넣고, 검색 결과 상위 5개를 API 이름을 가린 채 관점이 다른 채점 모델들에게 평가하게 했습니다.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;검색 결과 상위 5개의 품질 평균은 Perplexity 4.20, Parallel 3.10, Tavily 3.16(5점 만점)이었고, 관련 결과가 하나도 없는 질문 비율은 Perplexity 0%, Parallel 4%, Tavily 12%였습니다.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;그때는 답 대신 검색 결과 자체를 채점한 것이라 이 글의 88개 비교와 방법이 다릅니다. 그 뒤로 검색은 Perplexity만 씁니다.&lt;/p&gt;
+&lt;h2&gt;Claude Code에 Perplexity MCP를 붙이는 방법&lt;/h2&gt;
+&lt;p&gt;먼저 Perplexity 쪽을 준비합니다. &lt;a href=&quot;https://console.perplexity.ai&quot;&gt;API 콘솔&lt;/a&gt;에 Perplexity 계정으로 들어가 프로젝트를 만들고 카드를 등록합니다. 크레딧을 미리 사서 쓰는 방식이라 잔액이 0이 되면 키가 막힙니다. 결제 화면의 「자동 충전」을 켜 두면 잔액이 정해 둔 금액 아래로 내려갈 때 자동으로 채워집니다. 새 계정 가운데 일부는 60일짜리 $10(약 1만 3천 원) 가입 크레딧을 받습니다. 직접 산 크레딧은 만료되지 않습니다(&lt;a href=&quot;https://www.perplexity.ai/help-center/en/articles/10354847-api-payment-and-billing&quot;&gt;결제 안내&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./perplexity-console-billing.webp&quot; alt=&quot;Perplexity API 콘솔의 결제 화면. 크레딧 잔액, 저장된 결제 수단, 자동 충전(US$2 미만일 때 US$10)&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;자동 충전은 「크레딧 추가 구매」에서 켭니다. 최소 $10이고 세금 10%가 붙어 한 번에 $11(약 1만 5천 원)씩 결제됩니다.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;./perplexity-console-auto-reload.webp&quot; alt=&quot;크레딧 추가 창. 자동 충전 탭에 충전 금액 US$10, 트리거 잔액 US$2, 예상 세금 US$1, 충전당 총액 US$11&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;준비가 끝나면 터미널에서 아래 명령으로 Claude Code에 Perplexity MCP 서버를 등록합니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;claude mcp add -s user --transport http perplexity https://api.perplexity.ai/mcp
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;-s user&lt;/code&gt;는 어느 폴더에서나 쓰겠다는 뜻입니다. 빼면 기본값 &lt;code&gt;local&lt;/code&gt;이라 지금 폴더에서만 보입니다. 인증 방법은 두 가지입니다.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;strong&gt;Perplexity 계정으로 로그인(권장).&lt;/strong&gt; 위 명령을 실행한 뒤 Claude Code 안에서 &lt;code&gt;/mcp&lt;/code&gt;를 열어 &lt;code&gt;perplexity&lt;/code&gt;를 고르면 브라우저가 열립니다. 로그인하고 요금을 청구할 API 조직을 고르면 끝이고, 키를 어디에도 적지 않습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;API 키.&lt;/strong&gt; 콘솔 왼쪽 메뉴의 「API 키」에서 「+ API 키 생성」을 누르면 키가 한 번만 보입니다. 위 명령 끝에 &lt;code&gt;--header &quot;Authorization: Bearer &amp;lt;키&amp;gt;&quot;&lt;/code&gt;를 추가합니다. 키는 &lt;code&gt;~/.claude.json&lt;/code&gt;에 저장되니 이 파일은 공유하지 않도록 주의합니다.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;img src=&quot;./perplexity-console-api-keys.webp&quot; alt=&quot;Perplexity API 콘솔의 API 키 화면. 왼쪽 메뉴 맨 아래 「API 키」, 오른쪽 위 「+ API 키 생성」 버튼, 키 하나가 이름·생성일·마지막 사용과 함께 보임&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;등록한 뒤 &lt;code&gt;/mcp&lt;/code&gt;를 열면 이렇게 나옵니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Manage MCP servers
+  ❯ ✔ perplexity   4 tools
+
+Perplexity MCP Server
+  Status:  ✔ connected
+  Auth:    ✔ authenticated
+  URL:     https://api.perplexity.ai
+  Tools:   perplexity_ask · perplexity_research · perplexity_reason · perplexity_search
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;strong&gt;MCP 서버 등록에서 끝내면 답까지 써 주는 도구 3개가 그대로 열려 있습니다. 검색만 남기는 설정은 다음 절에 있습니다.&lt;/strong&gt; Perplexity가 운영하는 원격 서버에 연결하는 대신 내 컴퓨터에서 서버를 띄우려면 &lt;code&gt;claude mcp add perplexity --env &apos;PERPLEXITY_API_KEY=${PERPLEXITY_API_KEY}&apos; -- npx -y @perplexity-ai/mcp-server&lt;/code&gt;로 등록합니다. 도구 이름은 같습니다.&lt;/p&gt;
+&lt;h2&gt;Perplexity MCP 도구 4개 가운데 검색만 남기고 3개는 막습니다&lt;/h2&gt;
+&lt;p&gt;Perplexity MCP를 붙였다가 비용 문제를 겪었다는 글이 여럿 있습니다. 콘텐츠 리서치 에이전트를 만든 한 개발자는 비용 관련 규칙을 정해 두지 않고 쓰다가, Perplexity의 심층 조사 모델(Sonar Deep Research, 지금 MCP 서버의 research 도구에 해당)이 질문마다 실행돼 &lt;a href=&quot;https://genaiunplugged.substack.com/p/how-to-build-an-ai-content-research&quot;&gt;크레딧 $20(약 2만 7천 원)을 다 써 버렸다&lt;/a&gt;고 적었습니다. Reddit의 한 &lt;a href=&quot;https://www.reddit.com/r/RooCode/comments/1irjbjs/perplexity_api/&quot;&gt;스레드&lt;/a&gt;에는 Perplexity Pro 구독을 쓰면서 MCP도 연결하려다 API 비용 때문에 망설였다는 댓글이 있습니다.&lt;/p&gt;
+&lt;p&gt;Pro 구독자에게 주던 월 $5(약 6,700원) API 크레딧이 2026년 2월에 공지 없이 사라졌다고 &lt;a href=&quot;https://hoft.tistory.com/entry/perplexity-api-credit-removed-claude-free&quot;&gt;확인한 글&lt;/a&gt;도 있습니다. 지금은 API 키를 받으려면 카드를 등록하고 크레딧을 사야 합니다.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/perplexityai/modelcontextprotocol&quot;&gt;Perplexity MCP 서버&lt;/a&gt;는 도구 4개를 한꺼번에 제공합니다. 검색을 뺀 3개는 Perplexity의 모델이 검색하고 답까지 쓰는 Agent API 도구라 토큰 요금이 따로 나옵니다. 호출당 가격이 정해진 것은 검색 하나뿐입니다. 나머지 3개의 비용은 직접 확인했습니다. 아이폰 건강 데이터 질문 하나로, MCP 서버가 쓰는 것과 같은 설정 단계(fast·medium·high)로 Agent API를 한 번씩 호출했습니다(10월 29일).&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr&gt;
+&lt;th&gt;도구&lt;/th&gt;
+&lt;th&gt;하는 일&lt;/th&gt;
+&lt;th&gt;실제로 호출하는 API&lt;/th&gt;
+&lt;th&gt;과금&lt;/th&gt;
+&lt;th&gt;1회 호출 비용&lt;/th&gt;
+&lt;th&gt;설정&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;perplexity_search&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;검색 결과(제목·URL·본문 발췌·날짜)만 돌려주고 답은 Claude가 씀&lt;/td&gt;
+&lt;td&gt;Search API&lt;/td&gt;
+&lt;td&gt;요청당 $0.005, 토큰 과금 없음&lt;/td&gt;
+&lt;td&gt;7원(요금표 기준)&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;사용&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;perplexity_ask&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;Perplexity 모델이 검색해서 답까지 씀&lt;/td&gt;
+&lt;td&gt;Agent API fast (gpt-6-luna)&lt;/td&gt;
+&lt;td&gt;토큰 + 검색 호출&lt;/td&gt;
+&lt;td&gt;3원, 6초, 검색 1회&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;차단&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;perplexity_reason&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;여러 단계 추론해서 답을 씀&lt;/td&gt;
+&lt;td&gt;Agent API medium (gpt-6-luna, 최대 15단계)&lt;/td&gt;
+&lt;td&gt;토큰 + 도구 호출&lt;/td&gt;
+&lt;td&gt;16원, 49초, 검색 4회·페이지 7개&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;차단&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr&gt;
+&lt;td&gt;&lt;code&gt;perplexity_research&lt;/code&gt;&lt;/td&gt;
+&lt;td&gt;몇 분씩 조사해 보고서를 씀&lt;/td&gt;
+&lt;td&gt;Agent API high (gpt-6.1-sol, 최대 15단계)&lt;/td&gt;
+&lt;td&gt;토큰(입력 $2·출력 $10 / 100만) + 도구 호출&lt;/td&gt;
+&lt;td&gt;171원, 106초, 검색 5회·페이지 14개&lt;/td&gt;
+&lt;td&gt;&lt;strong&gt;차단&lt;/strong&gt;&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;ask는 검색 요청 하나보다 쌉니다. 그래도 저는 검색을 뺀 3개를 모두 막습니다. 이 도구들을 쓰면 답을 Perplexity의 모델이 쓰게 되어, Claude가 출처를 직접 읽고 답을 쓰는 구조가 깨지기 때문입니다. research는 한 번에 검색 한 번 값의 25배가 들고, 토큰으로 과금돼 질문마다 값이 달라 한 달 비용을 예상하기 어렵습니다.&lt;/p&gt;
+&lt;p&gt;Claude는 도구 설명을 보고 고르기 때문에 「조사해 줘」라는 말에 &lt;code&gt;perplexity_research&lt;/code&gt;를 고를 수 있습니다. 그래서 &lt;strong&gt;저는 Perplexity MCP의 ask·research·reason 도구를 막고 검색 도구만 남깁니다.&lt;/strong&gt; &lt;code&gt;~/.claude/settings.json&lt;/code&gt;의 &lt;code&gt;permissions.deny&lt;/code&gt;에 세 줄이면 됩니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;permissions&quot;: {
+    &quot;deny&quot;: [
+      &quot;mcp__perplexity__perplexity_ask&quot;,
+      &quot;mcp__perplexity__perplexity_research&quot;,
+      &quot;mcp__perplexity__perplexity_reason&quot;
+    ]
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&quot;https://code.claude.com/docs/en/permissions&quot;&gt;권한 문서&lt;/a&gt;에 따르면 도구 이름만 적은 deny 규칙은 그 도구를 Claude의 컨텍스트에서 아예 빼서 Claude가 보지도 못합니다. 2.1.310에서 공식 로컬 서버(&lt;code&gt;@perplexity-ai/mcp-server&lt;/code&gt;)를 그대로 등록하고 &lt;code&gt;claude -p&lt;/code&gt;를 &lt;code&gt;--output-format stream-json --verbose&lt;/code&gt;로 실행했습니다. 세션 시작 때 찍히는 사용 가능 도구 목록을 규칙 전후로 비교하면 이렇습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 규칙 없음
+perplexity 도구: perplexity_ask, perplexity_reason, perplexity_research, perplexity_search
+
+# permissions.deny 세 줄을 넣은 뒤
+perplexity 도구: perplexity_search
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;위 규칙의 도구 이름은 MCP 서버를 &lt;code&gt;perplexity&lt;/code&gt;라는 이름으로 등록했을 때 기준이고, 다른 이름으로 등록했다면 &lt;code&gt;mcp__&amp;lt;그 이름&amp;gt;__…&lt;/code&gt;로 바꿉니다. Perplexity가 권하는 원격 서버도 도구 이름이 같습니다.&lt;/p&gt;
+&lt;p&gt;저는 3월부터 MCP 서버와 Claude Code 사이에 중간 서버(프록시)를 하나 두고 거기서 이 도구들을 목록에서 빼 왔는데, 이 세 줄이면 프록시 없이 됩니다. Claude Code는 이제 MCP 도구 설명을 처음부터 다 싣지 않고 필요할 때만 불러오기 때문에, 세 도구를 막아도 입력 토큰은 거의 줄지 않습니다. 이 설정의 목적은 비싼 도구가 호출돼 비용이 나가는 것을 막는 데 있습니다.&lt;/p&gt;
+&lt;h2&gt;검색 비용은 적게 들지만, Claude 구독 한도는 더 빨리 찹니다&lt;/h2&gt;
+&lt;p&gt;&lt;a href=&quot;https://docs.perplexity.ai/docs/getting-started/pricing&quot;&gt;Perplexity Search API&lt;/a&gt;는 요청 1,000건에 $5(약 6,700원)이고, 빠른 검색 모드는 $1(약 1,300원)입니다. 측정은 일반 검색 모드로 했고 Claude는 질문 하나에 검색을 8회쯤 호출했으니, &lt;strong&gt;검색 비용은 질문 하나에 50원쯤(4센트)입니다.&lt;/strong&gt; 질문 88개를 측정한 날 Perplexity 콘솔에는 검색 713회, $3.57(약 4,800원)이 찍혔습니다.&lt;/p&gt;
+&lt;p&gt;Claude 구독 한도를 더 쓰는 이유는 Perplexity 답이 더 길고, 검색 결과에 실려 온 본문 발췌까지 Claude가 읽기 때문입니다. 생활 질문 58개(9월과 같은 질문)에서 Claude가 쓴 토큰을 API 요금으로 환산하면 Perplexity 쪽이 $44.8(약 6만 원), 기본 웹 검색 쪽이 $33.4(약 4만 5천 원)였습니다. 구독으로 쓰면 이 차이가 한도 소모로 나타납니다.&lt;/p&gt;
+&lt;h2&gt;이 측정의 한계&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;strong&gt;승패는 답이 얼마나 쓸모 있는지를 본 것이고, 사실이 맞는지는 따로 확인했습니다.&lt;/strong&gt; 채점 모델은 답을 읽고 순위만 매겼습니다. 사실 정확도는 제품 질문 12개의 주장을 웹에서 하나씩 확인했고, 두 검색 사이의 차이는 통계적으로 유의하지 않았습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;채점 모델은 긴 답을 좋아합니다.&lt;/strong&gt; 길이와 순위의 상관계수가 Claude 채점 +0.39, GPT 채점 +0.21이었고 Perplexity 답이 대체로 길어서, 이 선호가 결과에 어느 정도 섞여 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;질문은 저 한 사람이 물은 것이고 한국어가 대부분입니다.&lt;/strong&gt; 영어 개발 질문 위주로 쓰는 분에게는 차이가 다를 수 있습니다.&lt;/li&gt;
+&lt;li&gt;&lt;strong&gt;Perplexity가 최선이라는 뜻은 아닙니다.&lt;/strong&gt; Claude Code 공식 플러그인이 있는 Exa도 위 표처럼 기본 웹 검색을 이겼고 Perplexity와 비슷했습니다(Exa 3.0이 나온 이틀 뒤 측정이라 이전 버전과는 다를 수 있습니다). 9월에는 Codex 답도 있어서 채점 모델이 자기 회사 모델이 쓴 답을 더 높게 평가하는 편향이 있었는데, 그 이야기는 &lt;a href=&quot;/posts/2026/09/23/2026-09-23-web-search-blind-eval-judge-bias/&quot;&gt;9월 글&lt;/a&gt;에 적었습니다.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;검색 MCP를 붙일지 고민이라면 자기가 실제로 물었던 질문 10개를 두 가지 검색으로 비교해 보는 것이 가장 빠릅니다. 아래처럼 쓸 수 있는 도구를 지정해 한 질문을 두 번 실행하면 됩니다. 질문 10개에 Perplexity 검색 비용은 700원이 안 됩니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;# 기본 웹 검색만
+claude -p &quot;질문&quot; --tools &quot;WebSearch,WebFetch&quot; --strict-mcp-config --mcp-config &apos;{&quot;mcpServers&quot;:{}}&apos;
+# Perplexity MCP만 (perplexity.json은 아래 파일)
+claude -p &quot;질문&quot; --tools &quot;WebFetch&quot; --strict-mcp-config --mcp-config perplexity.json
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;code&gt;perplexity.json&lt;/code&gt;은 아래처럼 쓰고, API 키는 환경 변수 &lt;code&gt;PERPLEXITY_API_KEY&lt;/code&gt;에 넣어 둡니다. 앞 절의 &lt;code&gt;permissions.deny&lt;/code&gt; 세 줄을 넣어 두었다면 이 실행에서도 Perplexity 도구는 검색 하나만 남습니다.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+  &quot;mcpServers&quot;: {
+    &quot;perplexity&quot;: {
+      &quot;type&quot;: &quot;http&quot;,
+      &quot;url&quot;: &quot;https://api.perplexity.ai/mcp&quot;,
+      &quot;headers&quot;: { &quot;Authorization&quot;: &quot;Bearer ${PERPLEXITY_API_KEY}&quot; }
+    }
+  }
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;blockquote&gt;
+&lt;p&gt;비교 측정은 10월에 Claude Code 2.1.302와 Claude Opus 5.5로 했습니다. 도구를 막는 설정(permissions.deny)은 2.1.310에서 확인했고, 11월 18일에 2.1.325에서 다시 확인했습니다. &lt;code&gt;/mcp&lt;/code&gt; 화면은 2.1.312에서 찍었습니다. Perplexity 가격, Claude Code 문서, Brave 지원 언어는 11월 18일에 다시 확인했습니다. Anthropic의 위탁 업체 목록과 Google Cloud 문서는 10월 30일에 확인했습니다. 달러 금액은 10월 29일 환율(1달러 1,340원)로 환산했습니다.&lt;/p&gt;
+&lt;/blockquote&gt;
+</content:encoded></item><item><title>Claude Code 운영기 5편: Claude야, 영어로 쓰라니까 왜 한국어로 답한다고 해</title><link>https://monologg.kr/posts/2026/10/25/2026-10-25-claude-code-ops-claude-p-settings/</link><guid isPermaLink="true">https://monologg.kr/posts/2026/10/25/2026-10-25-claude-code-ops-claude-p-settings/</guid><description>cron에 걸어 둔 Claude Code가 영어로 써야 할 답 8건 중 4건을 한국어로 냈습니다. 사용자 설정이 claude -p에 실리는 것을 재현하고, 구독 로그인에서 쓰는 --restricted로 막는 법을 적었습니다.</description><pubDate>Sun, 25 Oct 2026 00:00:00 GMT</pubDate><content:encoded>&lt;blockquote&gt;
 &lt;p&gt;2026년 10월 기준입니다. Claude Code 2.1.302에서 재현했고, 공식 문서는 10월 25일에 확인했습니다.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;집 서버에서 쓰는 프로그램의 새 버전이 나오면, cron으로 도는 Claude Code가 릴리스 노트를 읽고 올려도 괜찮은지를 영어로 답하게 해 두었습니다. 기존 설정이 깨지는 변경은 없는지, 보안 문제는 없는지 같은 질문에 예·아니오와 근거 문장을 다는 식입니다. 그런데 답 8건 중 4건이 한국어로 나왔습니다.&lt;/p&gt;
